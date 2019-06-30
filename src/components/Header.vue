@@ -8,6 +8,7 @@
         <li
           class="tab"
           v-for="item in list"
+
           :key="item.id"
         >
           <router-link :to="item.url">{{item.navurl}}</router-link>
@@ -18,28 +19,32 @@
         href="#"
       >登陆</a>
     </div>
-    <header-nav></header-nav>
+
   </div>
 </template>
 
 <script>
-import Headernav from './Headernav'
+
 export default {
   name: 'Tabs',
-  components: {
-    [Headernav.name]: Headernav
-  },
+
   data() {
     return {
       list: [
         { id: 1, navurl: '首页', url: '/home' },
-        { id: 2, navurl: '产品', url: '/product' },
-        { id: 3, navurl: '物资', url: '/materialls' },
-        { id: 4, navurl: '客户', url: '/client' }
+        { id: 3, navurl: '材料', url: '/materials' },
+        { id: 8, navurl: '修理', url: '/repair' },
+        { id: 2, navurl: '订购', url: '/order' },
+        { id: 5, navurl: '工作', url: '/worker' }
+
       ]
     }
   },
-
+  methods:{
+    selectAction(index){
+      this.value=index
+    }
+  }
 }
 </script>
 
@@ -54,13 +59,22 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 50px 0 50px;
+  .log{
+
+  }
   nav {
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     .tab {
       width: 60px;
+      .router-link-active{
+        color: black;
+      }
     }
+  }
+  .login{
 
   }
 }

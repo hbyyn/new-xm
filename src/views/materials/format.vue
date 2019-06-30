@@ -1,6 +1,6 @@
 <template>
-  <div  class="page">
-    产品
+  <div class="page">
+WORKddddd
   </div>
 </template>
 

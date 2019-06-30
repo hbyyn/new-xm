@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import homeRoute from './home'
-import materiallsRoute from './materialls'
-import productRoute from './product'
-import clientRoute from './client'
+import materialsRoute from './materials'
+import orderRoute from './order'
+import repairRoute from './repair'
+import workRoute from './worker'
 
 Vue.use(Router)
 const routes= [
   homeRoute,
-  materiallsRoute,
-  productRoute,
-  clientRoute,
+  materialsRoute,
+  orderRoute,
+  repairRoute,
+  workRoute,
   {
     path: '/',
     redirect: '/home'

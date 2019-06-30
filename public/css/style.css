@@ -1,14 +1,37 @@
-html, body, #app{
-    width: 100%;
-    height: 100%;
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
 }
-.page{
+
+
+.nav_tabs {
+  height: 50px;
+  background-color: #fff;
+}
+.nav_tabs  ul {
+    line-height: 50px;
+    display: flex;
+    justify-content: center;
+}
+.nav_tabs  ul li a {
+    height: 50px;
+    display: block;
+    margin: 0 20px;
+    color: gray;
+    width: 100px;
+}
+.pageWrapper {
     height: 100%;
     width: 100%;
     position: absolute;
-    top: 0;
+    top: 110px;
     left: 0;
-    top: 100px;
-    overflow: hidden;
+    right: 0;
+
     background: rgb(206, 172, 172);
+  }
+.page {
+  margin: 10px 20px;
 }

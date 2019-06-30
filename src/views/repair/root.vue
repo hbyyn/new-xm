@@ -3,7 +3,6 @@
     <header-nav />
 
     <div class="pageWrapper">
-      <h1>首页</h1>
       <keep-alive>
         <router-view />
       </keep-alive>
