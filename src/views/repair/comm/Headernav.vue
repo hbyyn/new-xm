@@ -21,9 +21,9 @@ export default {
   data() {
     return {
       list: [
-        { id: 3, urlname: '材料', url: '/repair/materials' },
-        { id: 1, urlname: '材料修理', url: '/repair/mrepair' },
-        { id: 2, urlname: '修理', url: '/repair/repair' },
+        { id: 3, urlname: '物料表', url: '/repair/materials' },
+        { id: 1, urlname: '产品返修表', url: '/repair/mrepair' },
+        { id: 2, urlname: '返修表', url: '/repair/repair' },
       ]
     }
   }
@@ -31,5 +31,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.router-link-active {
+  color: #0c64eb;
+}
 
 </style>

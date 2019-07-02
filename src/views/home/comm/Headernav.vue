@@ -22,7 +22,6 @@ export default {
     return {
       list: [
         { id: 1, urlname: '首页', url: '/home/root' },
-
       ]
     }
   }
@@ -30,5 +29,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.router-link-active {
+  color: #0c64eb;
+}
 </style>

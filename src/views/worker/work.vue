@@ -59,10 +59,9 @@ export default {
 
       tableData: [{
         clint_id: 'a555',
-        material_id: 'b546',
         work_id: 'c222',
-        material_work_begindate: '2019-05-05',
-        material_work_enddate: '2019-05-07',
+        work_name: '李四',
+        work_desc: '打豆豆',
         clint_creator: 'jj-56',
         clint_createtime: '2016/05/03/14:06:55',
         clint_updator: 'jj-57',
@@ -70,10 +69,9 @@ export default {
       },
       {
         clint_id: 'a555',
-        material_id: 'b546',
         work_id: 'c222',
-        material_work_begindate: '2019-05-05',
-        material_work_enddate: '2019-05-07',
+        work_name: '李四',
+        work_desc: '打豆豆',
         clint_creator: 'jj-56',
         clint_createtime: '2016/05/03/14:06:55',
         clint_updator: 'jj-57',
@@ -82,10 +80,9 @@ export default {
       ],
       cols:[
         {id:1,prop:'clint_id',label:"公司编号"},
-        {id:2,prop:'material_id',label:"材料编号"},
         {id:7,prop:'work_id',label:"工序编号"},
-        {id:8,prop:'material_work_begindate',label:"开始日期"},
-        {id:11,prop:'material_work_enddate',label:"结束日期"},
+        {id:2,prop:'work_name',label:"工序名称"},
+        {id:8,prop:'work_desc',label:"工作描述"},
         { id: 14, prop: 'clint_creator', label: "创建人" },
         { id: 15, prop: 'clint_createtime', label: "创建时间" },
         { id: 16, prop: 'clint_updator', label: "修改人" },

@@ -23,7 +23,7 @@ export default {
       list: [
         { id: 1, urlname: '材料', url: '/worker/materials' },
         { id: 2, urlname: '材料工作', url: '/worker/mwork' },
-        { id: 3, urlname: '工作', url: '/worker/worker' },
+        { id: 3, urlname: '工作', url: '/worker/work' },
 
       ]
     }
@@ -32,4 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.router-link-active {
+  color: #0c64eb;
+}
 </style>

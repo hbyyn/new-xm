@@ -21,10 +21,10 @@ export default {
   data() {
     return {
       list: [
-        { id: 1, urlname: '订购产品', url: '/order/orderproduct' },
-        { id: 3, urlname: '产品', url: '/order/product' },
-        { id: 4, urlname: '订购', url: '/order/order' },
-        { id: 2, urlname: '客户', url: '/order/customers' },
+        { id: 1, urlname: '产品订单', url: '/order/orderproduct' },
+        { id: 3, urlname: '产品表', url: '/order/product' },
+        { id: 4, urlname: '单表', url: '/order/order' },
+        { id: 2, urlname: '客户表', url: '/order/customers' },
       ]
     }
   }
@@ -32,5 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.router-link-active {
+  color: #0c64eb;
+}
 </style>

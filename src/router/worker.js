@@ -8,8 +8,8 @@ const route = {
       component: () => import("../views/worker/mwork")
     },
     {
-      path: "worker",
-      component: () => import("../views/worker/worker")
+      path: "work",
+      component: () => import("../views/worker/work")
     },
     {
       path: "materials",

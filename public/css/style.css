@@ -23,7 +23,7 @@ body,
     width: 100px;
 }
 .pageWrapper {
-    height: 100%;
+
     width: 100%;
     position: absolute;
     top: 110px;
@@ -34,4 +34,7 @@ body,
   }
 .page {
   margin: 10px 20px;
+  background-color: white;
 }
+
+
