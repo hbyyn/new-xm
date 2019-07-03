@@ -1,6 +1,5 @@
 import Mock from 'mockjs'
 let data={
-  sel: null,//选中行
   columns: [
     { id: 1, prop: 'clint_id', label: "公司编号" },
     { id: 2, prop: 'customers_id', label: "客户编号" },
@@ -14,13 +13,24 @@ let data={
     { id: 17, prop: 'clint_updatetime', label: "修改时间" }
   ],
   list: [],
-}
+  FromData: {
+    clint_id: '',
+    customers_id: '',
+    customers_name: '',
+    customers_tel: '',
+    customers_address: '',
+    customers_fax: '',
+    clint_creator: '',
+    clint_createtime: '',
+    clint_updator: '',
+    clint_updatetime: '',
+  },//弹窗
+  total:20//list数据数量
+};
 
 
-
-for (let i = 0; i < 12; i++) {
+for (let i = 0; i < data.total; i++) {
   data.list.push(Mock.mock({
-    id:Mock.Random.guid(),
     clint_id: /[a-z][0-9]{6}$/,
     customers_id: /[a-z][0-9]{6}$/,
     customers_name: Mock.Random.cname(),
@@ -30,13 +40,12 @@ for (let i = 0; i < 12; i++) {
     clint_creator:/[a-z]{6}$/,
     clint_createtime: Mock.Random.date(),
     clint_updator:/[a-z]{6}$/,
-    clint_updatetime: Mock.Random.date(),
+    clint_updatetime: Mock.Random.date()
   }))
 }
-
-
 // 用户相关
 Mock.mock('/customers/api', 'get', data)
 // Mock.mock(/\/user\/batchremove/, 'get', tableAPI.batchremove)
 // Mock.mock(/\/user\/add/, 'get', tableAPI.createUser)
 // Mock.mock(/\/user\/edit/, 'get', tableAPI.updateUser)
+export default Mock
