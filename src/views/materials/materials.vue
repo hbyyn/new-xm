@@ -1,178 +1,120 @@
 <template>
   <div class="page">
-    <el-button
-      class="addrow"
-      type="success"
-      @click="addRow(tableData)"
-    >新增</el-button>
-    <el-button
-      type="success"
-      @click="removeUsers(tableData)"
-    >删除选中</el-button>
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      border
-      tooltip-effect="dark"
-      style="width: 100%"
-      @cell-dblclick="tableDbEdit"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
-      >
+    <div class="rowAdd">
+      <el-button type="primary" @click="rowAdd">新增</el-button>
+      <el-button type="danger" @click="rowRemove()">删除选中</el-button>
+    </div>
+
+    <el-table ref="multipleTable" :data="mock_all.list" tooltip-effect="dark" border style="width: 100%"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
       </el-table-column>
+
       <!--  主体 -->
-      <el-table-column
-        v-for="col in cols"
-        :key="col.id"
-        :prop="col.prop"
-        :label="col.label"
-      >
+      <el-table-column v-for="col in mock_api.columns" :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column
-        fixed="right"
-        label="操作"
-        show-overflow-tooltip
-      >
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip class-name="chang_del">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            移除
+          <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
+            修改
           </el-button>
-          <el-button
-            @click="handleClick(scope.row)"
-            type="text"
-            size="small"
-          >查看</el-button>
+          <el-button size="mini" v-if="!scope.row.isSet" type="danger" @click="rowDel(scope.$index, scope.row)">
+            删除
+          </el-button>
+
         </template>
       </el-table-column>
+
     </el-table>
     <!-- 分页 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="tableData.length"
-    >
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+      :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_api.total">
     </el-pagination>
-
-    <!-- 新增弹窗 -->
-
+    <!-- 新增 -->
+    <el-dialog title="新增" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px" :model="mock_api.FromData">
+        <el-form-item class="fromitem" :label="item.label" v-for="(item,index) in mock_api.columns" :key="item.id ">
+          <el-input v-model="mock_api.FromData[
+Object.keys(mock_api.FromData)[index]]"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="fromCancel">取 消</el-button>
+        <el-button type="primary" @click="fromOr">确 定</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-
+  name: 'HelloWorld',
   data() {
     return {
-
-      tableData: [{
-        clint_id: 'a545',
-        material_id: 'b546',
-        material_type: '金',
-        material_name: '电池',
-        format_id: 'c222',
-        material_unit: '5',
-        supplier_id: 'd45545',
-        material_erpid: 'e12315',
-        material_indate: '2019-05-04',//进货日期
-        material_storeid: 's26645',
-        material_operaterid: 'o165613',//操作员
-        material_operaterdate: '2019-05-07',
-        parent_id: 'p664654',
-        clint_creator: 'jj-56',
-        clint_createtime: '2016/05/03/14:06:55',
-        clint_updator: 'jj-57',
-        clint_updatetime: '2016/05/03/14:16:55'
-      },
-      {
-
-        clint_id: 'a555',
-        material_id: 'b546',
-        material_type: '金2',
-        material_name: '电池',
-        format_id: 'c222',
-        material_unit: '5',
-        supplier_id: 'd45545',
-        material_erpid: 'e12315',
-        material_indate: '2019-05-05',//进货日期
-        material_storeid: 's26645',
-        material_operaterid: 'o165613',//操作员
-        material_operaterdate: '2019-05-07',
-        parent_id: 'p664654',
-        clint_creator: 'jj-56',
-        clint_createtime: '2016/05/03/14:06:55',
-        clint_updator: 'jj-57',
-        clint_updatetime: '2016/05/03/14:16:55'
-      }
-      ],
-      cols: [
-        { id: 1, prop: 'clint_id', label: "公司编号" },
-        { id: 2, prop: 'material_id', label: "物料编号" },
-        { id: 3, prop: 'material_type', label: "物料类型" },
-        { id: 4, prop: 'material_name', label: "物料名称" },
-        { id: 13, prop: 'clint_creator', label: "规格编号" },
-        { id: 5, prop: 'material_unit', label: "物料单位" },
-        { id: 6, prop: 'supplier_id', label: "供应商编号" },
-        { id: 7, prop: 'material_erpid', label: "ERP-编号" },
-        { id: 8, prop: 'material_indate', label: "EPR入库日期" },
-        { id: 9, prop: 'material_storeid', label: "EPR入库编号" },
-        { id: 10, prop: 'material_operaterid', label: "材料操作员编号" },
-        { id: 11, prop: 'material_operaterdate', label: "材料操作日期" },
-        { id: 12, prop: 'format_id', label: "父级编号" },
-        { id: 14, prop: 'clint_creator', label: "创建人" },
-        { id: 15, prop: 'clint_createtime', label: "创建时间" },
-        { id: 16, prop: 'clint_updator', label: "修改人" },
-        { id: 17, prop: 'clint_updatetime', label: "修改时间" }
-      ],
-      multipleSelection: []
+      mock_all: "",
+      mock_api: '',//{columns,list,fromData，}
+      centerDialogVisible: false,
+      addorChange: true,//判断修改新增
+      changeIndex: '',
+      Fromadd: '',//from数据中中转
     }
   },
+  computed: {
 
+  },
   methods: {
-    //新增
-    addRow(tableData) {
-      tableData.push(this.tableData[0])
-    },
-    //删除多个用户
-
-    //移除
-    deleteRow(index, rows) {
-      console.log(index);
-      rows.splice(index, 1);
-    },
-    //改
-    tableDbEdit(row, column, cell, event) {
-      event.target.innerHTML = "";
-      let cellInput = document.createElement("input");
-      cellInput.value = "";
-      cellInput.setAttribute("type", "text");
-      cellInput.style.width = "60%";
-      cell.appendChild(cellInput);
-      cellInput.onblur = function () {
-        cell.removeChild(cellInput);
-        event.target.innerHTML = cellInput.value;
-      };
-    },
-    //查看
-    handleClick(row) {
-      console.log(row);
-    },
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    //批量删除
+    rowRemove() {
+      const a = this.mock_all.list;
+      const b = this.multipleSelection;
+      this.mock_all.list = a.filter(function (item) {
+        return b.indexOf(item) < 0;
+      })
+    },
+    //新增
+    rowAdd() {
+      this.centerDialogVisible = true;
+      this.addorChange = true;
+    },
+    //修改
+    pwdChange(index, row) {
+      this.changeIndex = index;
+      this.addorChange = false;
+      this.centerDialogVisible = true;
+      this.mock_api.FromData = row;
+    },
+    //弹窗确认
+    fromOr() {
+      //拷贝from的值
+      this.Fromadd = '';
+      this.Fromadd = { ...this.mock_api.FromData };
+      if (this.addorChange) {
+        this.mock_all.list.unshift(this.Fromadd)
+      } else {
+        this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
+      }
+      this.centerDialogVisible = false
+    },
+    //弹窗取消
+    fromCancel() {
+      this.centerDialogVisible = false;
+      if (!this.addorChange) {
+        this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
+      }
+    },
 
+    //移除
+    rowDel(index) {
+      // console.log(index, this.mock_all.list);
+      this.mock_all.list.splice(index, 1);
     },
     //分页
     handleSizeChange(val) {
@@ -180,16 +122,32 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
-    },
-    //创建
-
+    }
+  },
+  created() {
+    // 数据
+    axios.get('/api/alllist').then((res) => {
+      this.mock_all = res.data
+      console.log(res.data.list)
+    }).catch((err) => {
+      console.log(err)
+    });
+    // 数据
+    axios.get('/api/materials').then((res) => {
+      this.mock_api = res.data
+    }).catch((err) => {
+      console.log(err)
+    });
   }
-
 }
 </script>
-<style scoped>
-.addrow {
+
+<style lang="scss" scoped>
+.rowAdd {
   float: right;
   margin-right: 50px;
+}
+.chang_del {
+  flex: 1;
 }
 </style>

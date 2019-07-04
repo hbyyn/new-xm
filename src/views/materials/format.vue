@@ -1,79 +1,55 @@
 <template>
   <div class="page">
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
-      style="width: 100%"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
-      >
+    <el-table ref="multipleTable" :data="mock_api.list" tooltip-effect="dark" style="width: 100%"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
       </el-table-column>
       <!--  主体 -->
-      <el-table-column
-        v-for="col in cols"
-        :key="col.id"
-        :prop="col.prop"
-        :label="col.label"
-      >
+      <el-table-column v-for="col in cols" :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
-      <!-- //移除 -->
-      <el-table-column
-        fixed="right"
-        label="操作"
-        show-overflow-tooltip
-      >
+      <!-- //操作 -->
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip class-name="chang_del">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
-            type="text"
-            size="small"
-          >
-            移除
+          <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
+            修改
+          </el-button>
+          <el-button size="mini" v-if="!scope.row.isSet" type="danger" @click="rowDel(scope.$index, scope.row)">
+            删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="tableData.length"
-    >
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+      :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="mock_api.data">
     </el-pagination>
+    <!-- 新增 -->
+    <el-dialog title="新增" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px" :model="mock_api.FromData">
+        <el-form-item class="fromitem" :label="item.label" v-for="(item,index) in mock_api.columns" :key="item.id ">
+          <el-input v-model="mock_api.FromData[
+Object.keys(mock_api.FromData)[index]]"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="fromCancel">取 消</el-button>
+        <el-button type="primary" @click="fromOr">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
-
-      tableData: [{
-        clint_id: 'a555',
-        format_id: 'b546',
-        format_name: 'A计划',
-        clint_creator: 'jj-56',
-        clint_createtime: '2016/05/03/14:06:55',
-        clint_updator: 'jj-57',
-        clint_updatetime: '2016/05/03/14:16:55'
-      },
-      {
-        clint_id: 'a555',
-        format_id: 'b546',
-        format_name: 'A计划',
-        clint_creator: 'jj-56',
-        clint_createtime: '2016/05/03/14:06:55',
-        clint_updator: 'jj-57',
-        clint_updatetime: '2016/05/03/14:16:55'
-      }],
+      mock_api:'',
+      centerDialogVisible: false,
+      addorChange: true,//判断修改新增
+      changeIndex: '',
+      Fromadd: '',//from数据中中转
       cols: [
         { id: 1, prop: 'clint_id', label: "公司编号" },
         { id: 2, prop: 'format_id', label: "规格编号" },
@@ -85,6 +61,13 @@ export default {
       ],
     }
   },
+  created() {
+    axios.get('/api/alllist').then((res) => {
+      this.mock_api = res.data
+    }).catch((err) => {
+      console.log(err)
+    });
+  },
   methods: {
     // 选择
     handleSelectionChange(val) {
@@ -93,6 +76,33 @@ export default {
     //移除
     deleteRow(index, rows) {
       rows.splice(index, 1);
+    },
+
+     //修改
+    pwdChange(index, row) {
+      this.changeIndex = index;
+      this.addorChange = false;
+      this.centerDialogVisible = true;
+      this.mock_api.FromData = row;
+    },
+    //弹窗确认
+    fromOr() {
+      //拷贝from的值
+      this.Fromadd = '';
+      this.Fromadd = { ...this.mock_api.FromData };
+      if (this.addorChange) {
+        this.mock_all.list.unshift(this.Fromadd)
+      } else {
+        this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
+      }
+      this.centerDialogVisible = false
+    },
+    //弹窗取消
+    fromCancel() {
+      this.centerDialogVisible = false;
+      if (!this.addorChange) {
+        this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
+      }
     },
     //分页
     handleSizeChange(val) {

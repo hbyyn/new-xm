@@ -14,10 +14,8 @@
           <router-link :to="item.url">{{item.navurl}}</router-link>
         </li>
       </nav>
-      <a
-        class="login"
-        href="#"
-      >登陆</a>
+      <router-link class="login" to="/login">登陆</router-link>
+
     </div>
 
   </div>
@@ -33,7 +31,7 @@ export default {
       list: [
         { id: 1, navurl: '首页', url: '/home' },
         { id: 3, navurl: '材料', url: '/materials' },
-        { id: 8, navurl: '修理', url: '/repair' },
+        { id: 8, navurl: '返修', url: '/repair' },
         { id: 2, navurl: '订购', url: '/order' },
         { id: 5, navurl: '工作', url: '/worker' }
 

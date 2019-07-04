@@ -1,7 +1,7 @@
 <template>
   <div>
+    <Tabs></Tabs>
     <header-nav />
-
     <div class="pageWrapper">
       <keep-alive>
         <router-view />
@@ -11,9 +11,11 @@
 </template>
 
 <script>
+import Header from '../../components/Header'
 import Headernav from './comm/Headernav'
 export default {
   components: {
+    [Header.name]: Header,
     [Headernav.name]: Headernav
   }
 

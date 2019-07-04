@@ -23,7 +23,7 @@ export default {
       list: [
         { id: 1, urlname: '产品订单', url: '/order/orderproduct' },
         { id: 3, urlname: '产品表', url: '/order/product' },
-        { id: 4, urlname: '单表', url: '/order/order' },
+        { id: 4, urlname: '订单表', url: '/order/order' },
         { id: 2, urlname: '客户表', url: '/order/customers' },
       ]
     }

@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Tabs></Tabs>
     <keep-alive>
         <router-view />
     </keep-alive>
@@ -9,12 +8,10 @@
 
 
 <script>
-import Header from './components/Header'
-``
+
+
 export default {
-  components: {
-    [Header.name]: Header,
-  }
+
 }
 </script>
 
