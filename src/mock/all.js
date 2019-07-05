@@ -1,7 +1,41 @@
+//废弃没用
 import Mock from "mockjs";
 let data = {
   list: [],
+  FromData: {
+    clint_id: "",
+    material_id: "",
+    material_type: "",
+    material_name: "",
+    format_id: "",
+    material_unit: "",
+    supplier_id:"",
+    material_erpid: "",
+    material_indate: "",
+    material_storeid: "",
+    material_operaterid: "",
+    material_operaterdate: "",
+    parent_id: "",
+    //规划
+    format_name: "",
+    //供应商
+    supplier_name: "",
+    supplier_tel: "",
+    supplier_address: "",
+    supplier_fax: "",
+    //产品表
+    product_id: "",
+    product_name: "",
+    product_color:"",
+    product_desc: "",
+
+    clint_creator: "",
+    clint_createtime: "",
+    clint_updator: "",
+    clint_updatetime: ""
+  }, //弹窗,
   total: 10 //list数据数量
+
 };
 
 for (let i = 0; i < data.total; i++) {

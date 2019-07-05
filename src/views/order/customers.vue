@@ -40,7 +40,7 @@ Object.keys(mock_api.FromData)[index]]"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button  @click="fromCancel">取 消</el-button>
+        <el-button  @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="fromOr">确 定</el-button>
       </span>
     </el-dialog>
@@ -88,7 +88,7 @@ export default {
       this.changeIndex = index;
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.mock_api.FromData=row;
+      this.mock_api.FromData={...row};
     },
     //弹窗确认
     fromOr() {
@@ -102,13 +102,7 @@ export default {
       }
       this.centerDialogVisible = false
     },
-    //弹窗取消
-    fromCancel(){
-      this.centerDialogVisible = false;
-      if(!this.addorChange){
-        this.mock_api.list.splice(this.changeIndex,1,this.Fromadd)
-      }
-    },
+
 
     //移除
     rowDel(index) {

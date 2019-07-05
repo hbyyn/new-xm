@@ -8,16 +8,6 @@ let data={
     { id: 16, prop: 'clint_updator', label: "修改人" },
     { id: 17, prop: 'clint_updatetime', label: "修改时间" }
   ],
-  FromData: {
-    clint_id: '',
-    format_id: '',
-    format_name: '',
-    clint_creator: '',
-    clint_createtime: '',
-    clint_updator: '',
-    clint_updatetime: '',
-  },//弹窗
-
 }
 
 export default data
