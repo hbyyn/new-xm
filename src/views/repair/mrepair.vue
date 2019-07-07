@@ -1,178 +1,179 @@
-
 <template>
-  <div>
-    <el-autocomplete popper-class="my-autocomplete" v-model="state" :fetch-suggestions="querySearch" placeholder="请输入内容"
-      @select="handleSelect">
+  <div class="page">
+    <div class="rowAdd">
+      <el-button type="primary" @click="rowAdd">新增</el-button>
+      <el-button type="danger" @click="rowRemove()">删除选中</el-button>
+    </div>
 
-      <template slot-scope="{ item }">
-        <div class="name">{{ item.value }}</div>
-        <span class="addr">{{ item.address }}</span>
-      </template>
-    </el-autocomplete>
+    <el-table ref="multipleTable" :data="mock_all.list" tooltip-effect="dark" border style="width: 100%"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
+      </el-table-column>
+
+      <!--  主体 -->
+      <el-table-column v-for="col in mock_all.columns" :key="col.id" :prop="col.prop" :label="col.label">
+      </el-table-column>
+
+      <!-- //操作 -->
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip class-name="chang_del">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
+            修改
+          </el-button>
+          <el-button size="mini" type="danger" @click="rowDel(scope.$index, scope.row)">
+            删除
+          </el-button>
+
+        </template>
+      </el-table-column>
+
+    </el-table>
+    <!-- 分页 -->
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+      :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.total">
+    </el-pagination>
+    <!-- 新增 -->
+    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px">
+        <el-form-item :label="mock_all.columns[0].label">
+          <el-input v-model="mock_all.FromData.clint_id"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[1].label">
+          <el-select v-model="mock_all.FromData.material_id" placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in materials_store" :key="item.id" :value="item.material_id">
+              <span>{{'ID:'+item.material_id}}</span>
+              <span>{{'材料名:'+item.material_name}}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[2].label">
+          <el-select v-model="mock_all.FromData.repair_id" placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in repair_store" :key="item.id" :value="item.repair_id">
+              <span>{{'ID:'+item.repair_id}}</span>
+              <span>{{'返修名:'+item.repair_name}}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[3].label">
+          <el-input v-model="mock_all.FromData.material_repair_begindate"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[4].label">
+          <el-input v-model="mock_all.FromData.material_repair_enddate"></el-input>
+        </el-form-item>
+
+        <el-form-item :label="mock_all.columns[5].label">
+          <el-input v-model="mock_all.FromData.clint_creator"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[6].label">
+          <el-input v-model="mock_all.FromData.clint_createtime"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[7].label">
+          <el-input v-model="mock_all.FromData.clint_updator"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[8].label">
+          <el-input v-model="mock_all.FromData.clint_updatetime"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="fromOr">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
-
-<style lang="scss" scoped>
-.my-autocomplete {
-  li {
-    line-height: normal;
-    padding: 7px;
-
-    .name {
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .addr {
-      font-size: 12px;
-      color: #b4b4b4;
-    }
-
-    .highlighted .addr {
-      color: #ddd;
-    }
-  }
-}
-</style>
-
 <script>
+import { mapState } from 'vuex'
 export default {
+  name: 'HelloWorld',
   data() {
     return {
-      restaurants: [
-        { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
-        { "value": "新旺角茶餐厅", "address": "上海市普陀区真北路988号创邑金沙谷6号楼113" },
-        { "value": "泷千家(天山西路店)", "address": "天山西路438号" },
-        { "value": "胖仙女纸杯蛋糕（上海凌空店）", "address": "上海市长宁区金钟路968号1幢18号楼一层商铺18-101" },
-        { "value": "贡茶", "address": "上海市长宁区金钟路633号" },
-        { "value": "豪大大香鸡排超级奶爸", "address": "上海市嘉定区曹安公路曹安路1685号" },
-        { "value": "茶芝兰（奶茶，手抓饼）", "address": "上海市普陀区同普路1435号" },
-        { "value": "十二泷町", "address": "上海市北翟路1444弄81号B幢-107" },
-        { "value": "星移浓缩咖啡", "address": "上海市嘉定区新郁路817号" },
-        { "value": "阿姨奶茶/豪大大", "address": "嘉定区曹安路1611号" },
-        { "value": "新麦甜四季甜品炸鸡", "address": "嘉定区曹安公路2383弄55号" },
-        { "value": "Monica摩托主题咖啡店", "address": "嘉定区江桥镇曹安公路2409号1F，2383弄62号1F" },
-        { "value": "浮生若茶（凌空soho店）", "address": "上海长宁区金钟路968号9号楼地下一层" },
-        { "value": "NONO JUICE  鲜榨果汁", "address": "上海市长宁区天山西路119号" },
-        { "value": "CoCo都可(北新泾店）", "address": "上海市长宁区仙霞西路" },
-        { "value": "快乐柠檬（神州智慧店）", "address": "上海市长宁区天山西路567号1层R117号店铺" },
-        { "value": "Merci Paul cafe", "address": "上海市普陀区光复西路丹巴路28弄6号楼819" },
-        { "value": "猫山王（西郊百联店）", "address": "上海市长宁区仙霞西路88号第一层G05-F01-1-306" },
-        { "value": "枪会山", "address": "上海市普陀区棕榈路" },
-        { "value": "纵食", "address": "元丰天山花园(东门) 双流路267号" },
-        { "value": "钱记", "address": "上海市长宁区天山西路" },
-        { "value": "壹杯加", "address": "上海市长宁区通协路" },
-        { "value": "唦哇嘀咖", "address": "上海市长宁区新泾镇金钟路999号2幢（B幢）第01层第1-02A单元" },
-        { "value": "爱茜茜里(西郊百联)", "address": "长宁区仙霞西路88号1305室" },
-        { "value": "爱茜茜里(近铁广场)", "address": "上海市普陀区真北路818号近铁城市广场北区地下二楼N-B2-O2-C商铺" },
-        { "value": "鲜果榨汁（金沙江路和美广店）", "address": "普陀区金沙江路2239号金沙和美广场B1-10-6" },
-        { "value": "开心丽果（缤谷店）", "address": "上海市长宁区威宁路天山路341号" },
-        { "value": "超级鸡车（丰庄路店）", "address": "上海市嘉定区丰庄路240号" },
-        { "value": "妙生活果园（北新泾店）", "address": "长宁区新渔路144号" },
-        { "value": "香宜度麻辣香锅", "address": "长宁区淞虹路148号" },
-        { "value": "凡仔汉堡（老真北路店）", "address": "上海市普陀区老真北路160号" },
-        { "value": "港式小铺", "address": "上海市长宁区金钟路968号15楼15-105室" },
-        { "value": "蜀香源麻辣香锅（剑河路店）", "address": "剑河路443-1" },
-        { "value": "北京饺子馆", "address": "长宁区北新泾街道天山西路490-1号" },
-        { "value": "饭典*新简餐（凌空SOHO店）", "address": "上海市长宁区金钟路968号9号楼地下一层9-83室" },
-        { "value": "焦耳·川式快餐（金钟路店）", "address": "上海市金钟路633号地下一层甲部" },
-        { "value": "动力鸡车", "address": "长宁区仙霞西路299弄3号101B" },
-        { "value": "浏阳蒸菜", "address": "天山西路430号" },
-        { "value": "四海游龙（天山西路店）", "address": "上海市长宁区天山西路" },
-        { "value": "樱花食堂（凌空店）", "address": "上海市长宁区金钟路968号15楼15-105室" },
-        { "value": "壹分米客家传统调制米粉(天山店)", "address": "天山西路428号" },
-        { "value": "福荣祥烧腊（平溪路店）", "address": "上海市长宁区协和路福泉路255弄57-73号" },
-        { "value": "速记黄焖鸡米饭", "address": "上海市长宁区北新泾街道金钟路180号1层01号摊位" },
-        { "value": "红辣椒麻辣烫", "address": "上海市长宁区天山西路492号" },
-        { "value": "(小杨生煎)西郊百联餐厅", "address": "长宁区仙霞西路88号百联2楼" },
-        { "value": "阳阳麻辣烫", "address": "天山西路389号" },
-        { "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
-      ],
-      state: ''
-    };
-  },
-  methods: {
-    querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    handleSelect(item) {
-      console.log(item);
+      // mock_all: "",//转store
+      centerDialogVisible: false,
+      fromtitle: '',
+      addorChange: true,//判断修改新增
+      // changeIndex: '',转store
+      // Fromadd: '',//from数据中中转转store
     }
   },
-  // mounted() {
-  //   this.restaurants = this.loadAll();
-  // }
+  computed: {
+    ...mapState({
+      // 获得菜单列表数据
+      mock_all: state => state.mrepair.tableData,//{fromData,list,columns}
+      changeIndex: state => state.mrepair.changeIndex,
+      Fromadd: state => state.mrepair.Fromadd,
+      materials_store: state => state.materials.tableData.list,
+      repair_store:state => state.repair.tableData.list,
+    }),
+
+  },
+  methods: {
+    // 选择
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    //批量删除
+    rowRemove() {
+      const a = this.mock_all.list;
+      const b = this.multipleSelection;
+      this.mock_all.list = a.filter(function (item) {
+        return b.indexOf(item) < 0;
+      })
+    },
+    //新增
+    rowAdd() {
+      this.centerDialogVisible = true;
+      this.addorChange = true;
+      this.fromtitle = '新增';
+    },
+    //修改
+    pwdChange(index, row) {
+      this.fromtitle = '修改';
+      this.$store.commit('mrepair/setChangeIndex', index)
+      this.addorChange = false;
+      this.centerDialogVisible = true;
+      this.mock_all.FromData = { ...row };
+    },
+    //弹窗确认
+    fromOr() {
+      //拷贝from的值
+      this.$store.commit('mrepair/setFromadd', '')
+      this.$store.commit('mrepair/setFromadd', { ...this.mock_all.FromData })
+      if (this.addorChange) {
+        // this.mock_all.list.unshift(this.Fromadd)
+        this.$store.commit('mrepair/rowAddStore')
+      } else {
+        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
+        this.$store.commit('mrepair/pwdChange')
+      }
+      this.centerDialogVisible = false
+    },
+
+    //移除
+    rowDel(index) {
+      // console.log(index, this.mock_all.list);
+      this.mock_all.list.splice(index, 1);
+    },
+    //分页
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    }
+  },
+
+
 }
 </script>
-// export default {
 
-//   data() {
-//     return {
-
-//       tableData: [{
-//         clint_id: 'a555',
-//         material_id: 'b546',
-//         repair_id: 'e12315',
-//         material_repair_begindate: '2019-05-07',
-//         material_repair_enddate: '2019-06-07',
-//         clint_creator: 'jj-56',
-//         clint_createtime: '2016/05/03/14:06:55',
-//         clint_updator: 'jj-57',
-//         clint_updatetime: '2016/05/03/14:16:55'
-//       },
-//       {
-//         clint_id: 'a555',
-//         material_id: 'b546',
-//         repair_id: 'e12315',
-//         material_repair_begindate: '2019-05-07',
-//         material_repair_enddate: '2019-06-07',
-//         clint_creator: 'jj-56',
-//         clint_createtime: '2016/05/03/14:06:55',
-//         clint_updator: 'jj-57',
-//         clint_updatetime: '2016/05/03/14:16:55'
-//       }
-//       ],
-//       cols:[
-//         {id:1,prop:'clint_id',label:"公司编号"},
-//         {id:2,prop:'material_id',label:"材料编号"},
-//         {id:6,prop:'repair_id',label:"返修编号"},
-//         {id:7,prop:'material_repair_begindate',label:"维修启动日期"},
-//         {id:8,prop:'material_repair_enddate',label:"维修结束日期"},
-//         { id: 14, prop: 'clint_creator', label: "创建人" },
-//         { id: 15, prop: 'clint_createtime', label: "创建时间" },
-//         { id: 16, prop: 'clint_updator', label: "修改人" },
-//         { id: 17, prop: 'clint_updatetime', label: "修改时间" }
-//         ],
-//       multipleSelection: []
-//     }
-//   },
-
-//   methods: {
-//     // 选择
-//     handleSelectionChange(val) {
-//       this.multipleSelection = val;
-//     },
-//     //移除
-//     deleteRow(index, rows) {
-//       rows.splice(index, 1);
-//     },
-//     //分页
-//     handleSizeChange(val) {
-//       console.log(`每页 ${val} 条`);
-//     },
-//     handleCurrentChange(val) {
-//       console.log(`当前页: ${val}`);
-//     }
-//   }
-
-// }
-
+<style lang="scss" scoped>
+.rowAdd {
+  float: right;
+  margin-right: 50px;
+}
+.chang_del {
+  flex: 1;
+}
+</style>

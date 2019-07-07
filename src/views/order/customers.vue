@@ -5,7 +5,7 @@
       <el-button type="danger" @click="rowRemove()">删除选中</el-button>
     </div>
 
-    <el-table ref="multipleTable" border :data="mock_api.list" tooltip-effect="dark" style="width: 100%"
+    <el-table ref="multipleTable" border :data="mock_api.list.slice((pageCurrent-1)*pageSize,pageCurrent*pageSize)" tooltip-effect="dark" style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" @click="rowSelec(mock_api.list)">
       </el-table-column>
@@ -28,7 +28,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current="pageCurrent" :page-sizes="[10, 20, 30, 40]"
       :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_api.total">
     </el-pagination>
     <!-- 新增 -->
@@ -60,10 +60,12 @@ export default {
       addorChange:true,//判断修改新增
       changeIndex:'',
       Fromadd: '',//from数据中中转
+      pageSize:10,
+      pageCurrent:1,
     }
   },
   computed: {
-
+    // tableData
   },
   methods: {
     // 选择
@@ -85,7 +87,8 @@ export default {
      },
      //修改
     pwdChange(index,row) {
-      this.changeIndex = index;
+      console.log(index);
+      this.changeIndex = index +(this.pageCurrent-1)*this.pageSize;
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.mock_api.FromData={...row};
@@ -111,9 +114,11 @@ export default {
     },
     //分页
     handleSizeChange(val) {
+      this.pageSize=val;
         console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
+        this.pageCurrent=val
         console.log(`当前页: ${val}`);
       }
   },

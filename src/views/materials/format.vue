@@ -11,7 +11,7 @@
       </el-table-column>
 
       <!--  主体 -->
-      <el-table-column v-for="col in mock_api.columns" :key="col.id" :prop="col.prop" :label="col.label">
+      <el-table-column v-for="col in mock_all.columns" :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
       <!-- //操作 -->
@@ -30,30 +30,30 @@
     </el-table>
     <!-- 分页 -->
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_api.total">
+      :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.total">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px">
-        <el-form-item :label="mock_api.columns[0].label">
+        <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.FromData.clint_id"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[1].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.FromData.format_id"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[2].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.FromData.format_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[3].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.FromData.clint_creator"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[4].label">
+        <el-form-item :label="mock_all.columns[4].label">
           <el-input v-model="mock_all.FromData.clint_createtime"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[5].label">
+        <el-form-item :label="mock_all.columns[5].label">
           <el-input v-model="mock_all.FromData.clint_updator"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_api.columns[6].label">
+        <el-form-item :label="mock_all.columns[6].label">
           <el-input v-model="mock_all.FromData.clint_updatetime"></el-input>
         </el-form-item>
       </el-form>
@@ -68,13 +68,11 @@
 
 <script>
 import {mapState} from 'vuex'
-import axios from 'axios'
 export default {
   name: 'HelloWorld',
   data() {
     return {
-      // mock_all: "",//{fromData,list}转store
-      mock_api: '',//{columns}
+      // mock_all: "",//转store
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
@@ -85,10 +83,11 @@ export default {
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.format.all,
-      changeIndex: state => state.format.mock_all,
-      Fromadd: state => state.format.mock_all,
+      mock_all: state => state.format.tableData,//{fromData,list,columns}
+      changeIndex: state => state.format.changeIndex,
+      Fromadd: state => state.format.Fromadd,
     }),
+
   },
   methods: {
     // 选择
@@ -145,22 +144,7 @@ export default {
       console.log(`当前页: ${val}`);
     }
   },
-  created() {
-    console.log(this.mock_all)
-    // 数据
-    // axios.get('/api/alllist').then((res) => {
-    //   this.mock_all = res.data
-    //   console.log(res.data.list)
-    // }).catch((err) => {
-    //   console.log(err)
-    // });
-    // 数据
-    axios.get('/api/format').then((res) => {
-      this.mock_api = res.data
-    }).catch((err) => {
-      console.log(err)
-    });
-  }
+
 
 }
 </script>

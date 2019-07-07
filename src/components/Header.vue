@@ -33,7 +33,7 @@ export default {
         { id: 3, navurl: '材料', url: '/materials' },
         { id: 8, navurl: '返修', url: '/repair' },
         { id: 2, navurl: '订购', url: '/order' },
-        { id: 5, navurl: '工作', url: '/worker' }
+        { id: 5, navurl: '工序', url: '/worker' }
 
       ]
     }

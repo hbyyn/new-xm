@@ -25,7 +25,7 @@ let data={
     clint_updator: '',
     clint_updatetime: '',
   },//弹窗
-  total:10//list数据数量
+  total:50//list数据数量
 };
 
 
