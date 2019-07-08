@@ -48,16 +48,16 @@
           <el-input v-model="mock_all.FromData.repair_desc"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.alcohol_creator"></el-input>
+          <el-input v-model="mock_all.FromData.client_creator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.alcohol_createtime"></el-input>
+          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.alcohol_updator"></el-input>
+          <el-input v-model="mock_all.FromData.client_updator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.FromData.alcohol_updatetime"></el-input>
+          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

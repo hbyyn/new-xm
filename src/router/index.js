@@ -36,5 +36,17 @@ const router = new Router({
   routes
 })
 
+router.beforeEach((to,from,next) => {
+  let clint_id=sessionStorage.getItem('clint_id')
+  let username=sessionStorage.getItem('username')
+  if(to.path !== '/login' && !clint_id&& !username){
+    next({
+      path:'/login'
+    })
+  }else{
+      next()
+  }
+})
+
 
 export default router

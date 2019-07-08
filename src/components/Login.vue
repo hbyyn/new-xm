@@ -15,13 +15,13 @@
         <div class="footerfrom">
           <el-form label-position="right" label-width="80px" class="demo-ruleForm" size="mini">
             <el-form-item label="公司编号" prop="clint_id">
-              <el-input type="text" v-model="loginForm.clint_id"></el-input>
+              <el-input placeholder="Test001" type="text" v-model="loginForm.clint_id"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="username">
-              <el-input type="text" v-model="loginForm.username"></el-input>
+              <el-input placeholder="admin" type="text" v-model="loginForm.username"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input type="password" v-model="loginForm.password"></el-input>
+              <el-input placeholder="123456" v-model="loginForm.password" show-password></el-input>
             </el-form-item>
             <el-form-item label-position="left">
               <el-button type="primary" @click="handLeLong">登录</el-button>
@@ -58,15 +58,24 @@ export default {
         clint_id: '',
         username: '',
         password: ''
+      },
+      loginXXX: {
+        clint_id: 'Test001',
+        username: 'admin',
+        password: '123456'
       }
+
     }
   },
   methods: {
     handLeLong() {
 
-
-      this.$router.push('/');
-
+      if (this.loginForm.clint_id == this.loginXXX.clint_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
+        sessionStorage.setItem("clint_id", this.loginForm.clint_id);
+        sessionStorage.setItem("user_name", this.loginForm.username);
+        sessionStorage.setItem("password", this.loginForm.password);
+        this.$router.push('/');
+      }
     }
   }
 }

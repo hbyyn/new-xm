@@ -35,9 +35,9 @@
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px">
-        <el-form-item :label="mock_all.columns[0].label">
+        <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.FromData.clint_id"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.FromData.product_id"></el-input>
         </el-form-item>
@@ -48,10 +48,10 @@
           <el-input v-model="mock_all.FromData.product_color"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.product_desc"></el-input>
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="mock_all.FromData.product_desc"></el-input>
         </el-form-item>
 
-        <el-form-item :label="mock_all.columns[5].label">
+        <!-- <el-form-item :label="mock_all.columns[5].label">
           <el-input v-model="mock_all.FromData.clint_creator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[6].label">
@@ -62,7 +62,7 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[8].label">
           <el-input v-model="mock_all.FromData.clint_updatetime"></el-input>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -123,8 +123,8 @@ export default {
     //弹窗确认
     fromOr() {
       //拷贝from的值
-      this.$store.commit('product/setFromadd', '')
       this.$store.commit('product/setFromadd', { ...this.mock_all.FromData })
+      this.$store.commit('product/setNowTime')
       if (this.addorChange) {
         // this.mock_all.list.unshift(this.Fromadd)
         this.$store.commit('product/rowAddStore')
