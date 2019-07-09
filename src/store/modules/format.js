@@ -24,9 +24,9 @@ const state = {
     ],
     FromData: {
       clint_id: "",
-      format_id: "",
+      format_id: "66+",
       //规划
-      format_name: "",
+      format_name: "BBBB+",
 
       clint_creator: "",
       clint_createtime: "",

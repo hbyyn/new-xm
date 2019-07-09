@@ -1,19 +1,39 @@
 <template>
   <div class="page">
-    <div class="search">
-      <el-select v-model="format_store.format_id" filterable placeholder="请选择" ref="format_query">
-        <el-option v-for="item in format_store" :key="item.format_id" :label="item.format_id" :value="item.format_id">
-        </el-option>
-      </el-select>
-      <el-button type="primary" @click="onSubmit">提交</el-button>
-    </div>
-    <div class="rowAdd">
-      <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
-      <el-button type="danger" size="small" @click="rowRemove()">删除选中</el-button>
+    <div class="tableTop">
+      <div class="search">
+        <span>规格查找:</span>
+        <el-select v-model="format_search" clearable filterable
+          placeholder="请选择">
+          <el-option v-for="item in format_store" :key="item.format_id" :label="item.format_id+' '+item.format_name"
+            :value="item.format_id+' '+item.format_name">
+          </el-option>
+        </el-select>
+        <span>供应商查找:</span>
+        <el-select v-model="supplier_search" clearable filterable
+          placeholder="请选择">
+          <el-option v-for="item in supplier_store" :key="item.supplier_id" :label="item.supplier_id+' '+item.supplier_name"
+            :value="item.supplier_id+' '+item.supplier_name">
+          </el-option>
+        </el-select>
+        <span>产品查找:</span>
+        <el-select v-model="product_search" clearable filterable
+          placeholder="请选择" >
+          <el-option v-for="item in product_store" :key="item.product_id" :label="item.product_id+' '+item.product_name"
+            :value="item.product_id+' '+item.product_name">
+          </el-option>
+        </el-select>
+        <el-button type="primary" size="medium" round @click="onSubmit">查找</el-button>
+      </div>
+      <div class="rowAdd">
+        <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
+        <el-button type="danger" size="small" @click="rowRemove()">删除选中</el-button>
+      </div>
     </div>
 
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%"
-      @selection-change="handleSelectionChange">
+    <el-table ref="multipleTable"
+      :data="tableData.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)"
+      tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
       </el-table-column>
 
@@ -42,9 +62,9 @@
     </el-pagination>
 
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
+    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="30%">
       <div class="fromheight">
-        <el-form label-position="left" label-width="80px">
+        <el-form label-position="right" label-width="120px">
 
           <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.FromData.clint_id"></el-input>
@@ -60,10 +80,11 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[4].label">
             <!-- <el-input v-model="mock_all.FromData.format_id"></el-input> -->
-            <el-select v-model="mock_all.FromData.format_id" placeholder="请选择">
-              <el-option class="dialog_select" v-for="item in format_store" :key="item.id" :value="item.format_id">
-                <span>{{'ID:'+item.format_id}}</span>
-                <span>{{'名:'+item.format_name}}</span>
+            <el-select v-model="mock_all.FromData.format_id" filterable clearable placeholder="请选择">
+              <el-option class="dialog_select" v-for="item in format_store" :key="item.id"
+                :value="item.format_id+' '+item.format_name">
+                <span>{{item.format_id}}</span>
+                <span>{{' '+item.format_name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -74,9 +95,10 @@
           <el-form-item :label="mock_all.columns[6].label">
             <!-- <el-input v-model="mock_all.FromData.supplier_id"></el-input> -->
             <el-select v-model="mock_all.FromData.supplier_id" filterable clearable placeholder="请选择">
-              <el-option class="dialog_select" v-for="item in supplier_store" :key="item.id" :value="item.supplier_id">
-                <span>{{'ID:'+item.supplier_id}}</span>
-                <span>{{'名:'+item.supplier_name}}</span>
+              <el-option class="dialog_select" v-for="item in supplier_store" :key="item.id"
+                :value="item.supplier_id+' '+item.supplier_name">
+                <span>{{item.supplier_id}}</span>
+                <span>{{" "+item.supplier_name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -97,9 +119,10 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
             <el-select v-model="mock_all.FromData.product_id" placeholder="请选择">
-              <el-option class="dialog_select" v-for="item in product_store" :key="item.id" :value="item.product_id">
-                <span>{{'ID:'+item.product_id}}</span>
-                <span>{{'名:'+item.product_name}}</span>
+              <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
+                :value="item.product_id+' '+item.product_name">
+                <span>{{item.product_id}}</span>
+                <span>{{' '+item.product_name}}</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -140,8 +163,12 @@ export default {
       centerDialogVisible: false,//弹框
       fromtitle: '',
       addorChange: true,//判断修改新增
+      tableData: '',
       pageSize: 10,
       pageCurrent: 1,
+      format_search:'',
+      supplier_search:'',
+      product_search:''
     }
   },
   computed: {
@@ -154,14 +181,22 @@ export default {
       supplier_store: state => state.supplier.tableData.list,
       product_store: state => state.product.tableData.list,
     }),
-    tableData() {
-      return this.mock_all.list.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
-    }
-  },
 
+  },
+  created() {
+    this.tableShow(this.mock_all.list)
+  },
   methods: {
+    tableShow(data) {
+      this.tableData = data
+    },
+    //filter
     onSubmit() {
-      // this.tableData = this.mock_all.list.filter(item => item.format_id === this.$refs.format_query.value)
+      var filterData = this.mock_all.list.filter(item => !this.format_search || item.format_id.toLowerCase().includes(this.format_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.supplier_search || item.supplier_id.toLowerCase().includes(this.supplier_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.product_search || item.product_id.toLowerCase().includes(this.product_search.toLowerCase()))
+
+      this.tableShow(filterData)
     },
     // 选择
     handleSelectionChange(val) {
@@ -174,17 +209,19 @@ export default {
       this.mock_all.list = a.filter(function (item) {
         return b.indexOf(item) < 0;
       })
+      this.tableShow(this.mock_all.list)
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.fromtitle = '新增';
+
     },
     //修改
     pwdChange(index, row) {
       this.fromtitle = '修改';
-      this.$store.commit('materials/setChangeIndex', (index +(this.pageCurrent-1)*this.pageSize))
+      this.$store.commit('materials/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.mock_all.FromData = { ...row };
@@ -202,11 +239,13 @@ export default {
         this.$store.commit('materials/pwdChange')
       }
       this.centerDialogVisible = false
+      this.tableShow(this.mock_all.list)
     },
 
     //移除
     rowDel(index) {
       this.mock_all.list.splice(index, 1);
+      this.tableShow(this.mock_all.list)
     },
     //分页
     handleSizeChange(val) {
@@ -223,10 +262,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.rowAdd {
-  float: right;
-  margin-right: 50px;
-}
 .chang_del {
   flex: 1;
 }

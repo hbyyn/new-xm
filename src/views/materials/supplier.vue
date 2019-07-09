@@ -1,8 +1,14 @@
 <template>
   <div class="page">
-    <div class="rowAdd">
-      <el-button type="primary" @click="rowAdd">新增</el-button>
-      <el-button type="danger" @click="rowRemove()">删除选中</el-button>
+    <div class="tableTop">
+      <div class="search">
+        <span></span>
+
+      </div>
+      <div class="rowAdd">
+        <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
+        <el-button type="danger" size="small" @click="rowRemove()">删除选中</el-button>
+      </div>
     </div>
 
     <el-table ref="multipleTable" :data="mock_all.list" tooltip-effect="dark" border style="width: 100%"
