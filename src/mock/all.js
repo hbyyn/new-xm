@@ -3,7 +3,7 @@ import Mock from "mockjs";
 let data = {
   list: [],
   FromData: {
-    clint_id: "",
+    client_id: "",
     material_id: "",
     material_type: "",
     material_name: "",
@@ -29,10 +29,10 @@ let data = {
     product_color:"",
     product_desc: "",
 
-    clint_creator: "",
-    clint_createtime: "",
-    clint_updator: "",
-    clint_updatetime: ""
+    client_creator: "",
+    client_createtime: "",
+    client_updator: "",
+    client_updatetime: ""
   }, //弹窗,
   total: 10 //list数据数量
 
@@ -41,7 +41,7 @@ let data = {
 for (let i = 0; i < data.total; i++) {
   data.list.push(
     Mock.mock({
-      clint_id: /[a-z][0-9]{6}$/,
+      client_id: /[a-z][0-9]{6}$/,
       material_id: /[a-z][0-9]{6}$/,
       material_type: /[A-Z][0-9]{2}$/,
       material_name: Mock.Random.cname(),
@@ -67,10 +67,10 @@ for (let i = 0; i < data.total; i++) {
       product_color: Mock.Random.color(),
       product_desc: "水水水水水",
 
-      clint_creator: /[a-z]{6}$/,
-      clint_createtime: Mock.Random.date(),
-      clint_updator: /[a-z]{6}$/,
-      clint_updatetime: Mock.Random.date()
+      client_creator: /[a-z]{6}$/,
+      client_createtime: Mock.Random.date(),
+      client_updator: /[a-z]{6}$/,
+      client_updatetime: Mock.Random.date()
     })
   );
 }

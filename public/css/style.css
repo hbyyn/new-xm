@@ -41,22 +41,16 @@ body,
   align-items: center;
   padding: 0 50px;
 }
-.page .search{
+.page .tableTop .search{
   height: 52px;
   display: flex;
   align-items: center;
 }
-.page .search span{
+.page .tableTop .search span{
   font-size: 14px;
 }
-.page .search .el-select{
-  margin: 0 12px;
-}
-.page .search .el-select input{
-  width: 160px;
-  height: 36px;
-}
-.page .rowAdd{
+
+.page .tableTop .rowAdd{
   float: right;
   height: 52px;
   display: flex;

@@ -1,7 +1,7 @@
 const state = {
   tableData:{
     list: [{
-      clint_id: "22",
+      client_id: "22",
       supplier_id:"333",
       //供应商
       supplier_name: "DDD",
@@ -9,25 +9,25 @@ const state = {
       supplier_address: "333",
       supplier_fax: "333",
 
-      clint_creator: "333",
-      clint_createtime: "333",
-      clint_updator: "333",
-      clint_updatetime: "333"
+      client_creator: "333",
+      client_createtime: "333",
+      client_updator: "333",
+      client_updatetime: "333"
     }],
     columns: [
-      { id: 1, prop: 'clint_id', label: "公司编号" },
+      { id: 1, prop: 'client_id', label: "公司编号" },
       { id: 2, prop: 'supplier_id', label: "供应商编号" },
       { id: 3, prop: 'supplier_name', label: "供应商名称" },
       { id: 4, prop: 'supplier_tel', label: "供应商电话" },
       { id: 5, prop: 'supplier_address', label: "供应商地址" },
       { id: 6, prop: 'supplier_fax', label: "供应商传真" },
-      { id: 14, prop: 'clint_creator', label: "创建人" },
-      { id: 15, prop: 'clint_createtime', label: "创建时间" },
-      { id: 16, prop: 'clint_updator', label: "修改人" },
-      { id: 17, prop: 'clint_updatetime', label: "修改时间" }
+      { id: 14, prop: 'client_creator', label: "创建人" },
+      { id: 15, prop: 'client_createtime', label: "创建时间" },
+      { id: 16, prop: 'client_updator', label: "修改人" },
+      { id: 17, prop: 'client_updatetime', label: "修改时间" }
     ],
     FromData: {
-      clint_id: "",
+      client_id: "",
       supplier_id:"333+",
       //供应商
       supplier_name: "DDD+",
@@ -35,10 +35,10 @@ const state = {
       supplier_address: "333+",
       supplier_fax: "333+",
 
-      clint_creator: "",
-      clint_createtime: "",
-      clint_updator: "",
-      clint_updatetime: ""
+      client_creator: "",
+      client_createtime: "",
+      client_updator: "",
+      client_updatetime: ""
     }, //弹窗,
     total: 10 //list数据数量
   },
@@ -83,16 +83,16 @@ const mutations = {
   },
   //增
   rowAddStore(state) {
-    state.Fromadd.clint_id = sessionStorage.getItem("clint_id");
-    state.Fromadd.clint_creator = sessionStorage.getItem("user_name");
-    state.Fromadd.clint_createtime = state.nowTime
+    state.Fromadd.client_id = sessionStorage.getItem("client_id");
+    state.Fromadd.client_creator = sessionStorage.getItem("user_name");
+    state.Fromadd.client_createtime = state.nowTime
     state.tableData.list.unshift(state.Fromadd);
 
   },
   //改
   pwdChange(state) {
-    state.Fromadd.clint_updator = sessionStorage.getItem("user_name");
-    state.Fromadd.clint_updatetime = state.nowTime
+    state.Fromadd.client_updator = sessionStorage.getItem("user_name");
+    state.Fromadd.client_updatetime = state.nowTime
     state.tableData.list.splice(state.changeIndex, 1, state.Fromadd);
   }
 };

@@ -14,8 +14,8 @@
         </div>
         <div class="footerfrom">
           <el-form label-position="right" label-width="80px" class="demo-ruleForm" size="mini">
-            <el-form-item label="公司编号" prop="clint_id">
-              <el-input placeholder="Test001" type="text" v-model="loginForm.clint_id"></el-input>
+            <el-form-item label="公司编号" prop="client_id">
+              <el-input placeholder="Test001" type="text" v-model="loginForm.client_id"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="username">
               <el-input placeholder="admin" type="text" v-model="loginForm.username"></el-input>
@@ -25,7 +25,9 @@
             </el-form-item>
             <el-form-item label-position="left">
               <el-button type="primary" @click="handLeLong">登录</el-button>
-              <el-button>注册</el-button>
+              <el-button>
+                <router-link to="/register" style="color:#000">注册</router-link>
+              </el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -55,12 +57,12 @@ export default {
       ],
       value: 'zh-cn',
       loginForm: {
-        clint_id: '',
+        client_id: '',
         username: '',
         password: ''
       },
       loginXXX: {
-        clint_id: 'Test001',
+        client_id: 'Test001',
         username: 'admin',
         password: '123456'
       }
@@ -70,8 +72,8 @@ export default {
   methods: {
     handLeLong() {
 
-      if (this.loginForm.clint_id == this.loginXXX.clint_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
-        sessionStorage.setItem("clint_id", this.loginForm.clint_id);
+      if (this.loginForm.client_id == this.loginXXX.client_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
+        sessionStorage.setItem("client_id", this.loginForm.client_id);
         sessionStorage.setItem("user_name", this.loginForm.username);
         sessionStorage.setItem("password", this.loginForm.password);
         this.$router.push('/');

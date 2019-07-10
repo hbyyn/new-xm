@@ -3,27 +3,24 @@
     <div class="tableTop">
       <div class="search">
         <span>规格查找:</span>
-        <el-select v-model="format_search" clearable filterable
-          placeholder="请选择">
+        <el-select v-model="format_search" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in format_store" :key="item.format_id" :label="item.format_id+' '+item.format_name"
             :value="item.format_id+' '+item.format_name">
           </el-option>
         </el-select>
         <span>供应商查找:</span>
-        <el-select v-model="supplier_search" clearable filterable
-          placeholder="请选择">
-          <el-option v-for="item in supplier_store" :key="item.supplier_id" :label="item.supplier_id+' '+item.supplier_name"
-            :value="item.supplier_id+' '+item.supplier_name">
+        <el-select v-model="supplier_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in supplier_store" :key="item.supplier_id"
+            :label="item.supplier_id+' '+item.supplier_name" :value="item.supplier_id+' '+item.supplier_name">
           </el-option>
         </el-select>
         <span>产品查找:</span>
-        <el-select v-model="product_search" clearable filterable
-          placeholder="请选择" >
+        <el-select v-model="product_search" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in product_store" :key="item.product_id" :label="item.product_id+' '+item.product_name"
             :value="item.product_id+' '+item.product_name">
           </el-option>
         </el-select>
-        <el-button type="primary" size="medium" round @click="onSubmit">查找</el-button>
+        <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
       </div>
       <div class="rowAdd">
         <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
@@ -32,7 +29,7 @@
     </div>
 
     <el-table ref="multipleTable"
-      :data="tableData.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)"
+      :data="tableData"
       tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
       </el-table-column>
@@ -42,7 +39,7 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip class-name="chang_del">
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip >
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -67,7 +64,7 @@
         <el-form label-position="right" label-width="120px">
 
           <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.clint_id"></el-input>
+          <el-input v-model="mock_all.FromData.client_id"></el-input>
         </el-form-item> -->
           <el-form-item :label="mock_all.columns[1].label">
             <el-input v-model="mock_all.FromData.material_id" width="217px"></el-input>
@@ -79,7 +76,6 @@
             <el-input v-model="mock_all.FromData.material_name"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[4].label">
-            <!-- <el-input v-model="mock_all.FromData.format_id"></el-input> -->
             <el-select v-model="mock_all.FromData.format_id" filterable clearable placeholder="请选择">
               <el-option class="dialog_select" v-for="item in format_store" :key="item.id"
                 :value="item.format_id+' '+item.format_name">
@@ -131,16 +127,16 @@
           </el-form-item>
 
           <!-- <el-form-item :label="mock_all.columns[14].label">
-          <el-input v-model="mock_all.FromData.clint_creator"></el-input>
+          <el-input v-model="mock_all.FromData.client_creator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[15].label">
-          <el-input v-model="mock_all.FromData.clint_createtime"></el-input>
+          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[16].label">
-          <el-input v-model="mock_all.FromData.clint_updator"></el-input>
+          <el-input v-model="mock_all.FromData.client_updator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[17].label">
-          <el-input v-model="mock_all.FromData.clint_updatetime"></el-input>
+          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
         </el-form-item> -->
         </el-form>
       </div>
@@ -166,9 +162,9 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      format_search:'',
-      supplier_search:'',
-      product_search:''
+      format_search: '',
+      supplier_search: '',
+      product_search: ''
     }
   },
   computed: {
@@ -187,11 +183,13 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
+    //列表显示
     tableShow(data) {
-      this.tableData = data
+      let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      this.tableData = _data
     },
     //filter
-    onSubmit() {
+    onFilter() {
       var filterData = this.mock_all.list.filter(item => !this.format_search || item.format_id.toLowerCase().includes(this.format_search.toLowerCase()))
       filterData = filterData.filter(item => !this.supplier_search || item.supplier_id.toLowerCase().includes(this.supplier_search.toLowerCase()))
       filterData = filterData.filter(item => !this.product_search || item.product_id.toLowerCase().includes(this.product_search.toLowerCase()))
@@ -232,10 +230,8 @@ export default {
       this.$store.commit('materials/setFromadd', { ...this.mock_all.FromData })
       this.$store.commit('materials/setNowTime')
       if (this.addorChange) {
-        // this.mock_all.list.unshift(this.Fromadd)
         this.$store.commit('materials/rowAddStore')
       } else {
-        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
         this.$store.commit('materials/pwdChange')
       }
       this.centerDialogVisible = false
@@ -250,11 +246,13 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
-      console.log(`每页 ${val} 条`);
+      this.tableShow(this.mock_all.list)
+      this.onFilter()
     },
     handleCurrentChange(val) {
       this.pageCurrent = val
-      console.log(`当前页: ${val}`);
+      this.tableShow(this.mock_all.list)
+      this.onFilter()
     }
   }
 
@@ -262,9 +260,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.chang_del {
-  flex: 1;
-}
 .dialog_select {
   display: flex;
   justify-content: space-between;
@@ -273,4 +268,11 @@ export default {
   height: 500px;
   overflow: auto;
 }
+.page .tableTop .search .el-select{
+margin: 0 12px;
+  width: 160px;
+
+
+}
+
 </style>

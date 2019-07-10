@@ -2,16 +2,20 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span></span>
+        <span>名称搜索:</span>
+        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" />
+
+        <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
       </div>
+
       <div class="rowAdd">
         <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
         <el-button type="danger" size="small" @click="rowRemove()">删除选中</el-button>
       </div>
     </div>
 
-    <el-table ref="multipleTable" :data="mock_all.list" tooltip-effect="dark" border style="width: 100%"
+    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
       </el-table-column>
@@ -21,7 +25,7 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip class-name="chang_del">
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -36,13 +40,14 @@
     </el-table>
     <!-- 分页 -->
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.total">
+      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+      :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px">
+      <el-form label-position="right" label-width="120px">
         <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.clint_id"></el-input>
+          <el-input v-model="mock_all.FromData.client_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.FromData.format_id"></el-input>
@@ -52,16 +57,16 @@
         </el-form-item>
 
         <!-- <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.clint_creator"></el-input>
+          <el-input v-model="mock_all.FromData.client_creator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.clint_createtime"></el-input>
+          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.clint_updator"></el-input>
+          <el-input v-model="mock_all.FromData.client_updator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.clint_updatetime"></el-input>
+          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
         </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -74,17 +79,17 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
-  name: 'HelloWorld',
   data() {
     return {
-      // mock_all: "",//转store
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
-      // changeIndex: '',转store
-      // Fromadd: '',//from数据中中转转store
+      tableData: '',
+      pageSize: 10,
+      pageCurrent: 1,
+      name_search: '',
     }
   },
   computed: {
@@ -96,7 +101,21 @@ export default {
     }),
 
   },
+  created() {
+    this.tableShow(this.mock_all.list)
+  },
   methods: {
+    //列表显示
+    tableShow(data) {
+      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      this.tableData = _data
+    },
+    //filter
+    onFilter() {
+      var filterData = this.mock_all.list.filter(item => !this.name_search || item.format_name.toLowerCase().includes(this.name_search.toLowerCase()))
+
+      this.tableShow(filterData)
+    },
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -108,6 +127,7 @@ export default {
       this.mock_all.list = a.filter(function (item) {
         return b.indexOf(item) < 0;
       })
+      this.tableShow(this.mock_all.list)
     },
     //新增
     rowAdd() {
@@ -118,7 +138,7 @@ export default {
     //修改
     pwdChange(index, row) {
       this.fromtitle = '修改';
-      this.$store.commit('format/setChangeIndex', index)
+      this.$store.commit('format/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.mock_all.FromData = { ...row };
@@ -129,26 +149,29 @@ export default {
       this.$store.commit('format/setFromadd', { ...this.mock_all.FromData })
       this.$store.commit('format/setNowTime')
       if (this.addorChange) {
-        // this.mock_all.list.unshift(this.Fromadd)
         this.$store.commit('format/rowAddStore')
       } else {
-        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
         this.$store.commit('format/pwdChange')
       }
       this.centerDialogVisible = false
+      this.tableShow(this.mock_all.list)
     },
 
     //移除
     rowDel(index) {
-      // console.log(index, this.mock_all.list);
       this.mock_all.list.splice(index, 1);
+      this.tableShow(this.mock_all.list)
     },
     //分页
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.tableShow(this.mock_all.list)
+      this.onFilter()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.pageCurrent = val
+      this.tableShow(this.mock_all.list)
+      this.onFilter()
     }
   },
 
@@ -161,7 +184,9 @@ export default {
   float: right;
   margin-right: 50px;
 }
-.chang_del {
-  flex: 1;
+
+.page .tableTop .search .el-input {
+  margin: 0 12px;
+  width: 160px;
 }
 </style>
