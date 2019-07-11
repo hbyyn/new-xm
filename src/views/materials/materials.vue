@@ -3,21 +3,21 @@
     <div class="tableTop">
       <div class="search">
         <span>规格查找:</span>
-        <el-select v-model="format_search" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in format_store" :key="item.format_id" :label="item.format_id+' '+item.format_name"
-            :value="item.format_id+' '+item.format_name">
+        <el-select class="selectSearch" v-model="format_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.format_id" :label="item.format_id"
+            :value="item.format_id">
           </el-option>
         </el-select>
         <span>供应商查找:</span>
-        <el-select v-model="supplier_search" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in supplier_store" :key="item.supplier_id"
-            :label="item.supplier_id+' '+item.supplier_name" :value="item.supplier_id+' '+item.supplier_name">
+        <el-select class="selectSearch" v-model="supplier_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.supplier_id"
+            :label="item.supplier_id" :value="item.supplier_id">
           </el-option>
         </el-select>
         <span>产品查找:</span>
-        <el-select v-model="product_search" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in product_store" :key="item.product_id" :label="item.product_id+' '+item.product_name"
-            :value="item.product_id+' '+item.product_name">
+        <el-select class="selectSearch" v-model="product_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
+            :value="item.product_id">
           </el-option>
         </el-select>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
@@ -102,7 +102,10 @@
             <el-input v-model="mock_all.FromData.material_erpid"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[8].label">
-            <el-input v-model="mock_all.FromData.material_indate"></el-input>
+            <!-- <el-input v-model="mock_all.FromData.material_indate"></el-input> -->
+            <el-date-picker v-model="mock_all.FromData.material_indate" type="date"
+          value-format="yyyy-MM-dd" placeholder="选择日期">
+          </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[9].label">
             <el-input v-model="mock_all.FromData.material_storeid"></el-input>
@@ -111,7 +114,10 @@
             <el-input v-model="mock_all.FromData.material_operaterid"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
-            <el-input v-model="mock_all.FromData.material_operaterdate"></el-input>
+            <!-- <el-input v-model="mock_all.FromData.material_operaterdate"></el-input> -->
+            <el-date-picker v-model="mock_all.FromData.material_operaterdate" type="date"
+          value-format="yyyy-MM-dd" placeholder="选择日期">
+          </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
             <el-select v-model="mock_all.FromData.product_id" placeholder="请选择">
@@ -268,11 +274,6 @@ export default {
   height: 500px;
   overflow: auto;
 }
-.page .tableTop .search .el-select{
-margin: 0 12px;
-  width: 160px;
 
-
-}
 
 </style>

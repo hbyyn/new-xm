@@ -20,11 +20,11 @@
             <el-form-item label="用户名" prop="username">
               <el-input placeholder="admin" type="text" v-model="loginForm.username"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input placeholder="123456" v-model="loginForm.password" show-password></el-input>
+            <el-form-item label="密码" prop="password" >
+              <el-input placeholder="123456" v-model="loginForm.password" show-password @keyup.enter.native="handLeLong"></el-input>
             </el-form-item>
             <el-form-item label-position="left">
-              <el-button type="primary" @click="handLeLong">登录</el-button>
+              <el-button type="primary" @click="handLeLong" >登录</el-button>
               <el-button>
                 <router-link to="/register" style="color:#000">注册</router-link>
               </el-button>
@@ -71,7 +71,6 @@ export default {
   },
   methods: {
     handLeLong() {
-
       if (this.loginForm.client_id == this.loginXXX.client_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
         sessionStorage.setItem("client_id", this.loginForm.client_id);
         sessionStorage.setItem("user_name", this.loginForm.username);

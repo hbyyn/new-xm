@@ -2,8 +2,23 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>material_id:</span>
-        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" />
+        <span>产品编号:</span>
+        <el-select class="selectSearch" v-model="material_id_search" clearable filterable size="small"
+          placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
+            :value="item.material_id">
+          </el-option>
+        </el-select>
+        <span>返修编号:</span>
+        <el-select class="selectSearch" v-model="repair_id_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.repair_id" :label="item.repair_id"
+            :value="item.repair_id">
+          </el-option>
+        </el-select>
+        <span>启动日期:</span>
+        <el-date-picker v-model="begindate_search" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -67,14 +82,14 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <!-- <el-input v-model="mock_all.FromData.material_repair_begindate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_repair_begindate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.material_repair_begindate" type="date" value-format="yyyy-MM-dd"
+            placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
           <!-- <el-input v-model="mock_all.FromData.material_repair_enddate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_repair_enddate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.material_repair_enddate" type="date" value-format="yyyy-MM-dd"
+            placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
@@ -111,7 +126,9 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      name_search: '',
+      material_id_search: '',
+      repair_id_search: '',
+      begindate_search:''
     }
   },
   computed: {
@@ -136,8 +153,10 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.material_id.toLowerCase().includes(this.name_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.material_id_search || item.material_id.toLowerCase().includes(this.material_id_search.toLowerCase()))
 
+      filterData = filterData.filter(item => !this.repair_id_search || item.repair_id.toLowerCase().includes(this.repair_id_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.begindate_search || (Date.parse(this.begindate_search[0]) <Date.parse(item.material_repair_begindate))&&(Date.parse(item.material_repair_begindate) < Date.parse(this.begindate_search[1])))
       this.tableShow(filterData)
     },
     // 选择

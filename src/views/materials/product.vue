@@ -2,8 +2,12 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>名称搜索:</span>
-        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" />
+        <span>产品编号:</span>
+        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="queryStringId" placeholder="请输入内容"
+          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <span>产品名称:</span>
+        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName" placeholder="请输入内容"
+          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -94,7 +98,8 @@ export default {
       pageSize: 10,
       pageCurrent: 1,
       name_search: '',
-      flag_paging:false,
+      id_search:'',
+      flag_paging:false,//待做
     }
   },
   computed: {
@@ -109,6 +114,52 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
+    //搜索1
+    queryStringId(queryString, cb) {
+      let restaurants = (() => {
+        let restaurants = [];
+        for (var i = 0; i < this.mock_all.list.length; i++) {
+          restaurants.push({ value: '' });
+          restaurants[i].value = this.mock_all.list[i].product_id
+        }
+        // 去重
+        let hash = {};
+        restaurants = restaurants.reduce((preVal, curVal) => {
+          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+          return preVal
+        }, [])
+        return restaurants
+      })()
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    //搜索2
+    queryStringName(queryString, cb) {
+      let restaurants = (() => {
+        let restaurants = [];
+        for (var i = 0; i < this.mock_all.list.length; i++) {
+          restaurants.push({ value: '' });
+          restaurants[i].value = this.mock_all.list[i].product_name
+        }
+        // 去重
+        let hash = {};
+        restaurants = restaurants.reduce((preVal, curVal) => {
+          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+          return preVal
+        }, [])
+        return restaurants
+      })()
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+
      //列表显示
     tableShow(data) {
       let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
@@ -117,6 +168,7 @@ export default {
     //filter
     onFilter() {
       var filterData = this.mock_all.list.filter(item => !this.name_search || item.product_name.toLowerCase().includes(this.name_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.id_search || item.product_id.toLowerCase().includes(this.id_search.toLowerCase()))
 
       this.tableShow(filterData)
     },
@@ -195,13 +247,13 @@ export default {
   float: right;
   margin-right: 50px;
 }
-.page .tableTop .search .el-input {
-  margin: 0 12px;
-  width: 160px;
-}
 .active_paging{
   position: fixed;
   left: 20px;
   bottom: 10px;
+}
+.page .tableTop .search .searchInputS{
+  margin: 0 12px;
+  width: 160px;
 }
 </style>

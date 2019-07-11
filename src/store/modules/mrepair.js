@@ -25,8 +25,8 @@ const state = {
       ],
     FromData: {
       client_id: '',
-      material_id: 'b546+',
-      repair_id: 'e12315+',
+      material_id: '',
+      repair_id: '',
       material_repair_begindate: '',
       material_repair_enddate: '',
       client_creator: '',

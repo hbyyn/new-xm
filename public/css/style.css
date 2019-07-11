@@ -49,6 +49,11 @@ body,
 .page .tableTop .search span{
   font-size: 14px;
 }
+.page .tableTop .search .selectSearch{
+  margin: 0 12px;
+  width: 160px;
+}
+
 
 .page .tableTop .rowAdd{
   float: right;
