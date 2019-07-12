@@ -1,3 +1,4 @@
+import Date from "../time"
 
 const state = {
   tableData:{
@@ -24,16 +25,22 @@ const state = {
     ],
     FromData: {
       client_id: "",
-      format_id: "66+",
-      //规划
-      format_name: "BBBB+",
-
+      format_id: "",
+      format_name: "",
       client_creator: "",
       client_createtime: "",
       client_updator: "",
       client_updatetime: ""
-    }, //弹窗,
-    total: 10 //list数据数量
+    },
+    FromInit: {
+      client_id: "",
+      format_id: "",
+      format_name: "",
+      client_creator: "",
+      client_createtime: "",
+      client_updator: "",
+      client_updatetime: ""
+    },
   },
   changeIndex: "",
   Fromadd: "",
@@ -41,35 +48,11 @@ const state = {
 };
 const mutations = {
   setNowTime(state) {
-    // (new Date()).Format("yyyy-MM-dd hh:mm:ss") ==> 2006-07-02 08:09:04
-    // (new Date()).Format("yyyy-M-d h:m:s")      ==> 2006-7-2 8:9:4
-    Date.prototype.Format = function(fmt) {
-      var o = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "h+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-      };
-      if (/(y+)/.test(fmt))
-        fmt = fmt.replace(
-          RegExp.$1,
-          (this.getFullYear() + "").substr(4 - RegExp.$1.length)
-        );
-      for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt))
-          fmt = fmt.replace(
-            RegExp.$1,
-            RegExp.$1.length == 1
-              ? o[k]
-              : ("00" + o[k]).substr(("" + o[k]).length)
-          );
-      return fmt;
-    };
     state.nowTime =(new Date()).Format("yyyy-MM-dd hh:mm:ss")
   },
   setFromadd(state, param) {
     state.Fromadd = param;
+    state.tableData.FromData={...state.tableData.FromInit}
   },
   setChangeIndex(state, param) {
     state.changeIndex = param;
@@ -79,6 +62,8 @@ const mutations = {
     state.Fromadd.client_id = sessionStorage.getItem("client_id");
     state.Fromadd.client_creator = sessionStorage.getItem("user_name");
     state.Fromadd.client_createtime = state.nowTime
+    state.Fromadd.client_updator = ''
+    state.Fromadd.client_updatetime =''
     state.tableData.list.unshift(state.Fromadd);
 
   },

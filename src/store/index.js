@@ -8,6 +8,7 @@ import mrepair from "./modules/mrepair";
 import repair from "./modules/repair";
 import orderproduct from "./modules/orderproduct";
 import order from "./modules/order";
+import customers from "./modules/customers";
 import work from "./modules/work";
 import mwork from "./modules/mwork";
 
@@ -23,6 +24,7 @@ const store = new Vuex.Store({
     repair,
     orderproduct,
     order,
+    customers,
     work,
     mwork
   }

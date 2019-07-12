@@ -24,7 +24,7 @@
       </el-table-column>
 
       <!--  主体 -->
-      <el-table-column v-for="col in mock_all.columns" :key="col.id" :prop="col.prop" :label="col.label">
+      <el-table-column v-for="col in mock_all.columns"  :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
       <!-- //操作 -->
@@ -36,7 +36,6 @@
           <el-button size="mini" type="danger" @click="rowDel(scope.$index, scope.row)">
             删除
           </el-button>
-
         </template>
       </el-table-column>
 
@@ -58,7 +57,7 @@
           <el-input v-model="mock_all.FromData.product_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.product_color"></el-input>
+          <el-color-picker v-model="mock_all.FromData.product_color"></el-color-picker>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="mock_all.FromData.product_desc"></el-input>
@@ -99,7 +98,7 @@ export default {
       pageCurrent: 1,
       name_search: '',
       id_search:'',
-      flag_paging:false,//待做
+      flag_paging:false,
     }
   },
   computed: {
@@ -164,6 +163,15 @@ export default {
     tableShow(data) {
       let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if(document.documentElement.scrollHeight > document.documentElement.offsetHeight){
+          this.flag_paging =true;
+        }
+        else{
+          this.flag_paging =false;
+        }
+      })
     },
     //filter
     onFilter() {
@@ -230,12 +238,7 @@ export default {
       this.pageCurrent = val
       this.tableShow(this.mock_all.list)
       this.onFilter()
-      // if (document.body.scrollHeight > document.body.clientHeight) {
-      //   this.flag_paging=true
-      //   console.log(this.flag_paging)
-      // }else{
-      //   this.flag_paging=false
-      // }
+
     }
   },
 
@@ -247,13 +250,10 @@ export default {
   float: right;
   margin-right: 50px;
 }
-.active_paging{
-  position: fixed;
-  left: 20px;
-  bottom: 10px;
-}
 .page .tableTop .search .searchInputS{
   margin: 0 12px;
   width: 160px;
 }
+
+
 </style>

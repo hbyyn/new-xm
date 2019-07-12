@@ -2,20 +2,45 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>规格查找:</span>
-        <el-select class="selectSearch" v-model="format_search" clearable filterable size="small" placeholder="请选择">
+        <span>物料类型:</span>
+        <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_type" :label="item.material_type"
+            :value="item.material_type">
+          </el-option>
+        </el-select>
+        <span>物料名称:</span>
+        <el-select class="selectSearch" v-model="materialNameSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_name" :label="item.material_name"
+            :value="item.material_name">
+          </el-option>
+        </el-select>
+
+        <span>规格编号:</span>
+        <el-select class="selectSearch" v-model="formatSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.format_id" :label="item.format_id"
             :value="item.format_id">
           </el-option>
         </el-select>
-        <span>供应商查找:</span>
-        <el-select class="selectSearch" v-model="supplier_search" clearable filterable size="small" placeholder="请选择">
+        <span>供应商编号:</span>
+        <el-select class="selectSearch" v-model="supplierSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.supplier_id"
             :label="item.supplier_id" :value="item.supplier_id">
           </el-option>
         </el-select>
-        <span>产品查找:</span>
-        <el-select class="selectSearch" v-model="product_search" clearable filterable size="small" placeholder="请选择">
+        <span>ERP编号:</span>
+        <el-select class="selectSearch" v-model="materialErpidSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_erpid" :label="item.material_erpid"
+            :value="item.material_erpid">
+          </el-option>
+        </el-select>
+        <span>领料人:</span>
+        <el-select class="selectSearch" v-model="materialOperateridSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_operaterid" :label="item.material_operaterid"
+            :value="item.material_operaterid">
+          </el-option>
+        </el-select>
+        <span>产品编号:</span>
+        <el-select class="selectSearch" v-model="productSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
             :value="item.product_id">
           </el-option>
@@ -53,7 +78,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+    <el-pagination :class="{active_paging:flag_paging}"  @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
       :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="mock_all.list.length">
     </el-pagination>
@@ -168,9 +193,14 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      format_search: '',
-      supplier_search: '',
-      product_search: ''
+      flag_paging:false,
+      materialTypeSearch: '',
+      materialNameSearch: '',
+      formatSearch: '',
+      supplierSearch: '',
+      materialErpidSearch: '',
+      materialOperateridSearch: '',
+      productSearch: '',
     }
   },
   computed: {
@@ -193,12 +223,25 @@ export default {
     tableShow(data) {
       let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if(document.documentElement.scrollHeight > document.documentElement.offsetHeight){
+          this.flag_paging =true;
+        }
+        else{
+          this.flag_paging =false;
+        }
+      })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.format_search || item.format_id.toLowerCase().includes(this.format_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.supplier_search || item.supplier_id.toLowerCase().includes(this.supplier_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.product_search || item.product_id.toLowerCase().includes(this.product_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.materialTypeSearch || item.material_type.toLowerCase().includes(this.materialTypeSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.materialNameSearch || item.material_name.toLowerCase().includes(this.materialNameSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.formatSearch || item.format_id.toLowerCase().includes(this.formatSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.supplierSearch || item.supplier_id.toLowerCase().includes(this.supplierSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.materialErpidSearch || item.material_erpid.toLowerCase().includes(this.materialErpidSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.materialOperateridSearch || item.material_operaterid.toLowerCase().includes(this.materialOperateridSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.productSearch || item.product_id.toLowerCase().includes(this.productSearch.toLowerCase()))
 
       this.tableShow(filterData)
     },
@@ -266,13 +309,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dialog_select {
-  display: flex;
-  justify-content: space-between;
+.page .tableTop {
+  display: block;
+  height: 100px;
+  position: relative;
 }
-.fromheight {
-  height: 500px;
-  overflow: auto;
+.page .tableTop .search {
+  float: left;
+  flex-wrap: wrap;
+  height: 100px;
+  width: 1000px;
+  position: relative;
+}
+.page .tableTop .search .el-button {
+  position: absolute;
+  right: 20px;
+  bottom: 6px;
+}
+.page .tableTop .rowAdd {
+  position: absolute;
+  right: 20px;
+  bottom: 6px;
+}
+.page .tableTop .search .el-input {
+  margin: 0 12px;
+  width: 160px;
 }
 
 

@@ -43,7 +43,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
       :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="mock_all.list.length">
     </el-pagination>
@@ -93,8 +93,9 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      name_search: '',
       id_search:'',
+      name_search: '',
+      flag_paging:false,
     }
   },
   computed: {
@@ -116,7 +117,7 @@ export default {
         let restaurants = [];
         for (var i = 0; i < this.mock_all.list.length; i++) {
           restaurants.push({ value: '' });
-          restaurants[i].value = this.mock_all.list[i].format_id
+          restaurants[i].value = this.mock_all.list[i].format_id//修改点
         }
         // 去重
         let hash = {};
@@ -157,8 +158,17 @@ export default {
     },
     //列表显示
     tableShow(data) {
-      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if(document.documentElement.scrollHeight > document.documentElement.offsetHeight){
+          this.flag_paging =true;
+        }
+        else{
+          this.flag_paging =false;
+        }
+      })
     },
     //filter
     onFilter() {
@@ -185,6 +195,7 @@ export default {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.fromtitle = '新增';
+
     },
     //修改
     pwdChange(index, row) {
@@ -197,6 +208,7 @@ export default {
     //弹窗确认
     fromOr() {
       //拷贝from的值
+
       this.$store.commit('format/setFromadd', { ...this.mock_all.FromData })
       this.$store.commit('format/setNowTime')
       if (this.addorChange) {

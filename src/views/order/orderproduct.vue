@@ -2,8 +2,21 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>order_id:</span>
-        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" />
+        <span>订单编号:</span>
+        <el-select class="selectSearch" v-model="order_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.order_id" :label="item.order_id" :value="item.order_id">
+          </el-option>
+        </el-select>
+        <span>产品编号:</span>
+        <el-select class="selectSearch" v-model="product_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
+            :value="item.product_id">
+          </el-option>
+        </el-select>
+        <span>订单时间:</span>
+        <el-date-picker class="selecData" v-model="date_search" value-format="yyyy-MM-dd" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -25,7 +38,7 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip >
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -39,8 +52,9 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
@@ -53,14 +67,13 @@
           <el-select v-model="mock_all.FromData.order_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id">
               <span>{{'ID:'+item.order_id}}</span>
-              <span>{{'客户编号:'+item.customers_id}}</span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
           <!-- <el-input v-model="mock_all.FromData.product_id"></el-input> -->
           <el-select v-model="mock_all.FromData.product_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in product_store" :key="item.id" :value="item.product_id">
+            <el-option class="dialog_select" v-for="item in product_store" :key="item.id" :value="item.product_id+' '+item.product_name">
               <span>{{'ID:'+item.product_id}}</span>
               <span>{{'产品名:'+item.product_name}}</span>
             </el-option>
@@ -68,8 +81,8 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <!-- <el-input v-model="mock_all.FromData.order_product_date"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.order_product_date" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.order_product_date" type="date" value-format="yyyy-MM-dd"
+            placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
@@ -96,7 +109,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -106,7 +119,10 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      name_search: '',
+      order_search: '',
+      product_search: '',
+      date_search: '',
+      flag_paging: false,
     }
   },
   computed: {
@@ -115,11 +131,11 @@ export default {
       mock_all: state => state.orderproduct.tableData,//{fromData,list,columns}
       changeIndex: state => state.orderproduct.changeIndex,
       Fromadd: state => state.orderproduct.Fromadd,
-      order_store:state => state.order.tableData.list,
-      product_store:state => state.product.tableData.list,
+      order_store: state => state.order.tableData.list,
+      product_store: state => state.product.tableData.list,
     }),
   },
-   created() {
+  created() {
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -127,10 +143,21 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
+        }
+        else {
+          this.flag_paging = false;
+        }
+      })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.order_id.toLowerCase().includes(this.name_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.order_search || item.order_id.toLowerCase().includes(this.order_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.product_search || item.product_id.toLowerCase().includes(this.product_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.date_search || (Date.parse(this.date_search[0]) <= Date.parse(item.order_product_date)) && (Date.parse(item.order_product_date) <= Date.parse(this.date_search[1])))
 
       this.tableShow(filterData)
     },

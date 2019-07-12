@@ -7,6 +7,7 @@
         <router-view />
       </keep-alive> -->
     </div>
+    <footer class="footer"></footer>
   </div>
 </template>
 

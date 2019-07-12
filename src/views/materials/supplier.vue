@@ -6,8 +6,8 @@
         <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="queryStringId" placeholder="请输入内容"
           @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
         <span>供应商名称:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName"
+          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -43,7 +43,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
+    <el-pagination :class="{active_paging:flag_paging}"  @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
       :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
       :total="mock_all.list.length">
     </el-pagination>
@@ -103,7 +103,8 @@ export default {
       pageSize: 10,
       pageCurrent: 1,
       name_search: '',
-      id_search:''
+      id_search: '',
+      flag_paging:false,
     }
   },
   computed: {
@@ -119,7 +120,7 @@ export default {
 
   },
   methods: {
-     //搜索1
+    //搜索1
     queryStringId(queryString, cb) {
       let restaurants = (() => {
         let restaurants = [];
@@ -170,6 +171,15 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
+        }
+        else {
+          this.flag_paging = false;
+        }
+      })
     },
     //filter
     onFilter() {
@@ -244,7 +254,7 @@ export default {
   float: right;
   margin-right: 50px;
 }
-.page .tableTop .search .searchInputS{
+.page .tableTop .search .searchInputS {
   margin: 0 12px;
   width: 160px;
 }

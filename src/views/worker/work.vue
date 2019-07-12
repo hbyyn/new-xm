@@ -2,9 +2,12 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>工序名称:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="querySearch" placeholder="请输入内容"
+        <span>工序编号:</span>
+        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="queryStringId" placeholder="请输入内容"
           @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <span>工序名称:</span>
+        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName"
+          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -40,8 +43,9 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
@@ -58,7 +62,6 @@
         <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.FromData.work_desc"></el-input>
         </el-form-item>
-
 
         <!-- <el-form-item :label="mock_all.columns[4].label">
           <el-input v-model="mock_all.FromData.client_creator"></el-input>
@@ -85,7 +88,6 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'HelloWorld',
   data() {
     return {
       centerDialogVisible: false,
@@ -94,7 +96,10 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
+      id_search: '',
       name_search: '',
+      flag_paging: false,
+
     }
   },
   computed: {
@@ -106,12 +111,32 @@ export default {
     }),
 
   },
- created() {
+  created() {
     this.tableShow(this.mock_all.list)
   },
   methods: {
     //搜索1
-    querySearch(queryString, cb) {
+    queryStringId(queryString, cb) {
+      let restaurants = (() => {
+        let restaurants = [];
+        for (var i = 0; i < this.mock_all.list.length; i++) {
+          restaurants.push({ value: '' });
+          restaurants[i].value = this.mock_all.list[i].work_id//修改点
+        }
+        // 去重
+        let hash = {};
+        restaurants = restaurants.reduce((preVal, curVal) => {
+          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+          return preVal
+        }, [])
+        return restaurants
+      })()
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    //搜索2
+    queryStringName(queryString, cb) {
       let restaurants = (() => {
         let restaurants = [];
         for (var i = 0; i < this.mock_all.list.length; i++) {
@@ -140,10 +165,21 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
+        }
+        else {
+          this.flag_paging = false;
+        }
+      })
+
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.work_id.toLowerCase().includes(this.name_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.name_search || item.work_name.toLowerCase().includes(this.name_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.id_search || item.work_id.toLowerCase().includes(this.id_search.toLowerCase()))
 
       this.tableShow(filterData)
     },
@@ -158,7 +194,7 @@ export default {
       this.mock_all.list = a.filter(function (item) {
         return b.indexOf(item) < 0;
       })
-       this.tableShow(this.mock_all.list)
+      this.tableShow(this.mock_all.list)
     },
     //新增
     rowAdd() {
@@ -169,7 +205,7 @@ export default {
     //修改
     pwdChange(index, row) {
       this.fromtitle = '修改';
-      this.$store.commit('work/setChangeIndex',  (index + (this.pageCurrent - 1) * this.pageSize))
+      this.$store.commit('work/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.mock_all.FromData = { ...row };
@@ -187,7 +223,7 @@ export default {
         this.$store.commit('work/pwdChange')
       }
       this.centerDialogVisible = false
-       this.tableShow(this.mock_all.list)
+      this.tableShow(this.mock_all.list)
     },
 
     //移除
@@ -217,7 +253,7 @@ export default {
   float: right;
   margin-right: 50px;
 }
-.page .tableTop .search .searchInputS{
+.page .tableTop .search .searchInputS {
   margin: 0 12px;
   width: 160px;
 }

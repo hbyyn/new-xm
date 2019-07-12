@@ -2,9 +2,15 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>名称搜索:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="querySearch" placeholder="请输入内容"
+        <span>返修编号:</span>
+        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="querySearchId" placeholder="请输入内容"
           @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <span>返修名称:</span>
+        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="querySearchName"
+          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <span>返修说明:</span>
+        <el-autocomplete class="searchInputS" v-model="desc_search" :fetch-suggestions="querySearchDesc"
+          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -26,7 +32,7 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip >
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -40,9 +46,9 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-      :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
@@ -83,17 +89,21 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
-     centerDialogVisible: false,
+      centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
+      id_search: '',
       name_search: '',
+      desc_search: '',
+      flag_paging: false,
+
     }
   },
   computed: {
@@ -110,12 +120,52 @@ export default {
   },
   methods: {
     //搜索1
-    querySearch(queryString, cb) {
+    querySearchId(queryString, cb) {
+      let restaurants = (() => {
+        let restaurants = [];
+        for (var i = 0; i < this.mock_all.list.length; i++) {
+          restaurants.push({ value: '' });
+          restaurants[i].value = this.mock_all.list[i].repair_id
+        }
+        // 去重
+        let hash = {};
+        restaurants = restaurants.reduce((preVal, curVal) => {
+          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+          return preVal
+        }, [])
+        return restaurants
+      })()
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    //搜索2
+    querySearchName(queryString, cb) {
       let restaurants = (() => {
         let restaurants = [];
         for (var i = 0; i < this.mock_all.list.length; i++) {
           restaurants.push({ value: '' });
           restaurants[i].value = this.mock_all.list[i].repair_name
+        }
+        // 去重
+        let hash = {};
+        restaurants = restaurants.reduce((preVal, curVal) => {
+          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+          return preVal
+        }, [])
+        return restaurants
+      })()
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    //搜索3
+    querySearchDesc(queryString, cb) {
+      let restaurants = (() => {
+        let restaurants = [];
+        for (var i = 0; i < this.mock_all.list.length; i++) {
+          restaurants.push({ value: '' });
+          restaurants[i].value = this.mock_all.list[i].repair_desc
         }
         // 去重
         let hash = {};
@@ -139,10 +189,21 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
+        }
+        else {
+          this.flag_paging = false;
+        }
+      })
     },
     //filter
     onFilter() {
       var filterData = this.mock_all.list.filter(item => !this.name_search || item.repair_name.toLowerCase().includes(this.name_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.id_search || item.repair_id.toLowerCase().includes(this.id_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.desc_search || item.repair_desc.toLowerCase().includes(this.desc_search.toLowerCase()))
 
       this.tableShow(filterData)
     },

@@ -2,8 +2,27 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>work_id:</span>
-        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" />
+        <!-- <span>work_id:</span>
+        <el-input v-model="name_search" type="text" size="small" placeholder="输入关键字搜索" /> -->
+        <span>物料编号:</span>
+        <el-select class="selectSearch" v-model="material_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
+            :value="item.material_id">
+          </el-option>
+        </el-select>
+        <span>工序编号:</span>
+        <el-select class="selectSearch" v-model="work_search" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.work_id" :label="item.repair_id" :value="item.work_id">
+          </el-option>
+        </el-select>
+        <span>开始日期:</span>
+        <el-date-picker class="selecData" v-model="begindate_search" value-format="yyyy-MM-dd" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+        <span>结束日期:</span>
+        <el-date-picker class="selecData" v-model="enddate_search" value-format="yyyy-MM-dd" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -39,8 +58,9 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
@@ -50,7 +70,7 @@
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
           <el-select v-model="mock_all.FromData.material_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in materials_store" :key="item.id" :value="item.material_id">
+            <el-option class="dialog_select" v-for="item in materials_store" :key="item.id" :value="item.material_id+' '+item.material_name">
               <span>{{'ID:'+item.material_id}}</span>
               <span>{{'材料名:'+item.material_name}}</span>
             </el-option>
@@ -59,7 +79,7 @@
         <el-form-item :label="mock_all.columns[2].label">
           <!-- <el-input v-model="mock_all.FromData.work_id"></el-input> -->
           <el-select v-model="mock_all.FromData.work_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in work_store" :key="item.id" :value="item.work_id">
+            <el-option class="dialog_select" v-for="item in work_store" :key="item.id" :value="item.work_id+' '+item.work_name">
               <span>{{'ID:'+item.work_id}}</span>
               <span>{{'材料名:'+item.work_name}}</span>
             </el-option>
@@ -67,14 +87,14 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <!-- <el-input v-model="mock_all.FromData.material_work_begindate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_work_begindate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.material_work_begindate" type="date" value-format="yyyy-MM-dd"
+            placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
           <!-- <el-input v-model="mock_all.FromData.material_work_enddate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_work_enddate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.material_work_enddate" type="date" value-format="yyyy-MM-dd"
+            placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
@@ -112,7 +132,12 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      name_search: '',
+      material_search: '',
+      work_search: '',
+      begindate_search: '',
+      enddate_search: '',
+      flag_paging: false,
+
     }
   },
   computed: {
@@ -122,11 +147,11 @@ export default {
       changeIndex: state => state.mwork.changeIndex,
       Fromadd: state => state.mwork.Fromadd,
       materials_store: state => state.materials.tableData.list,
-      work_store:state => state.work.tableData.list,
+      work_store: state => state.work.tableData.list,
     }),
 
   },
-   created() {
+  created() {
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -134,11 +159,23 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
+      // 分页条
+      this.$nextTick(() => {
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
+        }
+        else {
+          this.flag_paging = false;
+        }
+      })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.work_id.toLowerCase().includes(this.name_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.material_search || item.material_id.toLowerCase().includes(this.material_search.toLowerCase()))
 
+      filterData = filterData.filter(item => !this.work_search || item.work_id.toLowerCase().includes(this.work_search.toLowerCase()))
+      filterData = filterData.filter(item => !this.begindate_search || (Date.parse(this.begindate_search[0]) <= Date.parse(item.material_work_begindate)) && (Date.parse(item.material_work_begindate) <= Date.parse(this.begindate_search[1])))
+      filterData = filterData.filter(item => !this.enddate_search || (Date.parse(this.enddate_search[0]) <= Date.parse(item.material_work_enddate)) && (Date.parse(item.material_work_enddate) <= Date.parse(this.enddate_search[1])))
       this.tableShow(filterData)
     },
     // 选择
@@ -207,9 +244,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.rowAdd {
-  float: right;
-  margin-right: 50px;
+.page .tableTop {
+  display: block;
+  height: 100px;
+  position: relative;
+}
+.page .tableTop .search {
+  float: left;
+  flex-wrap: wrap;
+  height: 100px;
+  width: 930px;
+  position: relative;
+}
+.page .tableTop .search .el-button {
+  position: absolute;
+  right: 20px;
+  bottom: 6px;
+}
+.page .tableTop .rowAdd {
+  position: absolute;
+  right: 20px;
+  bottom: 6px;
 }
 .page .tableTop .search .el-input {
   margin: 0 12px;

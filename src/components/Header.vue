@@ -43,6 +43,8 @@
       <!-- 改密码弹窗 -->
       <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%">
         <el-form label-position="right" label-width="120px">
+        <!-- <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"> -->
+
           <el-form-item :label="columns[0].label+':'">
             <span>{{loginname}}</span>
           </el-form-item>
@@ -75,7 +77,7 @@ export default {
     return {
       list: [
         { id: 1, navurl: '首页', url: '/home' },
-        { id: 3, navurl: '材料', url: '/materials' },
+        { id: 3, navurl: '物料', url: '/materials' },
         { id: 8, navurl: '返修', url: '/repair' },
         { id: 2, navurl: '订购', url: '/order' },
         { id: 5, navurl: '工序', url: '/worker' }
