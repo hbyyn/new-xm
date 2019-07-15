@@ -1,42 +1,31 @@
 import Date from "../time"
 
-
 const state = {
   tableData:{
     list: [{
-      client_id: 'a555',
-      order_id: '6564564',
-      customers_id: 'b546',
-      order_date: '2016/05/03',
-      order_outdate: '2016/06/03',
+      role_id: 'a555',
+      role_name: 'c222',
       client_creator: 'jj-56',
       client_createtime: '2016/05/03/14:06:55',
       client_updator: 'jj-57',
       client_updatetime: '2016/05/03/14:16:55'
     }],
     columns: [
-      { id: 1, prop: 'client_id', label: "公司编号" },
-      { id: 2, prop: 'order_id', label: "订购编号" },
-      { id: 3, prop: 'customers_id', label: "客户编号" },
-      { id: 4, prop: 'order_date', label: "订购时间" },
-      { id: 5, prop: 'order_outdate', label: "订单过时" },
+      {id:1,prop:'role_id',label:"角色编号"},
+      {id:7,prop:'role_name',label:"角色名称"},
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
       { id: 17, prop: 'client_updatetime', label: "修改时间" }
-    ],
+      ],
     FromData: {
-      client_id: '',
-      order_id: '6564564+',
-      customers_id: 'b546+',
-      order_date: '',
-      order_outdate: '',
+      role_id: '',
+      role_name: '',
       client_creator: '',
       client_createtime: '',
       client_updator: '',
       client_updatetime: ''
     }, //弹窗,
-    total: 10 //list数据数量
   },
   changeIndex: "",
   Fromadd: "",
@@ -77,3 +66,5 @@ export default {
     mutations
 
 }
+
+

@@ -72,7 +72,6 @@
 
 export default {
   name: 'Tabs',
-
   data() {
     return {
       list: [
@@ -80,7 +79,8 @@ export default {
         { id: 3, navurl: '物料', url: '/materials' },
         { id: 8, navurl: '返修', url: '/repair' },
         { id: 2, navurl: '订购', url: '/order' },
-        { id: 5, navurl: '工序', url: '/worker' }
+        { id: 5, navurl: '工序', url: '/worker' },
+        { id: 6, navurl: '设置', url: '/setting' },
       ],
       float: false,
       personal_list: [

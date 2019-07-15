@@ -2,15 +2,11 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>工序编号:</span>
-        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="queryStringId" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-        <span>工序名称:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName"
-          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-
+        <span>创建时间:</span>
+        <el-date-picker class="selecData" v-model="createtime_search" value-format="yyyy-MM-dd" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
-
       </div>
 
       <div class="rowAdd">
@@ -29,10 +25,13 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
+      <el-table-column fixed="right" width="240" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
+          </el-button>
+          <el-button size="mini" type="primary" @click="roleChang(scope.$index,scope.row)">
+            权限管理
           </el-button>
           <el-button size="mini" type="danger" @click="rowDel(scope.$index, scope.row)">
             删除
@@ -50,36 +49,24 @@
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px">
-        <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.client_id"></el-input>
-        </el-form-item> -->
+        <el-form-item :label="mock_all.columns[0].label">
+          <el-input v-model="mock_all.FromData.login_id"></el-input>
+        </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.work_id"></el-input>
+          <el-input v-model="mock_all.FromData.login_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <el-input v-model="mock_all.FromData.work_name"></el-input>
+          <el-input v-model="mock_all.FromData.login_acode"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.work_desc"></el-input>
-        </el-form-item>
-
-        <!-- <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.client_creator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.client_updator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
-        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="fromOr">确 定</el-button>
       </span>
+    </el-dialog>
+    <!-- 权限管理 -->
+    <el-dialog title="权限设置" :visible.sync="roleVisible" width="540px">
+
     </el-dialog>
 
   </div>
@@ -96,18 +83,18 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      id_search: '',
-      name_search: '',
       flag_paging: false,
+      createtime_search: '',
+      roleVisible: false,
 
     }
   },
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.work.tableData,//{fromData,list,columns}
-      changeIndex: state => state.work.changeIndex,
-      Fromadd: state => state.work.Fromadd,
+      mock_all: state => state.setting.tableData,//{fromData,list,columns}
+      changeIndex: state => state.setting.changeIndex,
+      Fromadd: state => state.setting.Fromadd,
     }),
 
   },
@@ -115,41 +102,6 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
-    // 搜索弹框数据，去重
-    restaurants(key){
-      let restaurants = [];
-        for (var i = 0; i < this.mock_all.list.length; i++) {
-          restaurants.push({ value: '' });
-          restaurants[i].value = this.mock_all.list[i][key]
-        }
-        // 去重
-        let hash = {};
-        restaurants = restaurants.reduce((preVal, curVal) => {
-          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-          return preVal
-        }, [])
-        return restaurants
-    },
-    //搜索1
-    queryStringId(queryString, cb) {
-      let restaurants = this.restaurants('work_id')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    //搜索2
-    queryStringName(queryString, cb) {
-      let restaurants = this.restaurants('work_name')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-
     //列表显示
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
@@ -167,11 +119,10 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.work_name.toLowerCase().includes(this.name_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.id_search || item.work_id.toLowerCase().includes(this.id_search.toLowerCase()))
-
+      var filterData = this.mock_all.list.filter(item => !this.createtime_search || (Date.parse(this.createtime_search[0]) <= Date.parse(item.client_createtime)) && (Date.parse(item.client_createtime) <= Date.parse(this.createtime_search[1])))
       this.tableShow(filterData)
     },
+
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -198,7 +149,7 @@ export default {
     //修改
     pwdChange(index, row) {
       this.fromtitle = '修改';
-      this.$store.commit('work/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
+      this.$store.commit('setting/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.mock_all.FromData = { ...row };
@@ -206,19 +157,23 @@ export default {
     //弹窗确认
     fromOr() {
       //拷贝from的值
-      this.$store.commit('work/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('work/setNowTime')
+      this.$store.commit('setting/setFromadd', { ...this.mock_all.FromData })
+      this.$store.commit('setting/setNowTime')
       if (this.addorChange) {
         // this.mock_all.list.unshift(this.Fromadd)
-        this.$store.commit('work/rowAddStore')
+        this.$store.commit('setting/rowAddStore')
       } else {
         // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
-        this.$store.commit('work/pwdChange')
+        this.$store.commit('setting/pwdChange')
       }
       this.centerDialogVisible = false
       this.tableShow(this.mock_all.list)
     },
-
+    //权限管理
+    roleChang(index, row) {
+      this.roleVisible = true;
+      console.log(index, row)
+    },
     //移除
     rowDel(index) {
       this.mock_all.list.splice(index, 1);

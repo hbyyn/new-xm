@@ -170,8 +170,8 @@ export default {
     //filter
     onFilter() {
       var filterData = this.mock_all.list.filter(item => !this.material_id_search || item.material_id.toLowerCase().includes(this.material_id_search.toLowerCase()))
-
       filterData = filterData.filter(item => !this.repair_id_search || item.repair_id.toLowerCase().includes(this.repair_id_search.toLowerCase()))
+
       filterData = filterData.filter(item => !this.begindate_search || (Date.parse(this.begindate_search[0]) <= Date.parse(item.material_repair_begindate)) && (Date.parse(item.material_repair_begindate) <= Date.parse(this.begindate_search[1])))
       filterData = filterData.filter(item => !this.enddate_search || (Date.parse(this.enddate_search[0]) <= Date.parse(item.material_repair_enddate)) && (Date.parse(item.material_repair_enddate) <= Date.parse(this.enddate_search[1])))
       this.tableShow(filterData)
@@ -194,6 +194,10 @@ export default {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.fromtitle = '新增';
+      let obj = this.mock_all.FromData
+      for (let k of Object.keys(obj)) {
+        obj[k] = ''
+      }
     },
     //修改
     pwdChange(index, row) {

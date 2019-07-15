@@ -2,14 +2,22 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
+        <span>物料编号:</span>
+        <el-select class="selectSearch" v-model="materialIdSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
+            :value="item.material_id">
+          </el-option>
+        </el-select>
         <span>物料类型:</span>
-        <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small"
+          placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.material_type" :label="item.material_type"
             :value="item.material_type">
           </el-option>
         </el-select>
         <span>物料名称:</span>
-        <el-select class="selectSearch" v-model="materialNameSearch" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="materialNameSearch" clearable filterable size="small"
+          placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.material_name" :label="item.material_name"
             :value="item.material_name">
           </el-option>
@@ -23,18 +31,20 @@
         </el-select>
         <span>供应商编号:</span>
         <el-select class="selectSearch" v-model="supplierSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.supplier_id"
-            :label="item.supplier_id" :value="item.supplier_id">
+          <el-option v-for="item in mock_all.list" :key="item.supplier_id" :label="item.supplier_id"
+            :value="item.supplier_id">
           </el-option>
         </el-select>
         <span>ERP编号:</span>
-        <el-select class="selectSearch" v-model="materialErpidSearch" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="materialErpidSearch" clearable filterable size="small"
+          placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.material_erpid" :label="item.material_erpid"
             :value="item.material_erpid">
           </el-option>
         </el-select>
         <span>领料人:</span>
-        <el-select class="selectSearch" v-model="materialOperateridSearch" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="materialOperateridSearch" clearable filterable size="small"
+          placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.material_operaterid" :label="item.material_operaterid"
             :value="item.material_operaterid">
           </el-option>
@@ -45,6 +55,14 @@
             :value="item.product_id">
           </el-option>
         </el-select>
+        <span>EPR入库日期:</span>
+        <el-date-picker class="selecData" v-model="indate_search" value-format="yyyy-MM-dd" type="datetimerange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+        <span>领料时间:</span>
+        <el-date-picker class="selecData" v-model="operaterdate_search" value-format="yyyy-MM-dd" type="datetimerange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
       </div>
       <div class="rowAdd">
@@ -53,9 +71,8 @@
       </div>
     </div>
 
-    <el-table ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark" border style="width: 100%" @selection-change="handleSelectionChange">
+    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" border style="width: 100%"
+      @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" @click="rowSelec(mock_all.list)">
       </el-table-column>
 
@@ -64,7 +81,7 @@
       </el-table-column>
 
       <!-- //操作 -->
-      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip >
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -78,21 +95,21 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}"  @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-      :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
 
     <!-- 新增 -->
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="30%">
       <div class="fromheight">
-        <el-form label-position="right" label-width="120px">
+        <el-form label-position="right" label-width="120px" :model="mock_all.FromData">
 
           <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.FromData.client_id"></el-input>
         </el-form-item> -->
           <el-form-item :label="mock_all.columns[1].label">
-            <el-input v-model="mock_all.FromData.material_id" width="217px"></el-input>
+            <el-input v-model="mock_all.FromData.material_id" :readonly="readonlyFlat" width="217px"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[2].label">
             <el-input v-model="mock_all.FromData.material_type"></el-input>
@@ -128,9 +145,9 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[8].label">
             <!-- <el-input v-model="mock_all.FromData.material_indate"></el-input> -->
-            <el-date-picker v-model="mock_all.FromData.material_indate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
-          </el-date-picker>
+            <el-date-picker v-model="mock_all.FromData.material_indate" type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
+            </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[9].label">
             <el-input v-model="mock_all.FromData.material_storeid"></el-input>
@@ -140,11 +157,15 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
             <!-- <el-input v-model="mock_all.FromData.material_operaterdate"></el-input> -->
-            <el-date-picker v-model="mock_all.FromData.material_operaterdate" type="date"
-          value-format="yyyy-MM-dd" placeholder="选择日期">
-          </el-date-picker>
+            <el-date-picker v-model="mock_all.FromData.material_operaterdate" type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
+            </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
+            <el-input v-model="mock_all.FromData.parent_id"></el-input>
+          </el-form-item>
+          <el-form-item :label="mock_all.columns[13].label">
+
             <el-select v-model="mock_all.FromData.product_id" placeholder="请选择">
               <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
                 :value="item.product_id+' '+item.product_name">
@@ -152,9 +173,6 @@
                 <span>{{' '+item.product_name}}</span>
               </el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item :label="mock_all.columns[13].label">
-            <el-input v-model="mock_all.FromData.parent_id"></el-input>
           </el-form-item>
 
           <!-- <el-form-item :label="mock_all.columns[14].label">
@@ -190,10 +208,12 @@ export default {
       centerDialogVisible: false,//弹框
       fromtitle: '',
       addorChange: true,//判断修改新增
+      readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      flag_paging:false,
+      flag_paging: false,
+      materialIdSearch: '',
       materialTypeSearch: '',
       materialNameSearch: '',
       formatSearch: '',
@@ -201,6 +221,8 @@ export default {
       materialErpidSearch: '',
       materialOperateridSearch: '',
       productSearch: '',
+      indate_search: '',
+      operaterdate_search: '',
     }
   },
   computed: {
@@ -221,27 +243,32 @@ export default {
   methods: {
     //列表显示
     tableShow(data) {
-      let _data=data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
       // 分页条
       this.$nextTick(() => {
-        if(document.documentElement.scrollHeight > document.documentElement.offsetHeight){
-          this.flag_paging =true;
+        if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
+          this.flag_paging = true;
         }
-        else{
-          this.flag_paging =false;
+        else {
+          this.flag_paging = false;
         }
       })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.materialTypeSearch || item.material_type.toLowerCase().includes(this.materialTypeSearch.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.materialIdSearch || item.material_id.toLowerCase().includes(this.materialIdSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.materialTypeSearch || item.material_type.toLowerCase().includes(this.materialTypeSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.materialNameSearch || item.material_name.toLowerCase().includes(this.materialNameSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.formatSearch || item.format_id.toLowerCase().includes(this.formatSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.supplierSearch || item.supplier_id.toLowerCase().includes(this.supplierSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.materialErpidSearch || item.material_erpid.toLowerCase().includes(this.materialErpidSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.materialOperateridSearch || item.material_operaterid.toLowerCase().includes(this.materialOperateridSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.productSearch || item.product_id.toLowerCase().includes(this.productSearch.toLowerCase()))
+
+      filterData = filterData.filter(item => !this.indate_search || (Date.parse(this.indate_search[0]) <= Date.parse(item.material_indate)) && (Date.parse(item.material_indate) <= Date.parse(this.indate_search[1])))
+      filterData = filterData.filter(item => !this.operaterdate_search || (Date.parse(this.operaterdate_search[0]) <= Date.parse(item.material_operaterdate)) && (Date.parse(item.material_operaterdate) <= Date.parse(this.operaterdate_search[1])))
+
 
       this.tableShow(filterData)
     },
@@ -251,18 +278,35 @@ export default {
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     //新增
     rowAdd() {
-      this.centerDialogVisible = true;
       this.addorChange = true;
+      this.centerDialogVisible = true;
+      this.readonlyFlat = false;
       this.fromtitle = '新增';
+
+      let obj = this.mock_all.FromData
+      for (let k of Object.keys(obj)) {
+        obj[k] = ''
+      }
 
     },
     //修改
@@ -271,6 +315,7 @@ export default {
       this.$store.commit('materials/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
+      this.readonlyFlat = true;
       this.mock_all.FromData = { ...row };
     },
     //弹窗确认
@@ -311,14 +356,14 @@ export default {
 <style lang="scss" scoped>
 .page .tableTop {
   display: block;
-  height: 100px;
+  height: 150px;
   position: relative;
 }
 .page .tableTop .search {
   float: left;
   flex-wrap: wrap;
-  height: 100px;
   width: 1000px;
+  height: 150px;
   position: relative;
 }
 .page .tableTop .search .el-button {
@@ -335,6 +380,4 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
-
-
 </style>

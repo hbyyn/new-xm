@@ -64,8 +64,6 @@ const mutations = {
     state.Fromadd.client_id = sessionStorage.getItem("client_id");
     state.Fromadd.client_creator = sessionStorage.getItem("user_name");
     state.Fromadd.client_createtime = state.nowTime
-    state.Fromadd.client_updator = ''
-    state.Fromadd.client_updatetime =''
     state.tableData.list.unshift(state.Fromadd);
 
   },

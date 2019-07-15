@@ -179,6 +179,10 @@ export default {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.fromtitle = '新增';
+      let obj = this.mock_all.FromData
+      for (let k of Object.keys(obj)) {
+        obj[k] = ''
+      }
     },
     //修改
     pwdChange(index, row) {

@@ -11,6 +11,8 @@ import order from "./modules/order";
 import customers from "./modules/customers";
 import work from "./modules/work";
 import mwork from "./modules/mwork";
+import setting from "./modules/setting"
+import role from "./modules/role"
 
 Vue.use(Vuex);
 
@@ -26,7 +28,9 @@ const store = new Vuex.Store({
     order,
     customers,
     work,
-    mwork
+    mwork,
+    setting,
+    role,
   }
 });
 
