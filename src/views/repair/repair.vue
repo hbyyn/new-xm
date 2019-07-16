@@ -3,10 +3,10 @@
     <div class="tableTop">
       <div class="search">
         <span>返修编号:</span>
-        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="querySearchId" placeholder="请输入内容"
+        <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="querySearchId" placeholder="请输入内容"
           @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
         <span>返修名称:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="querySearchName"
+        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="querySearchName"
           placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
@@ -32,7 +32,7 @@
       <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
-            修改
+            编辑
           </el-button>
           <el-button size="mini" type="danger" @click="rowDel(scope.$index, scope.row)">
             删除
@@ -43,38 +43,44 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
+    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="50%" :model="mock_all.FromData"
+      >
       <el-form label-position="right" label-width="120px">
-        <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.client_id"></el-input>
-        </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.repair_id"></el-input>
+          <el-input v-model="mock_all.FromData.repair_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.FromData.repair_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <!-- <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.FromData.repair_desc"></el-input>
-        </el-form-item>
-
-        <!-- <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.client_creator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.client_updator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
         </el-form-item> -->
+        <!--富文本编辑器组件-->
+        <el-form-item :label="mock_all.columns[3].label" prop="content">
+          <el-row style="height:200px ;">
+            <quill-editor style="height:140px ;" v-model="dataForm.content" ref="myQuillEditor"
+              :options="dataForm.editorOption"></quill-editor>
+          </el-row>
+
+        </el-form-item>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="附件">
+               <el-upload  :limit = '5'>
+                <div style="width:100%;">
+                  <i class="el-icon-upload" style="float:left;width:32px;height:22px;padding-top:5px;font-size:22px;"></i>
+                  <div slot="tip" style="float:left;margin-top:0px;" class="el-upload__tip">5555</div>
+                </div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
@@ -87,19 +93,47 @@
 
 <script>
 import { mapState } from 'vuex'
+import { quillEditor } from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+//工具栏配置
+const toolbarOptions = [
+  ['clean', { 'header': [1, 2, 3, 4, 5, 6, false] }, 'bold', 'italic', 'underline', 'code-block', { 'list': 'ordered' }, { 'list': 'bullet' }, 'image', { 'color': [] }, { 'background': [] }]
+];
 export default {
+  components: {
+    quillEditor
+  },
   data() {
     return {
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
+      readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      id_search: '',
-      name_search: '',
-      flag_paging: false,
-
+      idSearch: '',
+      nameSearch: '',
+      flagPaging: false,//
+      fileType: {
+        targetEnum: "Enclosure"
+      },
+      dataForm: {
+        content:'',
+        fileList: [],
+        editorOption: {
+          placeholder: "请输入反馈问题的内容",
+          theme: 'snow',  // or 'bubble'
+          modules: {
+            toolbar: {
+              container: toolbarOptions,  // 工具栏
+            }
+          }
+        },
+      },
     }
   },
   computed: {
@@ -115,20 +149,22 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
+
+
     // 搜索弹框数据，去重
-    restaurants(key){
+    restaurants(key) {
       let restaurants = [];
-        for (var i = 0; i < this.mock_all.list.length; i++) {
-          restaurants.push({ value: '' });
-          restaurants[i].value = this.mock_all.list[i][key]//修改点
-        }
-        // 去重
-        let hash = {};
-        restaurants = restaurants.reduce((preVal, curVal) => {
-          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-          return preVal
-        }, [])
-        return restaurants
+      for (var i = 0; i < this.mock_all.list.length; i++) {
+        restaurants.push({ value: '' });
+        restaurants[i].value = this.mock_all.list[i][key]//修改点
+      }
+      // 去重
+      let hash = {};
+      restaurants = restaurants.reduce((preVal, curVal) => {
+        hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+        return preVal
+      }, [])
+      return restaurants
     },
     //搜索1
     querySearchId(queryString, cb) {
@@ -157,18 +193,18 @@ export default {
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
-          this.flag_paging = true;
+          this.flagPaging = true;
         }
         else {
-          this.flag_paging = false;
+          this.flagPaging = false;
         }
       })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.repair_name.toLowerCase().includes(this.name_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.id_search || item.repair_id.toLowerCase().includes(this.id_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.desc_search || item.repair_desc.toLowerCase().includes(this.desc_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.nameSearch || item.repair_name.toLowerCase().includes(this.nameSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.idSearch || item.repair_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.descSearch || item.repair_desc.toLowerCase().includes(this.descSearch.toLowerCase()))
 
       this.tableShow(filterData)
     },
@@ -189,6 +225,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
+      this.readonlyFlat = false;
       this.fromtitle = '新增';
       let obj = this.mock_all.FromData
       for (let k of Object.keys(obj)) {
@@ -201,11 +238,13 @@ export default {
       this.$store.commit('repair/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
+      this.readonlyFlat = true;
       this.mock_all.FromData = { ...row };
     },
     //弹窗确认
     fromOr() {
       //拷贝from的值
+      this.mock_all.FromData.repair_desc=this.dataForm.content
       this.$store.commit('repair/setFromadd', { ...this.mock_all.FromData })
       this.$store.commit('repair/setNowTime')
       if (this.addorChange) {

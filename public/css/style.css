@@ -55,7 +55,7 @@ body,
   width: 160px;
 }
 .page .tableTop .search .selecData{
-  margin: 0 12px;
+
 }
 .page .tableTop .rowAdd{
   float: right;
@@ -74,6 +74,7 @@ body,
   z-index: 10;
 
 }
+
 .footer{
   position: fixed;
   left: 0;

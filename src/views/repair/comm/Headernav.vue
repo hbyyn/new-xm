@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       list: [
-        { id: 3, urlname: '物料表', url: '/repair/materials' },
+        // { id: 3, urlname: '物料表', url: '/repair/materials' },
         { id: 1, urlname: '产品返修表', url: '/repair/mrepair' },
         { id: 2, urlname: '返修表', url: '/repair/repair' },
       ]

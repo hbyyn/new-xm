@@ -56,13 +56,24 @@
           </el-option>
         </el-select>
         <span>EPR入库日期:</span>
-        <el-date-picker class="selecData" v-model="indate_search" value-format="yyyy-MM-dd" type="datetimerange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
+        <div class="selecData">
+          <el-date-picker  v-model="indateSearch.start" type="datetime" placeholder="开始日期"
+            default-time="08:30:00" value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+          <el-date-picker  v-model="indateSearch.end" type="datetime" placeholder="结束日期"
+            default-time="18:00:00">
+          </el-date-picker>
+        </div>
+
         <span>领料时间:</span>
-        <el-date-picker class="selecData" v-model="operaterdate_search" value-format="yyyy-MM-dd" type="datetimerange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
+        <div class="selecData">
+          <el-date-picker  v-model="operaterdateSearch.start" type="datetime" placeholder="开始日期"
+            default-time="08:30:00" value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+          <el-date-picker  v-model="operaterdateSearch.end" type="datetime" placeholder="结束日期"
+            default-time="18:00:00">
+          </el-date-picker>
+        </div>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
       </div>
       <div class="rowAdd">
@@ -95,13 +106,13 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
 
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="30%">
+    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
       <div class="fromheight">
         <el-form label-position="right" label-width="120px" :model="mock_all.FromData">
 
@@ -109,7 +120,7 @@
           <el-input v-model="mock_all.FromData.client_id"></el-input>
         </el-form-item> -->
           <el-form-item :label="mock_all.columns[1].label">
-            <el-input v-model="mock_all.FromData.material_id" :readonly="readonlyFlat" width="217px"></el-input>
+            <el-input v-model="mock_all.FromData.material_id" :readonly="readonlyFlat"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[2].label">
             <el-input v-model="mock_all.FromData.material_type"></el-input>
@@ -205,6 +216,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      multipleSelection: [],
       centerDialogVisible: false,//弹框
       fromtitle: '',
       addorChange: true,//判断修改新增
@@ -212,7 +224,7 @@ export default {
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      flag_paging: false,
+      flagPaging: false,
       materialIdSearch: '',
       materialTypeSearch: '',
       materialNameSearch: '',
@@ -221,8 +233,14 @@ export default {
       materialErpidSearch: '',
       materialOperateridSearch: '',
       productSearch: '',
-      indate_search: '',
-      operaterdate_search: '',
+      indateSearch: {
+        start: '',
+        end: ''
+      },
+      operaterdateSearch: {
+        start: '',
+        end: ''
+      },
     }
   },
   computed: {
@@ -248,10 +266,10 @@ export default {
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
-          this.flag_paging = true;
+          this.flagPaging = true;
         }
         else {
-          this.flag_paging = false;
+          this.flagPaging = false;
         }
       })
     },
@@ -266,36 +284,44 @@ export default {
       filterData = filterData.filter(item => !this.materialOperateridSearch || item.material_operaterid.toLowerCase().includes(this.materialOperateridSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.productSearch || item.product_id.toLowerCase().includes(this.productSearch.toLowerCase()))
 
-      filterData = filterData.filter(item => !this.indate_search || (Date.parse(this.indate_search[0]) <= Date.parse(item.material_indate)) && (Date.parse(item.material_indate) <= Date.parse(this.indate_search[1])))
-      filterData = filterData.filter(item => !this.operaterdate_search || (Date.parse(this.operaterdate_search[0]) <= Date.parse(item.material_operaterdate)) && (Date.parse(item.material_operaterdate) <= Date.parse(this.operaterdate_search[1])))
+      filterData = filterData.filter(item => {
+        let startTime = Date.parse(this.indateSearch.start),
+          endTime = Date.parse(this.indateSearch.end),
+          listTime = Date.parse(item.material_indate);
+        if (!startTime && !endTime) {
+          return true
+        } else if (startTime && !endTime) {
+          return listTime >= startTime
+        }
+        else if (!startTime && endTime) {
+          return listTime <= endTime
+        } else if (startTime && endTime) {
+          return listTime >= startTime && listTime <= endTime
+        }
+      })
+      filterData = filterData.filter(item => {
+        let startTime = Date.parse(this.operaterdateSearch.start),
+          endTime = Date.parse(this.operaterdateSearch.end),
+          listTime = Date.parse(item.material_operaterdate);
+        if (!startTime && !endTime) {
+          return true
+        } else if (startTime && !endTime) {
+          return listTime >= startTime
+        }
+        else if (!startTime && endTime) {
+          return listTime <= endTime
+        } else if (startTime && endTime) {
+          return listTime >= startTime && listTime <= endTime
+        }
+      })
+
+      // filterData = filterData.filter(item => !this.indateSearch || (Date.parse(this.indateSearch[0]) <= Date.parse(item.material_indate)) && (Date.parse(item.material_indate) <= Date.parse(this.indateSearch[1])))
+      // filterData = filterData.filter(item => !this.operaterdateSearch || (Date.parse(this.operaterdateSearch[0]) <= Date.parse(item.material_operaterdate)) && (Date.parse(item.material_operaterdate) <= Date.parse(this.operaterdateSearch[1])))
 
 
       this.tableShow(filterData)
     },
-    // 选择
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    //批量删除
-    rowRemove() {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-        this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
-        this.tableShow(this.mock_all.list)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
+
     //新增
     rowAdd() {
       this.addorChange = true;
@@ -334,8 +360,58 @@ export default {
 
     //移除
     rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
+    // 选择
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    //批量删除
+    rowRemove() {
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //分页
     handleSizeChange(val) {
@@ -362,7 +438,7 @@ export default {
 .page .tableTop .search {
   float: left;
   flex-wrap: wrap;
-  width: 1000px;
+  width: 1040px;
   height: 150px;
   position: relative;
 }
@@ -379,5 +455,17 @@ export default {
 .page .tableTop .search .el-input {
   margin: 0 12px;
   width: 160px;
+}
+.page .tableTop .search .selecData{
+  margin: 0 10px;
+}
+.page .tableTop .search .selecData .el-input{
+  width: 190px;
+margin: 0 2px;
+}
+
+.fromheight {
+  height: 400px;
+  overflow: auto;
 }
 </style>

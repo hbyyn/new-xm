@@ -3,20 +3,24 @@
     <div class="tableTop">
       <div class="search">
         <span>订单编号:</span>
-        <el-select class="selectSearch" v-model="order_search" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="orderSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.order_id" :label="item.order_id" :value="item.order_id">
           </el-option>
         </el-select>
         <span>产品编号:</span>
-        <el-select class="selectSearch" v-model="product_search" clearable filterable size="small" placeholder="请选择">
+        <el-select class="selectSearch" v-model="productSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
             :value="item.product_id">
           </el-option>
         </el-select>
         <span>订单时间:</span>
-        <el-date-picker class="selecData" v-model="date_search" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
+        <div class="selecData">
+          <el-date-picker v-model="dateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+          <el-date-picker v-model="dateSearch.end" type="datetime" placeholder="结束日期" default-time="18:00:00">
+          </el-date-picker>
+        </div>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -52,7 +56,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
@@ -73,7 +77,8 @@
         <el-form-item :label="mock_all.columns[2].label">
           <!-- <el-input v-model="mock_all.FromData.product_id"></el-input> -->
           <el-select v-model="mock_all.FromData.product_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in product_store" :key="item.id" :value="item.product_id+' '+item.product_name">
+            <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
+              :value="item.product_id+' '+item.product_name">
               <span>{{'ID:'+item.product_id}}</span>
               <span>{{'产品名:'+item.product_name}}</span>
             </el-option>
@@ -81,8 +86,8 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <!-- <el-input v-model="mock_all.FromData.order_product_date"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.order_product_date" type="date" value-format="yyyy-MM-dd"
-            placeholder="选择日期">
+          <el-date-picker v-model="mock_all.FromData.order_product_date" type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
@@ -116,13 +121,17 @@ export default {
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
+      readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      order_search: '',
-      product_search: '',
-      date_search: '',
-      flag_paging: false,
+      orderSearch: '',
+      productSearch: '',
+      dateSearch: {
+        start: '',
+        end: ''
+      },
+      flagPaging: false,
     }
   },
   computed: {
@@ -146,18 +155,33 @@ export default {
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
-          this.flag_paging = true;
+          this.flagPaging = true;
         }
         else {
-          this.flag_paging = false;
+          this.flagPaging = false;
         }
       })
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.order_search || item.order_id.toLowerCase().includes(this.order_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.product_search || item.product_id.toLowerCase().includes(this.product_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.date_search || (Date.parse(this.date_search[0]) <= Date.parse(item.order_product_date)) && (Date.parse(item.order_product_date) <= Date.parse(this.date_search[1])))
+      var filterData = this.mock_all.list.filter(item => !this.orderSearch || item.order_id.toLowerCase().includes(this.orderSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.productSearch || item.product_id.toLowerCase().includes(this.productSearch.toLowerCase()))
+
+      filterData = filterData.filter(item => {
+        let startTime = Date.parse(this.dateSearch.start);
+        let endTime = Date.parse(this.dateSearch.end);
+        let listTime = Date.parse(item.order_product_date);
+        if (!startTime && !endTime) {
+          return true
+        } else if (startTime && !endTime) {
+          return listTime >= startTime
+        }
+        else if (!startTime && endTime) {
+          return listTime <= endTime
+        } else if (startTime && endTime) {
+          return listTime >= startTime && listTime <= endTime
+        }
+      })
 
       this.tableShow(filterData)
     },
@@ -178,6 +202,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
+      this.readonlyFlat = false;
       this.fromtitle = '新增';
       let obj = this.mock_all.FromData
       for (let k of Object.keys(obj)) {
@@ -190,6 +215,7 @@ export default {
       this.$store.commit('orderproduct/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
+      this.readonlyFlat = true;
       this.mock_all.FromData = { ...row };
     },
     //弹窗确认
@@ -237,5 +263,12 @@ export default {
 .page .tableTop .search .el-input {
   margin: 0 12px;
   width: 160px;
+}
+.page .tableTop .search .selecData {
+  margin: 0 10px;
+}
+.page .tableTop .search .selecData .el-input {
+  width: 190px;
+  margin: 0 2px;
 }
 </style>

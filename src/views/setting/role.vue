@@ -3,7 +3,7 @@
     <div class="tableTop">
       <div class="search">
         <span>创建时间:</span>
-        <el-date-picker class="selecData" v-model="createtime_search" value-format="yyyy-MM-dd" type="daterange"
+        <el-date-picker class="selecData" v-model="createtimeSearch" value-format="yyyy-MM-dd" type="daterange"
           range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
         </el-date-picker>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
@@ -42,7 +42,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
@@ -50,7 +50,7 @@
     <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px">
         <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.role_id"></el-input>
+          <el-input v-model="mock_all.FromData.role_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.FromData.role_name"></el-input>
@@ -77,11 +77,12 @@ export default {
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
+      readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      flag_paging: false,
-      createtime_search: '',
+      flagPaging: false,
+      createtimeSearch: '',
       roleVisible: false,
 
     }
@@ -106,17 +107,17 @@ export default {
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
-          this.flag_paging = true;
+          this.flagPaging = true;
         }
         else {
-          this.flag_paging = false;
+          this.flagPaging = false;
         }
       })
 
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.createtime_search || (Date.parse(item.client_createtime) >= Date.parse(this.createtime_search[0])) && (Date.parse(item.client_createtime) <= Date.parse(this.createtime_search[1])))
+      var filterData = this.mock_all.list.filter(item => !this.createtimeSearch || (Date.parse(item.client_createtime) >= Date.parse(this.createtimeSearch[0])) && (Date.parse(item.client_createtime) <= Date.parse(this.createtimeSearch[1])))
       this.tableShow(filterData)
     },
 
@@ -137,6 +138,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
+      this.readonlyFlat = false;
       this.fromtitle = '新增';
       let obj = this.mock_all.FromData
       for (let k of Object.keys(obj)) {
@@ -149,6 +151,7 @@ export default {
       this.$store.commit('role/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
+      this.readonlyFlat = true;
       this.mock_all.FromData = { ...row };
     },
     //弹窗确认

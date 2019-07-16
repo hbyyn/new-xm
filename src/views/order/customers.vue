@@ -3,10 +3,10 @@
     <div class="tableTop">
       <div class="search">
         <span>工序编号:</span>
-        <el-autocomplete class="searchInputS" v-model="id_search" :fetch-suggestions="queryStringId" placeholder="请输入内容"
+        <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="queryStringId" placeholder="请输入内容"
           @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
         <span>工序名称:</span>
-        <el-autocomplete class="searchInputS" v-model="name_search" :fetch-suggestions="queryStringName"
+        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="queryStringName"
           placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
@@ -43,7 +43,7 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flag_paging}" @size-change="handleSizeChange"
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
@@ -54,7 +54,7 @@
           <el-input v-model="mock_all.FromData.client_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.customers_id"></el-input>
+          <el-input v-model="mock_all.FromData.customers_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.FromData.customers_name"></el-input>
@@ -86,12 +86,13 @@ export default {
       centerDialogVisible: false,
       fromtitle: '',
       addorChange: true,//判断修改新增
+      readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
-      id_search: '',
-      name_search: '',
-      flag_paging: false,
+      idSearch: '',
+      nameSearch: '',
+      flagPaging: false,
 
     }
   },
@@ -150,18 +151,18 @@ export default {
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
-          this.flag_paging = true;
+          this.flagPaging = true;
         }
         else {
-          this.flag_paging = false;
+          this.flagPaging = false;
         }
       })
 
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.name_search || item.customers_name.toLowerCase().includes(this.name_search.toLowerCase()))
-      filterData = filterData.filter(item => !this.id_search || item.customers_id.toLowerCase().includes(this.id_search.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.nameSearch || item.customers_name.toLowerCase().includes(this.nameSearch.toLowerCase()))
+      filterData = filterData.filter(item => !this.idSearch || item.customers_id.toLowerCase().includes(this.idSearch.toLowerCase()))
 
       this.tableShow(filterData)
     },
@@ -182,6 +183,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
+      this.readonlyFlat = false;
       this.fromtitle = '新增';
       let obj = this.mock_all.FromData
       for (let k of Object.keys(obj)) {
@@ -194,6 +196,7 @@ export default {
       this.$store.commit('customers/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
+      this.readonlyFlat = true;
       this.mock_all.FromData = { ...row };
     },
     //弹窗确认
