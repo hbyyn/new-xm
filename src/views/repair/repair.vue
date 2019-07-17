@@ -3,11 +3,11 @@
     <div class="tableTop">
       <div class="search">
         <span>返修编号:</span>
-        <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="querySearchId" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-        <span>返修名称:</span>
-        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="querySearchName"
-          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.repair_id" :label="item.repair_id+' '+item.repair_name"
+            :value="item.repair_id">
+          </el-option>
+        </el-select>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -48,32 +48,34 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="50%" :model="mock_all.FromData"
-      >
-      <el-form label-position="right" label-width="120px">
-        <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.repair_id" :readonly="readonlyFlat"></el-input>
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="60%">
+      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+        <el-form-item :label="mock_all.columns[1].label" prop="repair_id">
+          <el-input v-model="mock_all.formData.repair_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <el-input v-model="mock_all.FromData.repair_name"></el-input>
+          <el-input v-model="mock_all.formData.repair_name"></el-input>
         </el-form-item>
-        <!-- <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.repair_desc"></el-input>
-        </el-form-item> -->
+        <el-form-item :label="mock_all.columns[3].label">
+          <el-input v-model="mock_all.formData.repair_desc"></el-input>
+        </el-form-item>
         <!--富文本编辑器组件-->
-        <el-form-item :label="mock_all.columns[3].label" prop="content">
-          <el-row style="height:200px ;">
-            <quill-editor style="height:140px ;" v-model="dataForm.content" ref="myQuillEditor"
-              :options="dataForm.editorOption"></quill-editor>
-          </el-row>
 
+        <el-form-item label="说明详细">
+          <el-row  style="height:200px;">
+            <quill-editor class="ql-editor" style="height:140px;padding:0;overflow-y:unset" v-model="mock_all.formData.form_content" ref="myQuillEditor"
+              :options="editorOption"></quill-editor>
+          </el-row>
         </el-form-item>
         <el-row>
           <el-col :span="24">
             <el-form-item label="附件">
-               <el-upload  :limit = '5'>
+              <el-upload class="upload-demo" ref="upload" :data="fileType"
+                action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview"
+                :on-remove="handleRemove" :file-list="mock_all.formData.form_fileList" :auto-upload="false" :limit='5'>
                 <div style="width:100%;">
-                  <i class="el-icon-upload" style="float:left;width:32px;height:22px;padding-top:5px;font-size:22px;"></i>
+                  <i class="el-icon-upload"
+                    style="float:left;width:32px;height:22px;padding-top:5px;font-size:22px;"></i>
                   <div slot="tip" style="float:left;margin-top:0px;" class="el-upload__tip">5555</div>
                 </div>
               </el-upload>
@@ -84,7 +86,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="fromOr">确 定</el-button>
+        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -94,9 +96,10 @@
 <script>
 import { mapState } from 'vuex'
 import { quillEditor } from 'vue-quill-editor'
-import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+// import 'quill/dist/quill.bubble.css'
+
 
 //工具栏配置
 const toolbarOptions = [
@@ -108,8 +111,9 @@ export default {
   },
   data() {
     return {
+      multipleSelection: [],
       centerDialogVisible: false,
-      fromtitle: '',
+      formtitle: '',
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
@@ -118,30 +122,34 @@ export default {
       idSearch: '',
       nameSearch: '',
       flagPaging: false,//
+
       fileType: {
         targetEnum: "Enclosure"
       },
-      dataForm: {
-        content:'',
-        fileList: [],
-        editorOption: {
-          placeholder: "请输入反馈问题的内容",
-          theme: 'snow',  // or 'bubble'
-          modules: {
-            toolbar: {
-              container: toolbarOptions,  // 工具栏
-            }
+      editorOption: {
+        placeholder: "请输入反馈问题的内容",
+        theme: 'snow',  // or 'bubble'
+        modules: {
+          toolbar: {
+            container: toolbarOptions,  // 工具栏
           }
-        },
+        }
+      },
+
+      rules: {
+        repair_id: [
+          { required: true, message: '请输入规格编号', trigger: 'blur' },
+        ],
       },
     }
   },
   computed: {
+
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.repair.tableData,//{fromData,list,columns}
+      mock_all: state => state.repair.tableData,//{formData,list,columns}
       changeIndex: state => state.repair.changeIndex,
-      Fromadd: state => state.repair.Fromadd,
+      formadd: state => state.repair.formadd,
     }),
 
   },
@@ -149,41 +157,12 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
-
-
-    // 搜索弹框数据，去重
-    restaurants(key) {
-      let restaurants = [];
-      for (var i = 0; i < this.mock_all.list.length; i++) {
-        restaurants.push({ value: '' });
-        restaurants[i].value = this.mock_all.list[i][key]//修改点
-      }
-      // 去重
-      let hash = {};
-      restaurants = restaurants.reduce((preVal, curVal) => {
-        hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-        return preVal
-      }, [])
-      return restaurants
+    //上传文件
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
     },
-    //搜索1
-    querySearchId(queryString, cb) {
-      let restaurants = this.restaurants('repair_id')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    //搜索2
-    querySearchName(queryString, cb) {
-      let restaurants = this.restaurants('repair_name')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
+    handlePreview(file) {
+      console.log(file);
     },
 
     //列表显示
@@ -202,11 +181,31 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.nameSearch || item.repair_name.toLowerCase().includes(this.nameSearch.toLowerCase()))
-      filterData = filterData.filter(item => !this.idSearch || item.repair_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.repair_id.toLowerCase().includes(this.idSearch.toLowerCase()))
       filterData = filterData.filter(item => !this.descSearch || item.repair_desc.toLowerCase().includes(this.descSearch.toLowerCase()))
 
       this.tableShow(filterData)
+    },
+    //移除
+    rowDel(index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     },
     // 选择
     handleSelectionChange(val) {
@@ -214,53 +213,77 @@ export default {
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('repair/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.readonlyFlat = false;
-      this.fromtitle = '新增';
-      let obj = this.mock_all.FromData
+      this.formtitle = '新增';
+      let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
     },
     //修改
     pwdChange(index, row) {
-      this.fromtitle = '修改';
+      this.formtitle = '修改';
       this.$store.commit('repair/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.readonlyFlat = true;
-      this.mock_all.FromData = { ...row };
+      this.mock_all.formData = { ...row };
     },
-    //弹窗确认
-    fromOr() {
-      //拷贝from的值
-      this.mock_all.FromData.repair_desc=this.dataForm.content
-      this.$store.commit('repair/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('repair/setNowTime')
-      if (this.addorChange) {
-        this.$store.commit('repair/rowAddStore')
-      } else {
-        this.$store.commit('repair/pwdChange')
-      }
-      this.centerDialogVisible = false
-      this.tableShow(this.mock_all.list)
+    //submit
+    formOr(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // submit
+          this.$store.commit('repair/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('repair/setNowTime')
+          if (this.addorChange) {
+            this.$store.commit('repair/rowAddStore')
+          } else {
+            this.$store.commit('repair/pwdChange')
+          }
+          this.$refs.upload.submit();
+          this.centerDialogVisible = false
+          this.tableShow(this.mock_all.list)
+
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
 
-    //移除
-    rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
-    },
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
@@ -286,4 +309,6 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
+
+
 </style>

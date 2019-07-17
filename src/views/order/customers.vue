@@ -2,12 +2,12 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <span>工序编号:</span>
-        <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="queryStringId" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-        <span>工序名称:</span>
-        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="queryStringName"
-          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
+        <span>客户编号:</span>
+        <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.customers_id"
+            :label="item.customers_id+' '+item.customers_name" :value="item.customers_id">
+          </el-option>
+        </el-select>
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -48,30 +48,27 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px">
-        <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.client_id"></el-input>
-        </el-form-item> -->
-        <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.customers_id" :readonly="readonlyFlat"></el-input>
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+        <el-form-item :label="mock_all.columns[1].label" prop="customers_id">
+          <el-input v-model="mock_all.formData.customers_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <el-input v-model="mock_all.FromData.customers_name"></el-input>
+          <el-input v-model="mock_all.formData.customers_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.customers_tel"></el-input>
+          <el-input v-model="mock_all.formData.customers_tel"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.customers_address"></el-input>
+          <el-input v-model="mock_all.formData.customers_address"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.customers_fax"></el-input>
+          <el-input v-model="mock_all.formData.customers_fax"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="fromOr">确 定</el-button>
+        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -83,8 +80,9 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      multipleSelection: [],
       centerDialogVisible: false,
-      fromtitle: '',
+      formtitle: '',
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
@@ -93,15 +91,20 @@ export default {
       idSearch: '',
       nameSearch: '',
       flagPaging: false,
+      rules: {
+        customers_id: [
+          { required: true, message: '请输入规格编号', trigger: 'blur' },
+        ],
+      },
 
     }
   },
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.customers.tableData,//{fromData,list,columns}
+      mock_all: state => state.customers.tableData,//{formData,list,columns}
       changeIndex: state => state.customers.changeIndex,
-      Fromadd: state => state.customers.Fromadd,
+      formadd: state => state.customers.formadd,
     }),
 
   },
@@ -110,19 +113,19 @@ export default {
   },
   methods: {
     // 搜索弹框数据，去重
-    restaurants(key){
+    restaurants(key) {
       let restaurants = [];
-        for (var i = 0; i < this.mock_all.list.length; i++) {
-          restaurants.push({ value: '' });
-          restaurants[i].value = this.mock_all.list[i][key]//修改点
-        }
-        // 去重
-        let hash = {};
-        restaurants = restaurants.reduce((preVal, curVal) => {
-          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-          return preVal
-        }, [])
-        return restaurants
+      for (var i = 0; i < this.mock_all.list.length; i++) {
+        restaurants.push({ value: '' });
+        restaurants[i].value = this.mock_all.list[i][key]//修改点
+      }
+      // 去重
+      let hash = {};
+      restaurants = restaurants.reduce((preVal, curVal) => {
+        hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+        return preVal
+      }, [])
+      return restaurants
     },
     //搜索1
     queryStringId(queryString, cb) {
@@ -133,7 +136,7 @@ export default {
     },
     //搜索2
     queryStringName(queryString, cb) {
-       let restaurants = this.restaurants('customers_name')
+      let restaurants = this.restaurants('customers_name')
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
@@ -161,10 +164,30 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.nameSearch || item.customers_name.toLowerCase().includes(this.nameSearch.toLowerCase()))
-      filterData = filterData.filter(item => !this.idSearch || item.customers_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.customers_id.toLowerCase().includes(this.idSearch.toLowerCase()))
 
       this.tableShow(filterData)
+    },
+    //移除
+    rowDel(index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     },
     // 选择
     handleSelectionChange(val) {
@@ -172,54 +195,78 @@ export default {
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('customers/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.readonlyFlat = false;
-      this.fromtitle = '新增';
-      let obj = this.mock_all.FromData
+      this.formtitle = '新增';
+      let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
     },
     //修改
     pwdChange(index, row) {
-      this.fromtitle = '修改';
+      this.formtitle = '修改';
       this.$store.commit('customers/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.readonlyFlat = true;
-      this.mock_all.FromData = { ...row };
+      this.mock_all.formData = { ...row };
     },
-    //弹窗确认
-    fromOr() {
-      //拷贝from的值
-      this.$store.commit('customers/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('customers/setNowTime')
-      if (this.addorChange) {
-        // this.mock_all.list.unshift(this.Fromadd)
-        this.$store.commit('customers/rowAddStore')
-      } else {
-        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
-        this.$store.commit('customers/pwdChange')
-      }
-      this.centerDialogVisible = false
-      this.tableShow(this.mock_all.list)
+    //submit
+    formOr(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // submit
+          this.$store.commit('customers/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('customers/setNowTime')
+          if (this.addorChange) {
+            // this.mock_all.list.unshift(this.formadd)
+            this.$store.commit('customers/rowAddStore')
+          } else {
+            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
+            this.$store.commit('customers/pwdChange')
+          }
+          this.centerDialogVisible = false
+          this.tableShow(this.mock_all.list)
+
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
 
-    //移除
-    rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
-    },
     //分页
     handleSizeChange(val) {
       this.pageSize = val;

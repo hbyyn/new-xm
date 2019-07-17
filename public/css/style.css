@@ -54,13 +54,13 @@ body,
   margin: 0 12px;
   width: 160px;
 }
-.page .tableTop .search .selecData{
-
-}
 .page .tableTop .rowAdd{
   float: right;
   display: flex;
   align-items: center;
+}
+.page .fromAdd .el-input{
+  width: 220px;
 }
 
 .page .active_paging{

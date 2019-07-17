@@ -47,21 +47,21 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px">
-        <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.login_id" :readonly="readonlyFlat"></el-input>
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+        <el-form-item :label="mock_all.columns[0].label" prop="login_id">
+          <el-input v-model="mock_all.formData.login_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.login_name"></el-input>
+          <el-input v-model="mock_all.formData.login_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <el-input v-model="mock_all.FromData.login_acode"></el-input>
+          <el-input v-model="mock_all.formData.login_acode"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="fromOr">确 定</el-button>
+        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 权限管理 -->
@@ -77,8 +77,9 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      multipleSelection: [],
       centerDialogVisible: false,
-      fromtitle: '',
+      formtitle: '',
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
@@ -87,15 +88,20 @@ export default {
       flagPaging: false,
       createtimeSearch: '',
       roleVisible: false,
+      rules: {
+        login_id: [
+          { required: true, message: '请输入编号', trigger: 'blur' },
+        ],
+      },
 
     }
   },
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.setting.tableData,//{fromData,list,columns}
+      mock_all: state => state.setting.tableData,//{formData,list,columns}
       changeIndex: state => state.setting.changeIndex,
-      Fromadd: state => state.setting.Fromadd,
+      formadd: state => state.setting.formadd,
     }),
 
   },
@@ -124,63 +130,108 @@ export default {
       this.tableShow(filterData)
     },
 
+    //移除
+    rowDel(index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('setting/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.readonlyFlat = false;
-      this.fromtitle = '新增';
-      let obj = this.mock_all.FromData
+      this.formtitle = '新增';
+      let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
     },
     //修改
     pwdChange(index, row) {
-      this.fromtitle = '修改';
+      this.formtitle = '修改';
       this.$store.commit('setting/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.readonlyFlat = true;
-      this.mock_all.FromData = { ...row };
+      this.mock_all.formData = { ...row };
     },
-    //弹窗确认
-    fromOr() {
-      //拷贝from的值
-      this.$store.commit('setting/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('setting/setNowTime')
-      if (this.addorChange) {
-        // this.mock_all.list.unshift(this.Fromadd)
-        this.$store.commit('setting/rowAddStore')
-      } else {
-        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
-        this.$store.commit('setting/pwdChange')
-      }
-      this.centerDialogVisible = false
-      this.tableShow(this.mock_all.list)
+    //submit
+    formOr(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // submit
+          this.$store.commit('setting/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('setting/setNowTime')
+          if (this.addorChange) {
+            // this.mock_all.list.unshift(this.formadd)
+            this.$store.commit('setting/rowAddStore')
+          } else {
+            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
+            this.$store.commit('setting/pwdChange')
+          }
+          this.centerDialogVisible = false
+          this.tableShow(this.mock_all.list)
+
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
     //权限管理
     roleChang(index, row) {
       this.roleVisible = true;
       console.log(index, row)
-    },
-    //移除
-    rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
     },
     //分页
     handleSizeChange(val) {

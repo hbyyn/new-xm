@@ -3,12 +3,11 @@
     <div class="tableTop">
       <div class="search">
         <span>供应商编号:</span>
-        <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="queryStringId" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-        <span>供应商名称:</span>
-        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="queryStringName"
-          placeholder="请输入内容" @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-
+        <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
+          <el-option v-for="item in mock_all.list" :key="item.supplier_id"
+            :label="item.supplier_id+' '+item.supplier_name" :value="item.supplier_id">
+          </el-option>
+        </el-select>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
       </div>
@@ -43,48 +42,35 @@
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination :class="{active_paging:flagPaging}"  @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]"
-      :current="pageCurrent" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-      :total="mock_all.list.length">
+    <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="right" label-width="120px">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.client_id"></el-input>
+          <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
-        <el-form-item :label="mock_all.columns[1].label">
-          <el-input v-model="mock_all.FromData.supplier_id" :readonly="readonlyFlat"></el-input>
+        <el-form-item :label="mock_all.columns[1].label" prop="supplier_id">
+          <el-input v-model="mock_all.formData.supplier_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <el-input v-model="mock_all.FromData.supplier_name"></el-input>
+          <el-input v-model="mock_all.formData.supplier_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
-          <el-input v-model="mock_all.FromData.supplier_tel"></el-input>
+          <el-input v-model="mock_all.formData.supplier_tel"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.FromData.supplier_address"></el-input>
+          <el-input v-model="mock_all.formData.supplier_address"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.supplier_fax"></el-input>
+          <el-input v-model="mock_all.formData.supplier_fax"></el-input>
         </el-form-item>
-
-        <!-- <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.client_creator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[8].label">
-          <el-input v-model="mock_all.FromData.client_updator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[9].label">
-          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
-        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="fromOr">确 定</el-button>
+        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -96,24 +82,30 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      multipleSelection:[],
       centerDialogVisible: false,//弹框
-      fromtitle: '',
+      formtitle: '',
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
+      flagPaging: false,
       nameSearch: '',
       idSearch: '',
-      flagPaging:false,
+      rules: {
+        supplier_id: [
+          { required: true, message: '请输入规格编号', trigger: 'blur' },
+        ],
+      },
     }
   },
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.supplier.tableData,//{fromData,list,columns}
+      mock_all: state => state.supplier.tableData,//{formData,list,columns}
       changeIndex: state => state.supplier.changeIndex,
-      Fromadd: state => state.supplier.Fromadd,
+      formadd: state => state.supplier.formadd,
     }),
   },
   created() {
@@ -121,41 +113,6 @@ export default {
 
   },
   methods: {
-     // 搜索弹框数据，去重
-    restaurants(key){
-      let restaurants = [];
-        for (var i = 0; i < this.mock_all.list.length; i++) {
-          restaurants.push({ value: '' });
-          restaurants[i].value = this.mock_all.list[i][key]//修改点
-        }
-        // 去重
-        let hash = {};
-        restaurants = restaurants.reduce((preVal, curVal) => {
-          hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-          return preVal
-        }, [])
-        return restaurants
-    },
-    //搜索1
-    queryStringId(queryString, cb) {
-      let restaurants = this.restaurants('supplier_id')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    //搜索2
-    queryStringName(queryString, cb) {
-      let restaurants = this.restaurants('supplier_name')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
 
     //列表显示
     tableShow(data) {
@@ -173,10 +130,30 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.nameSearch || item.supplier_name.toLowerCase().includes(this.nameSearch.toLowerCase()))
-      filterData = filterData.filter(item => !this.idSearch || item.supplier_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.supplier_id.toLowerCase().includes(this.idSearch.toLowerCase()))
 
       this.tableShow(filterData)
+    },
+   //移除
+    rowDel(index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
     },
     // 选择
     handleSelectionChange(val) {
@@ -184,52 +161,75 @@ export default {
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('supplier/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
       this.readonlyFlat = false;
-      this.fromtitle = '新增';
-      let obj = this.mock_all.FromData
+      this.formtitle = '新增';
+      let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
     },
     //修改
     pwdChange(index, row) {
-      this.fromtitle = '修改';
+      this.formtitle = '修改';
       this.$store.commit('supplier/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.readonlyFlat = true;
-      this.mock_all.FromData = { ...row };
+      this.mock_all.formData = { ...row };
     },
-    //弹窗确认
-    fromOr() {
-      //拷贝from的值
-      this.$store.commit('supplier/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('supplier/setNowTime')
-      if (this.addorChange) {
-        this.$store.commit('supplier/rowAddStore')
-      } else {
-        this.$store.commit('supplier/pwdChange')
-      }
-      this.centerDialogVisible = false
-      this.tableShow(this.mock_all.list)
+    //submit
+    formOr(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // submit
+          this.$store.commit('supplier/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('supplier/setNowTime')
+          if (this.addorChange) {
+            this.$store.commit('supplier/rowAddStore')
+          } else {
+            this.$store.commit('supplier/pwdChange')
+          }
+          this.centerDialogVisible = false
+          this.tableShow(this.mock_all.list)
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
 
-    //移除
-    rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
-    },
     //分页
     handleSizeChange(val) {
       this.pageSize = val;

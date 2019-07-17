@@ -2,8 +2,6 @@
   <div class="page">
     <div class="tableTop">
       <div class="search">
-        <!-- <span>work_id:</span>
-        <el-input v-model="nameSearch" type="text" size="small" placeholder="输入关键字搜索" /> -->
         <span>物料编号:</span>
         <el-select class="selectSearch" v-model="materialSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
@@ -15,10 +13,7 @@
           <el-option v-for="item in mock_all.list" :key="item.work_id" :label="item.repair_id" :value="item.work_id">
           </el-option>
         </el-select>
-        <span>开始日期:</span>
-        <!-- <el-date-picker class="selecData" v-model="begindateSearch" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker> -->
+        <span>工序开始:</span>
         <div class="selecData">
           <el-date-picker v-model="begindateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss">
@@ -27,10 +22,7 @@
           </el-date-picker>
         </div>
 
-        <span>结束日期:</span>
-        <!-- <el-date-picker class="selecData" v-model="enddateSearch" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker> -->
+        <span>工序结束:</span>
         <div class="selecData">
           <el-date-picker v-model="enddateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss">
@@ -78,59 +70,41 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="fromtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px">
-        <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.FromData.client_id"></el-input>
-        </el-form-item> -->
-        <el-form-item :label="mock_all.columns[1].label">
-          <el-select v-model="mock_all.FromData.material_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in materials_store" :key="item.id" :value="item.material_id+' '+item.material_name">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+        <el-form-item :label="mock_all.columns[1].label" prop="material_id">
+          <el-select v-model="mock_all.formData.material_id" placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
+              :value="item.material_id+' '+item.material_name">
               <span>{{'ID:'+item.material_id}}</span>
               <span>{{'材料名:'+item.material_name}}</span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
-          <!-- <el-input v-model="mock_all.FromData.work_id"></el-input> -->
-          <el-select v-model="mock_all.FromData.work_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in work_store" :key="item.id" :value="item.work_id+' '+item.work_name">
+          <el-select v-model="mock_all.formData.work_id" placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in work_store" :key="item.id"
+              :value="item.work_id+' '+item.work_name">
               <span>{{'ID:'+item.work_id}}</span>
               <span>{{'材料名:'+item.work_name}}</span>
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
-          <!-- <el-input v-model="mock_all.FromData.material_work_begindate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_work_begindate" type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期">
+          <el-date-picker v-model="mock_all.formData.material_work_begindate" type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
-          <!-- <el-input v-model="mock_all.FromData.material_work_enddate"></el-input> -->
-          <el-date-picker v-model="mock_all.FromData.material_work_enddate" type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="选择日期">
+          <el-date-picker v-model="mock_all.formData.material_work_enddate" type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
 
-        <!-- <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.FromData.client_creator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.FromData.client_createtime"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.FromData.client_updator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[8].label">
-          <el-input v-model="mock_all.FromData.client_updatetime"></el-input>
-        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="fromOr">确 定</el-button>
+        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -143,32 +117,38 @@ export default {
   name: 'HelloWorld',
   data() {
     return {
+      multipleSelection: [],
       centerDialogVisible: false,
-      fromtitle: '',
+      formtitle: '',
       addorChange: true,//判断修改新增
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
+      flagPaging: false,
       materialSearch: '',
       workSearch: '',
-      begindateSearch:{
+      begindateSearch: {
         start: '',
         end: ''
       },
-      enddateSearch:{
+      enddateSearch: {
         start: '',
         end: ''
       },
-      flagPaging: false,
+      rules: {
+        material_id: [
+          { required: true, message: '请输入编号', trigger: 'blur' },
+        ],
+      },
 
     }
   },
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.mwork.tableData,//{fromData,list,columns}
+      mock_all: state => state.mwork.tableData,//{formData,list,columns}
       changeIndex: state => state.mwork.changeIndex,
-      Fromadd: state => state.mwork.Fromadd,
+      formadd: state => state.mwork.formadd,
       materials_store: state => state.materials.tableData.list,
       work_store: state => state.work.tableData.list,
     }),
@@ -229,58 +209,103 @@ export default {
       })
       this.tableShow(filterData)
     },
+    //移除
+    rowDel(index) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        this.mock_all.list.splice(index, 1);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
     //批量删除
     rowRemove() {
-      const a = this.mock_all.list;
-      const b = this.multipleSelection;
-      this.mock_all.list = a.filter(function (item) {
-        return b.indexOf(item) < 0;
-      })
-      this.tableShow(this.mock_all.list)
+      if (this.multipleSelection.length) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$store.commit('mwork/rowRemoveStore', this.multipleSelection)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          message: "请选择需要删除的选项"
+        });
+        return false;
+      }
     },
     //新增
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
-      this.fromtitle = '新增';
-      let obj = this.mock_all.FromData
+      this.formtitle = '新增';
+      let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
     },
     //修改
     pwdChange(index, row) {
-      this.fromtitle = '修改';
+      this.formtitle = '修改';
       this.$store.commit('mwork/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize));
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.mock_all.FromData = { ...row };
+      this.mock_all.formData = { ...row };
     },
-    //弹窗确认
-    fromOr() {
-      //拷贝from的值
-      this.$store.commit('mwork/setFromadd', { ...this.mock_all.FromData })
-      this.$store.commit('mwork/setNowTime')
-      if (this.addorChange) {
-        // this.mock_all.list.unshift(this.Fromadd)
-        this.$store.commit('mwork/rowAddStore')
-      } else {
-        // this.mock_all.list.splice(this.changeIndex, 1, this.Fromadd)
-        this.$store.commit('mwork/pwdChange')
-      }
-      this.centerDialogVisible = false
-      this.tableShow(this.mock_all.list)
+    //submit
+    formOr(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // submit
+          this.$store.commit('mwork/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('mwork/setNowTime')
+          if (this.addorChange) {
+            // this.mock_all.list.unshift(this.formadd)
+            this.$store.commit('mwork/rowAddStore')
+          } else {
+            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
+            this.$store.commit('mwork/pwdChange')
+          }
+          this.centerDialogVisible = false
+          this.tableShow(this.mock_all.list)
+
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     },
 
-    //移除
-    rowDel(index) {
-      this.mock_all.list.splice(index, 1);
-      this.tableShow(this.mock_all.list)
-    },
     //分页
     handleSizeChange(val) {
       this.pageSize = val;

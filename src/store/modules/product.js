@@ -26,7 +26,7 @@ const state = {
       { id: 16, prop: 'client_updator', label: "修改人" },
       { id: 17, prop: 'client_updatetime', label: "修改时间" }
     ],
-    FromData: {
+    formData: {
       client_id: "",
       //产品表
       product_id: "88+",
@@ -42,32 +42,34 @@ const state = {
     total: 10 //list数据数量
   },
   changeIndex: "",
-  Fromadd: "",
+  formadd: "",
   nowTime:"",
 };
 const mutations = {
   setNowTime(state) {
     state.nowTime =(new Date()).Format("yyyy-MM-dd hh:mm:ss")
   },
-  setFromadd(state, param) {
-    state.Fromadd = param;
+  setformadd(state, param) {
+    state.formadd = param;
   },
   setChangeIndex(state, param) {
     state.changeIndex = param;
   },
   //增
   rowAddStore(state) {
-    state.Fromadd.client_id = sessionStorage.getItem("client_id");
-    state.Fromadd.client_creator = sessionStorage.getItem("user_name");
-    state.Fromadd.client_createtime = state.nowTime
-    state.tableData.list.unshift(state.Fromadd);
-
+    state.formadd.client_id = sessionStorage.getItem("client_id");
+    state.formadd.client_creator = sessionStorage.getItem("user_name");
+    state.formadd.client_createtime = state.nowTime
+    state.tableData.list.unshift(state.formadd);
+  },
+  rowRemoveStore(state,param){
+    state.tableData.list=state.tableData.list.filter( item=>(param.indexOf(item) < 0))
   },
   //改
   pwdChange(state) {
-    state.Fromadd.client_updator = sessionStorage.getItem("user_name");
-    state.Fromadd.client_updatetime = state.nowTime
-    state.tableData.list.splice(state.changeIndex, 1, state.Fromadd);
+    state.formadd.client_updator = sessionStorage.getItem("user_name");
+    state.formadd.client_updatetime = state.nowTime
+    state.tableData.list.splice(state.changeIndex, 1, state.formadd);
   }
 }
 
