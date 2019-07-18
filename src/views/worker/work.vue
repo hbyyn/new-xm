@@ -50,35 +50,20 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.formData.client_id"></el-input>
-        </el-form-item> -->
-        <el-form-item :label="mock_all.columns[1].label" prop="work_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="work_id">
           <el-input v-model="mock_all.formData.work_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.work_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.work_desc"></el-input>
         </el-form-item>
 
-        <!-- <el-form-item :label="mock_all.columns[4].label">
-          <el-input v-model="mock_all.formData.client_creator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[5].label">
-          <el-input v-model="mock_all.formData.client_createtime"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[6].label">
-          <el-input v-model="mock_all.formData.client_updator"></el-input>
-        </el-form-item>
-        <el-form-item :label="mock_all.columns[7].label">
-          <el-input v-model="mock_all.formData.client_updatetime"></el-input>
-        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -116,6 +101,21 @@ export default {
       formadd: state => state.work.formadd,
     }),
 
+  },
+  watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -225,11 +225,17 @@ export default {
           this.$store.commit('work/setformadd', { ...this.mock_all.formData })
           this.$store.commit('work/setNowTime')
           if (this.addorChange) {
-            // this.mock_all.list.unshift(this.formadd)
             this.$store.commit('work/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
-            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
             this.$store.commit('work/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

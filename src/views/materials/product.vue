@@ -8,11 +8,6 @@
             :value="item.product_id">
           </el-option>
         </el-select>
-        <!-- <el-autocomplete class="searchInputS" v-model="idSearch" :fetch-suggestions="queryStringId" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete>
-        <span>产品名称:</span>
-        <el-autocomplete class="searchInputS" v-model="nameSearch" :fetch-suggestions="queryStringName" placeholder="请输入内容"
-          @keyup.enter.native="onFilter" clearable size="small"></el-autocomplete> -->
 
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
 
@@ -53,23 +48,23 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <el-form-item :label="mock_all.columns[1].label" prop="product_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="product_id">
           <el-input v-model="mock_all.formData.product_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.product_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-color-picker v-model="mock_all.formData.product_color"></el-color-picker>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[4].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="mock_all.formData.product_desc"></el-input>
         </el-form-item>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -106,6 +101,21 @@ export default {
       changeIndex: state => state.product.changeIndex,
       formadd: state => state.product.formadd,
     }),
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -250,8 +260,16 @@ export default {
           this.$store.commit('product/setNowTime')
           if (this.addorChange) {
             this.$store.commit('product/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('product/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

@@ -17,7 +17,7 @@ const state = {
       }
     ],
     columns: [
-      { id: 1, prop: "client_id", label: "公司编号" },
+      // { id: 1, prop: "client_id", label: "公司编号" },
       { id: 2, prop: "repair_id", label: "返修编号" },
       { id: 6, prop: "repair_name", label: "返修名称" },
       { id: 7, prop: "repair_desc", label: "修理说明标题" },

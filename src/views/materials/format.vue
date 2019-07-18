@@ -51,17 +51,17 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
 
-        <el-form-item :label="mock_all.columns[1].label" prop="format_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="format_id">
           <el-input v-model="mock_all.formData.format_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.format_name"></el-input>
         </el-form-item>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -87,7 +87,7 @@ export default {
       //验证
       rules: {
         format_id: [
-          { required: true, message: '请输入规格编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       },
     }
@@ -103,6 +103,21 @@ export default {
   },
   created() {
     this.tableShow(this.mock_all.list)
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   methods: {
 
@@ -208,8 +223,16 @@ export default {
           this.$store.commit('format/setNowTime')
           if (this.addorChange) {
             this.$store.commit('format/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('format/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

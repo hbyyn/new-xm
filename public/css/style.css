@@ -59,7 +59,7 @@ body,
   display: flex;
   align-items: center;
 }
-.page .fromAdd .el-input{
+.page .formAdd .el-input{
   width: 220px;
 }
 

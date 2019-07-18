@@ -50,13 +50,13 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="60%">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <el-form-item :label="mock_all.columns[1].label" prop="repair_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="repair_id">
           <el-input v-model="mock_all.formData.repair_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.repair_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.repair_desc"></el-input>
         </el-form-item>
         <!--富文本编辑器组件-->
@@ -85,8 +85,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -128,7 +128,6 @@ export default {
       },
       editorOption: {
         placeholder: "请输入反馈问题的内容",
-        theme: 'snow',  // or 'bubble'
         modules: {
           toolbar: {
             container: toolbarOptions,  // 工具栏
@@ -138,7 +137,7 @@ export default {
 
       rules: {
         repair_id: [
-          { required: true, message: '请输入规格编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       },
     }
@@ -152,6 +151,21 @@ export default {
       formadd: state => state.repair.formadd,
     }),
 
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -270,8 +284,16 @@ export default {
           this.$store.commit('repair/setNowTime')
           if (this.addorChange) {
             this.$store.commit('repair/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('repair/pwdChange')
+             this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.$refs.upload.submit();
           this.centerDialogVisible = false

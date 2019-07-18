@@ -16,7 +16,7 @@ const state = {
       client_updatetime: "88"
     }],
     columns: [
-      { id: 1, prop: 'client_id', label: "公司编号" },
+      // { id: 1, prop: 'client_id', label: "公司编号" },
       { id: 2, prop: 'product_id', label: "产品编号" },
       { id: 3, prop: 'product_name', label: "产品名称" },
       { id: 4, prop: 'product_color', label: "产品颜色" },

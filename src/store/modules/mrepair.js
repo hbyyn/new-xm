@@ -14,7 +14,7 @@ const state = {
       client_updatetime: '2016/05/03/14:16:55'
     }],
     columns:[
-      {id:1,prop:'client_id',label:"公司编号"},
+      // {id:1,prop:'client_id',label:"公司编号"},
       {id:2,prop:'material_id',label:"物料编号"},
       {id:6,prop:'repair_id',label:"返修编号"},
       {id:7,prop:'material_repair_begindate',label:"维修启动日期"},

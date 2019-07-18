@@ -52,25 +52,25 @@
         <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
-        <el-form-item :label="mock_all.columns[1].label" prop="supplier_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="supplier_id">
           <el-input v-model="mock_all.formData.supplier_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.supplier_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.supplier_tel"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[4].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.supplier_address"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[5].label">
+        <el-form-item :label="mock_all.columns[4].label">
           <el-input v-model="mock_all.formData.supplier_fax"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -95,7 +95,7 @@ export default {
       idSearch: '',
       rules: {
         supplier_id: [
-          { required: true, message: '请输入规格编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       },
     }
@@ -107,6 +107,21 @@ export default {
       changeIndex: state => state.supplier.changeIndex,
       formadd: state => state.supplier.formadd,
     }),
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -218,8 +233,16 @@ export default {
           this.$store.commit('supplier/setNowTime')
           if (this.addorChange) {
             this.$store.commit('supplier/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('supplier/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

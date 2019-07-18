@@ -15,7 +15,7 @@
           </el-option>
         </el-select>
         <span>启动日期:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="begindateSearch.start" type="datetime" placeholder="开始日期" default-time="08:30:00"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -24,7 +24,7 @@
         </div>
 
         <span>结束日期:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="enddateSearch.start" type="datetime" placeholder="开始日期" default-time="08:30:00"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -73,7 +73,7 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <el-form-item :label="mock_all.columns[1].label" prop="material_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="material_id">
           <el-select v-model="mock_all.formData.material_id" :readonly="readonlyFlat" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
               :value="item.material_id+' '+item.material_name">
@@ -82,7 +82,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-select v-model="mock_all.formData.repair_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in repair_store" :key="item.id"
               :value="item.repair_id+' '+item.repair_name">
@@ -91,13 +91,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-date-picker v-model="mock_all.formData.material_repair_begindate" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
 
         </el-form-item>
-        <el-form-item :label="mock_all.columns[4].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-date-picker v-model="mock_all.formData.material_repair_enddate" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
@@ -105,8 +105,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -139,7 +139,7 @@ export default {
       flagPaging: false,
       rules: {
         material_id: [
-          { required: true, message: '请输入规格编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       },
 
@@ -155,6 +155,21 @@ export default {
       repair_store: state => state.repair.tableData.list,
     }),
 
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -297,8 +312,16 @@ export default {
           this.$store.commit('mrepair/setNowTime')
           if (this.addorChange) {
             this.$store.commit('mrepair/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('mrepair/pwdChange')
+             this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -354,10 +377,10 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
-.page .tableTop .search .selecData {
+.page .tableTop .search .selecDate {
   margin: 0 10px;
 }
-.page .tableTop .search .selecData .el-input {
+.page .tableTop .search .selecDate .el-input {
   width: 190px;
   margin: 0 2px;
 }

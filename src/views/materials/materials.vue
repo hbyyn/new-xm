@@ -56,7 +56,7 @@
           </el-option>
         </el-select>
         <span>EPR入库日期:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="indateSearch.start" type="datetime" placeholder="开始日期" default-time="08:30:00"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -65,7 +65,7 @@
         </div>
 
         <span>领料时间:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="operaterdateSearch.start" type="datetime" placeholder="开始日期" default-time="08:30:00"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -118,17 +118,18 @@
           <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
-          <el-form-item :label="mock_all.columns[1].label" prop="material_id">
+          <el-form-item :label="mock_all.columns[0].label" prop="material_id">
             <el-input v-model="mock_all.formData.material_id" :readonly="readonlyFlat"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[2].label">
+          <el-form-item :label="mock_all.columns[1].label">
             <el-input v-model="mock_all.formData.material_type"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[3].label">
+          <el-form-item :label="mock_all.columns[2].label">
             <el-input v-model="mock_all.formData.material_name"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[4].label">
-            <el-select v-model="mock_all.formData.format_id" filterable clearable placeholder="请选择">
+          <el-form-item :label="mock_all.columns[3].label">
+            <el-select @keyup.enter.native.self.prevent v-model="mock_all.formData.format_id" filterable clearable
+              placeholder="请选择">
               <el-option class="dialog_select" v-for="item in format_store" :key="item.id"
                 :value="item.format_id+' '+item.format_name">
                 <span>{{item.format_id}}</span>
@@ -137,10 +138,10 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="mock_all.columns[5].label">
+          <el-form-item :label="mock_all.columns[4].label">
             <el-input v-model="mock_all.formData.material_unit"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[6].label">
+          <el-form-item :label="mock_all.columns[5].label">
             <!-- <el-input v-model="mock_all.formData.supplier_id"></el-input> -->
             <el-select v-model="mock_all.formData.supplier_id" filterable clearable placeholder="请选择">
               <el-option class="dialog_select" v-for="item in supplier_store" :key="item.id"
@@ -150,30 +151,31 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[7].label">
+          <el-form-item :label="mock_all.columns[6].label">
             <el-input v-model="mock_all.formData.material_erpid"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[8].label">
+          <el-form-item :label="mock_all.columns[7].label">
             <!-- <el-input v-model="mock_all.formData.material_indate"></el-input> -->
             <el-date-picker v-model="mock_all.formData.material_indate" type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[9].label">
+          <el-form-item :label="mock_all.columns[8].label">
             <el-input v-model="mock_all.formData.material_storeid"></el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[10].label">
-            <el-input v-model="mock_all.formData.material_operaterid"></el-input>
+          <el-form-item :label="mock_all.columns[9].label">
+            <el-input v-model="mock_all.formData.material_operaterid">
+            </el-input>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[11].label">
+          <el-form-item :label="mock_all.columns[10].label">
             <!-- <el-input v-model="mock_all.formData.material_operaterdate"></el-input> -->
             <el-date-picker v-model="mock_all.formData.material_operaterdate" type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[12].label">
+          <el-form-item :label="mock_all.columns[11].label">
             <!-- <el-input v-model="mock_all.formData.parent_id"></el-input> -->
-            <el-select v-model="mock_all.formData.parent_id" placeholder="请选择">
+            <el-select v-model="mock_all.formData.parent_id" placeholder="请选择" clearable>
               <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id"
                 :value="item.material_id+' '+item.material_name">
                 <span>{{item.material_id}}</span>
@@ -181,7 +183,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item :label="mock_all.columns[13].label">
+          <el-form-item :label="mock_all.columns[12].label">
 
             <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
               <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
@@ -208,8 +210,8 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
+        <el-button type="primary" native-type="submit" @click="formOr('ruleForm')">确 定</el-button>
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -251,7 +253,7 @@ export default {
       //验证
       rules: {
         material_id: [
-          { required: true, message: '请输入物料编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       }
     }
@@ -267,6 +269,21 @@ export default {
       product_store: state => state.product.tableData.list,
     }),
 
+  },
+  watch: {
+    //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown = (e) => {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -362,8 +379,16 @@ export default {
           this.$store.commit('materials/setNowTime')
           if (this.addorChange) {
             this.$store.commit('materials/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             this.$store.commit('materials/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -442,7 +467,8 @@ export default {
       this.tableShow(this.mock_all.list)
       this.onFilter()
     }
-  }
+  },
+
 
 }
 </script>
@@ -474,10 +500,10 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
-.page .tableTop .search .selecData {
+.page .tableTop .search .selecDate {
   margin: 0 10px;
 }
-.page .tableTop .search .selecData .el-input {
+.page .tableTop .search .selecDate .el-input {
   width: 190px;
   margin: 0 2px;
 }

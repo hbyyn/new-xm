@@ -14,7 +14,7 @@
           </el-option>
         </el-select>
         <span>订单时间:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="dateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -63,14 +63,14 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <el-form-item :label="mock_all.columns[1].label" prop="order_id">
+        <el-form-item :label="mock_all.columns[0].label" prop="order_id">
           <el-select v-model="mock_all.formData.order_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id">
               <span>{{'ID:'+item.order_id}}</span>
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
               :value="item.product_id+' '+item.product_name">
@@ -79,7 +79,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <!-- <el-input v-model="mock_all.formData.order_product_date"></el-input> -->
           <el-date-picker v-model="mock_all.formData.order_product_date" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
@@ -87,8 +87,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -117,7 +117,7 @@ export default {
       flagPaging: false,
       rules: {
         order_id: [
-          { required: true, message: '请输入规格编号', trigger: 'blur' },
+          { required: true, message: '请输入编号', trigger: 'blur' },
         ],
       },
     }
@@ -131,6 +131,21 @@ export default {
       order_store: state => state.order.tableData.list,
       product_store: state => state.product.tableData.list,
     }),
+  },
+   watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -256,11 +271,17 @@ export default {
           this.$store.commit('orderproduct/setformadd', { ...this.mock_all.formData })
           this.$store.commit('orderproduct/setNowTime')
           if (this.addorChange) {
-            // this.mock_all.list.unshift(this.formadd)
             this.$store.commit('orderproduct/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
-            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
             this.$store.commit('orderproduct/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -297,10 +318,10 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
-.page .tableTop .search .selecData {
+.page .tableTop .search .selecDate {
   margin: 0 10px;
 }
-.page .tableTop .search .selecData .el-input {
+.page .tableTop .search .selecDate .el-input {
   width: 190px;
   margin: 0 2px;
 }

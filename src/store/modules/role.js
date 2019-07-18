@@ -3,6 +3,7 @@ import Date from "../time"
 const state = {
   tableData:{
     list: [{
+      client_id: "22",
       role_id: 'a555',
       role_name: 'c222',
       client_creator: 'jj-56',
@@ -19,6 +20,7 @@ const state = {
       { id: 17, prop: 'client_updatetime', label: "修改时间" }
       ],
     formData: {
+      client_id: "",
       role_id: '',
       role_name: '',
       client_creator: '',

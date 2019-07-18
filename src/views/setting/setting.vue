@@ -3,15 +3,19 @@
     <div class="tableTop">
       <div class="search">
         <span>创建时间:</span>
-        <el-date-picker class="selecData" v-model="createtimeSearch" value-format="yyyy-MM-dd" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
+        <div class="selecDate">
+          <el-date-picker v-model="createtimeSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+          <el-date-picker v-model="createtimeSearch.end" type="datetime" placeholder="结束日期" default-time="18:00:00">
+          </el-date-picker>
+        </div>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
       </div>
 
       <div class="rowAdd">
-        <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
         <el-button type="danger" size="small" @click="rowRemove()">删除选中</el-button>
+        <el-button type="primary" size="small" @click="rowAdd">新增</el-button>
       </div>
     </div>
 
@@ -60,8 +64,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
     <!-- 权限管理 -->
@@ -86,7 +90,10 @@ export default {
       pageSize: 10,
       pageCurrent: 1,
       flagPaging: false,
-      createtimeSearch: '',
+      createtimeSearch:{
+        start: '',
+        end: ''
+      },
       roleVisible: false,
       rules: {
         login_id: [
@@ -105,9 +112,25 @@ export default {
     }),
 
   },
+  watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
+  },
   created() {
     this.tableShow(this.mock_all.list)
   },
+
   methods: {
     //列表显示
     tableShow(data) {
@@ -126,7 +149,21 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.createtimeSearch || (Date.parse(this.createtimeSearch[0]) <= Date.parse(item.client_createtime)) && (Date.parse(item.client_createtime) <= Date.parse(this.createtimeSearch[1])))
+      var filterData = this.mock_all.list.filter(item => {
+        let startTime = Date.parse(this.createtimeSearch.start);
+        let endTime = Date.parse(this.createtimeSearch.end);
+        let listTime = Date.parse(item.client_createtime);
+        if (!startTime && !endTime) {
+          return true
+        } else if (startTime && !endTime) {
+          return listTime >= startTime
+        }
+        else if (!startTime && endTime) {
+          return listTime <= endTime
+        } else if (startTime && endTime) {
+          return listTime >= startTime && listTime <= endTime
+        }
+      })
       this.tableShow(filterData)
     },
 
@@ -213,11 +250,17 @@ export default {
           this.$store.commit('setting/setformadd', { ...this.mock_all.formData })
           this.$store.commit('setting/setNowTime')
           if (this.addorChange) {
-            // this.mock_all.list.unshift(this.formadd)
             this.$store.commit('setting/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
-            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
             this.$store.commit('setting/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -258,5 +301,12 @@ export default {
 .page .tableTop .search .searchInputS {
   margin: 0 12px;
   width: 160px;
+}
+.page .tableTop .search .selecDate {
+  margin: 0 10px;
+}
+.page .tableTop .search .selecDate .el-input {
+  width: 190px;
+  margin: 0 2px;
 }
 </style>

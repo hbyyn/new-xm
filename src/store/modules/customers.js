@@ -18,7 +18,7 @@ const state = {
       }
     ],
     columns: [
-      { id: 1, prop: "client_id", label: "公司编号" },
+      // { id: 1, prop: "client_id", label: "公司编号" },
       { id: 2, prop: "customers_id", label: "客户编号" },
       { id: 3, prop: "customers_name", label: "客户姓名" },
       { id: 4, prop: "customers_tel", label: "客户电话" },

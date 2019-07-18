@@ -14,16 +14,16 @@
           </el-option>
         </el-select>
         <span>工序开始:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="begindateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
-          <el-date-picker v-model="enddateSearch.end" type="datetime" placeholder="结束日期" default-time="18:00:00">
+          <el-date-picker v-model="begindateSearch.end" type="datetime" placeholder="结束日期" default-time="18:00:00">
           </el-date-picker>
         </div>
 
         <span>工序结束:</span>
-        <div class="selecData">
+        <div class="selecDate">
           <el-date-picker v-model="enddateSearch.start" placeholder="开始日期" default-time="08:30:00" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss">
           </el-date-picker>
@@ -71,8 +71,8 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
-        <el-form-item :label="mock_all.columns[1].label" prop="material_id">
+      <el-form label-position="right" label-width="140px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+        <el-form-item :label="mock_all.columns[0].label" prop="material_id">
           <el-select v-model="mock_all.formData.material_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
               :value="item.material_id+' '+item.material_name">
@@ -81,7 +81,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[1].label">
           <el-select v-model="mock_all.formData.work_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in work_store" :key="item.id"
               :value="item.work_id+' '+item.work_name">
@@ -90,12 +90,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label">
+        <el-form-item :label="mock_all.columns[2].label">
           <el-date-picker v-model="mock_all.formData.material_work_begindate" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[4].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-date-picker v-model="mock_all.formData.material_work_enddate" type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
           </el-date-picker>
@@ -103,8 +103,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="formOr('ruleForm')">确 定</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -153,6 +153,21 @@ export default {
       work_store: state => state.work.tableData.list,
     }),
 
+  },
+  watch: {
+     //弹窗回车
+    centerDialogVisible(val) {
+      if (val) {
+        document.onkeydown =  (e)=> {
+          let ev = e || window.event
+          if (ev.keyCode == 13) {
+            this.formOr('ruleForm');
+          }
+        }
+      } else {
+        document.onkeydown = undefined;
+      }
+    }
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -292,9 +307,17 @@ export default {
           if (this.addorChange) {
             // this.mock_all.list.unshift(this.formadd)
             this.$store.commit('mwork/rowAddStore')
+            this.$message({
+              type: 'success',
+              message: '新增成功!'
+            })
           } else {
             // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
             this.$store.commit('mwork/pwdChange')
+            this.$message({
+              type: 'success',
+              message: '修改成功!'
+            })
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -349,10 +372,10 @@ export default {
   margin: 0 12px;
   width: 160px;
 }
-.page .tableTop .search .selecData {
+.page .tableTop .search .selecDate {
   margin: 0 10px;
 }
-.page .tableTop .search .selecData .el-input {
+.page .tableTop .search .selecDate .el-input {
   width: 190px;
   margin: 0 2px;
 }

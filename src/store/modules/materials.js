@@ -25,7 +25,7 @@ const state = {
       client_updatetime: ""
     }],
     columns: [
-      { id: 1, prop: "client_id", label: "公司编号" },
+      // { id: 1, prop: "client_id", label: "公司编号" },
       { id: 2, prop: "material_id", label: "物料编号" },
       { id: 3, prop: "material_type", label: "物料类型" },
       { id: 4, prop: "material_name", label: "物料名称" },

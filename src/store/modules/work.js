@@ -13,7 +13,7 @@ const state = {
       client_updatetime: '2016/05/03/14:16:55'
     }],
     columns: [
-      {id:1,prop:'client_id',label:"公司编号"},
+      // {id:1,prop:'client_id',label:"公司编号"},
       {id:7,prop:'work_id',label:"工序编号"},
       {id:2,prop:'work_name',label:"工序名称"},
       {id:8,prop:'work_desc',label:"工作描述"},
