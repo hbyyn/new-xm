@@ -68,9 +68,18 @@
     </el-dialog>
     <!-- 权限编辑 -->
     <el-dialog title="角色编辑" :visible.sync="roleVisible" width="540px">
-      <el-checkbox-group v-model="checkedRole">
-        <el-checkbox v-for="item in checkboxList" :label="item" :key="item">{{item}}</el-checkbox>
-      </el-checkbox-group>
+      <el-form label-position="left" label-width="80px" >
+        <el-form-item label="xxx">
+          <el-checkbox-group v-model="checkedRole">
+            <el-checkbox v-for="item in checkboxList" :label="item" :key="item">{{item}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <span class="dialog-footer">
+          <el-button type="primary" @click="rolesSubmit">确 定</el-button>
+          <el-button @click="roleVisible = false">取 消</el-button>
+        </span>
+
     </el-dialog>
 
   </div>
@@ -81,8 +90,8 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      checkedRole:['可编辑','可查看','不可见'],
-      checkboxList:['可编辑','可查看','不可见'],
+      checkedRole: [],
+      checkboxList: ['可编辑', '可查看', '不可见'],
       multipleSelection: [],
       centerDialogVisible: false,
       formtitle: '',
@@ -133,6 +142,9 @@ export default {
     }
   },
   methods: {
+    rolesSubmit(){
+      console.log(this.checkedRole,this.checkboxList)
+    },
     //列表显示
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)

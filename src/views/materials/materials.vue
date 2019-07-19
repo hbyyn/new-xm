@@ -112,23 +112,23 @@
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
       <div class="formheight">
-        <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules"
+        <el-form class="formAdd" label-position="right" label-width="120px" :model="formData" :rules="rules"
           ref="ruleForm">
 
           <!-- <el-form-item :label="mock_all.columns[0].label">
-          <el-input v-model="mock_all.formData.client_id"></el-input>
+          <el-input v-model="formData.client_id"></el-input>
         </el-form-item> -->
           <el-form-item :label="mock_all.columns[0].label" prop="material_id">
-            <el-input v-model="mock_all.formData.material_id" :readonly="readonlyFlat"></el-input>
+            <el-input v-model="formData.material_id" :readonly="readonlyFlat"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[1].label">
-            <el-input v-model="mock_all.formData.material_type"></el-input>
+            <el-input v-model="formData.material_type"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[2].label">
-            <el-input v-model="mock_all.formData.material_name"></el-input>
+            <el-input v-model="formData.material_name"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[3].label">
-            <el-select @keyup.enter.native.self.prevent v-model="mock_all.formData.format_id" filterable clearable
+            <el-select @keyup.enter.native.self.prevent v-model="formData.format_id" filterable clearable
               placeholder="请选择">
               <el-option class="dialog_select" v-for="item in format_store" :key="item.id"
                 :value="item.format_id+' '+item.format_name">
@@ -139,11 +139,11 @@
           </el-form-item>
 
           <el-form-item :label="mock_all.columns[4].label">
-            <el-input v-model="mock_all.formData.material_unit"></el-input>
+            <el-input v-model="formData.material_unit"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[5].label">
-            <!-- <el-input v-model="mock_all.formData.supplier_id"></el-input> -->
-            <el-select v-model="mock_all.formData.supplier_id" filterable clearable placeholder="请选择">
+            <!-- <el-input v-model="formData.supplier_id"></el-input> -->
+            <el-select v-model="formData.supplier_id" filterable clearable placeholder="请选择">
               <el-option class="dialog_select" v-for="item in supplier_store" :key="item.id"
                 :value="item.supplier_id+' '+item.supplier_name">
                 <span>{{item.supplier_id}}</span>
@@ -152,30 +152,30 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="mock_all.columns[6].label">
-            <el-input v-model="mock_all.formData.material_erpid"></el-input>
+            <el-input v-model="formData.material_erpid"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[7].label">
-            <!-- <el-input v-model="mock_all.formData.material_indate"></el-input> -->
-            <el-date-picker v-model="mock_all.formData.material_indate" type="datetime"
+            <!-- <el-input v-model="formData.material_indate"></el-input> -->
+            <el-date-picker v-model="formData.material_indate" type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[8].label">
-            <el-input v-model="mock_all.formData.material_storeid"></el-input>
+            <el-input v-model="formData.material_storeid"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[9].label">
-            <el-input v-model="mock_all.formData.material_operaterid">
+            <el-input v-model="formData.material_operaterid">
             </el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[10].label">
-            <!-- <el-input v-model="mock_all.formData.material_operaterdate"></el-input> -->
-            <el-date-picker v-model="mock_all.formData.material_operaterdate" type="datetime"
+            <!-- <el-input v-model="formData.material_operaterdate"></el-input> -->
+            <el-date-picker v-model="formData.material_operaterdate" type="datetime"
               value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
-            <!-- <el-input v-model="mock_all.formData.parent_id"></el-input> -->
-            <el-select v-model="mock_all.formData.parent_id" placeholder="请选择" clearable>
+            <!-- <el-input v-model="formData.parent_id"></el-input> -->
+            <el-select v-model="formData.parent_id" clearable :disabled="flagParentId"  placeholder="请选择" >
               <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id"
                 :value="item.material_id+' '+item.material_name">
                 <span>{{item.material_id}}</span>
@@ -185,7 +185,7 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
 
-            <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
+            <el-select v-model="formData.product_id" clearable :disabled="flagProductId" placeholder="请选择">
               <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
                 :value="item.product_id+' '+item.product_name">
                 <span>{{item.product_id}}</span>
@@ -195,16 +195,16 @@
           </el-form-item>
 
           <!-- <el-form-item :label="mock_all.columns[14].label">
-          <el-input v-model="mock_all.formData.client_creator"></el-input>
+          <el-input v-model="formData.client_creator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[15].label">
-          <el-input v-model="mock_all.formData.client_createtime"></el-input>
+          <el-input v-model="formData.client_createtime"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[16].label">
-          <el-input v-model="mock_all.formData.client_updator"></el-input>
+          <el-input v-model="formData.client_updator"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[17].label">
-          <el-input v-model="mock_all.formData.client_updatetime"></el-input>
+          <el-input v-model="formData.client_updatetime"></el-input>
         </el-form-item> -->
         </el-form>
       </div>
@@ -224,12 +224,36 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+
       multipleSelection: [],
       centerDialogVisible: false,//弹框
       formtitle: '',
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
+      flagParentId:false,
+      flagProductId:false,
+      formData: {
+        client_id: "",
+        material_id: "",
+        material_type: "",
+        material_name: "",
+        format_id: "",
+        material_unit: "",
+        supplier_id: "",
+        material_erpid: "",
+        material_indate: "",
+        material_storeid: "",
+        material_operaterid: "",
+        material_operaterdate: "",
+        parent_id: "",
+        product_id: "",
+
+        client_creator: "",
+        client_createtime: "",
+        client_updator: "",
+        client_updatetime: ""
+      },
       pageSize: 10,
       pageCurrent: 1,
       flagPaging: false,
@@ -268,7 +292,12 @@ export default {
       supplier_store: state => state.supplier.tableData.list,
       product_store: state => state.product.tableData.list,
     }),
-
+     fromParentId(){
+      return this.formData.parent_id
+    },
+    fromProductId(){
+      return this.formData.product_id
+    },
   },
   watch: {
     //弹窗回车
@@ -283,7 +312,23 @@ export default {
       } else {
         document.onkeydown = undefined;
       }
-    }
+    },
+    fromParentId(val){
+      if(val){
+        this.flagProductId=true
+      }else{
+        this.flagProductId=false
+      }
+    },
+    fromProductId(val) {
+      if(val){
+        this.flagParentId=true
+      }else{
+        this.flagParentId=false
+      }
+    },
+
+
   },
   created() {
     this.tableShow(this.mock_all.list)
@@ -354,7 +399,7 @@ export default {
       this.readonlyFlat = false;
       this.formtitle = '新增';
 
-      let obj = this.mock_all.formData
+      let obj = this.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
@@ -367,15 +412,15 @@ export default {
       this.addorChange = false;
       this.centerDialogVisible = true;
       this.readonlyFlat = true;
-      this.mock_all.formData = { ...row };
+      this.formData = { ...row };
     },
     //弹窗确认
     formOr(formName) {
-      //拷贝form的值
+      //验证
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // alert('submit!');
-          this.$store.commit('materials/setformadd', { ...this.mock_all.formData })
+          this.$store.commit('materials/setformadd', { ...this.formData })
           this.$store.commit('materials/setNowTime')
           if (this.addorChange) {
             this.$store.commit('materials/rowAddStore')
@@ -383,6 +428,7 @@ export default {
               type: 'success',
               message: '新增成功!'
             })
+
           } else {
             this.$store.commit('materials/pwdChange')
             this.$message({

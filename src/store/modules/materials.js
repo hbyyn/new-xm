@@ -16,8 +16,8 @@ const state = {
       material_storeid: "xxx",
       material_operaterid: "xxx",
       material_operaterdate: "xxx",
-      product_id: "xxx",
       parent_id: "xxx",
+      product_id: "xxx",
 
       client_creator: "xxx",
       client_createtime: "xxx",
@@ -57,8 +57,8 @@ const state = {
       material_storeid: "",
       material_operaterid: "",
       material_operaterdate: "",
-      product_id: "",
       parent_id: "",
+      product_id: "",
 
       client_creator: "",
       client_createtime: "",
@@ -86,6 +86,9 @@ const mutations = {
     state.formadd.client_id = sessionStorage.getItem("client_id");
     state.formadd.client_creator = sessionStorage.getItem("user_name");
     state.formadd.client_createtime = state.nowTime
+    // if(state.formadd.product_id){
+
+    // }
     state.tableData.list.unshift(state.formadd);
 
   },

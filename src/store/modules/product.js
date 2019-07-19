@@ -29,10 +29,10 @@ const state = {
     formData: {
       client_id: "",
       //产品表
-      product_id: "88+",
-      product_name: "SSSS+",
+      product_id: "",
+      product_name: "",
       product_color:"",
-      product_desc: "88+",
+      product_desc: "",
 
       client_creator: "",
       client_createtime: "",
@@ -75,9 +75,10 @@ const mutations = {
 
 
 
+
 export default {
     namespaced: true,
     state,
-    mutations
+    mutations,
 
 }
