@@ -177,9 +177,7 @@
             <!-- <el-input v-model="formData.parent_id"></el-input> -->
             <el-select v-model="formData.parent_id" clearable :disabled="flagParentId"  placeholder="请选择" >
               <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id"
-                :value="item.material_id+' '+item.material_name">
-                <span>{{item.material_id}}</span>
-                <span>{{' '+item.material_name}}</span>
+                :value="item.material_id">
               </el-option>
             </el-select>
           </el-form-item>

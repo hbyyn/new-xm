@@ -16,8 +16,8 @@ const state = {
       material_storeid: "xxx",
       material_operaterid: "xxx",
       material_operaterdate: "xxx",
-      parent_id: "xxx",
-      product_id: "xxx",
+      parent_id: "",
+      product_id: "88 SSSS",
 
       client_creator: "xxx",
       client_createtime: "xxx",
@@ -103,8 +103,9 @@ const mutations = {
   }
 };
 
+
 export default {
   namespaced: true,
   state,
-  mutations
+  mutations,
 };
