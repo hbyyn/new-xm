@@ -110,7 +110,7 @@
     </el-pagination>
 
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <div class="formheight">
         <el-form class="formAdd" label-position="right" label-width="120px" :model="formData" :rules="rules"
           ref="ruleForm">

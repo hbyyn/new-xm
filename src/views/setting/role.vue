@@ -30,7 +30,7 @@
 
       <!-- //操作 -->
       <el-table-column fixed="right" width="240" label="操作" show-overflow-tooltip>
-        <template slot-scope="scope">
+        <template slot-scope="scope" >
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
           </el-button>
@@ -51,8 +51,8 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="50%">
-      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
+      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="role_id">
           <el-input v-model="mock_all.formData.role_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
@@ -69,7 +69,7 @@
     <!-- 权限编辑 -->
     <el-dialog title="角色编辑" :visible.sync="roleVisible" width="540px">
       <el-form label-position="left" label-width="80px" >
-        <el-form-item label="xxx">
+        <el-form-item :label="i.label" v-for="(i,index) in listRole" :key="index">
           <el-checkbox-group v-model="checkedRole">
             <el-checkbox v-for="item in checkboxList" :label="item" :key="item">{{item}}</el-checkbox>
           </el-checkbox-group>
@@ -90,6 +90,10 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
+      listRole:[{
+        label:'首页',
+
+      }],
       checkedRole: [],
       checkboxList: ['可编辑', '可查看', '不可见'],
       multipleSelection: [],

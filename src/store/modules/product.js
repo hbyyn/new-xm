@@ -14,6 +14,18 @@ const state = {
       client_createtime: "88",
       client_updator: "88",
       client_updatetime: "88"
+    },{
+      client_id: "881",
+      //产品表
+      product_id: "881",
+      product_name: "SSSS1",
+      product_color:"#5369851",
+      product_desc: "881",
+
+      client_creator: "881",
+      client_createtime: "881",
+      client_updator: "881",
+      client_updatetime: "881"
     }],
     columns: [
       // { id: 1, prop: 'client_id', label: "公司编号" },

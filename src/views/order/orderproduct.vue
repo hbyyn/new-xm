@@ -61,8 +61,8 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
-      <el-form label-position="left" label-width="80px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
+      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="order_id">
           <el-select v-model="mock_all.formData.order_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id">

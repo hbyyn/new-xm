@@ -46,7 +46,7 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="40%">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="product_id">
           <el-input v-model="mock_all.formData.product_id" :readonly="readonlyFlat"></el-input>
@@ -121,40 +121,40 @@ export default {
     this.tableShow(this.mock_all.list)
   },
   methods: {
-    // 搜索弹框数据，去重
-    restaurants(key) {
-      let restaurants = [];
-      for (var i = 0; i < this.mock_all.list.length; i++) {
-        restaurants.push({ value: '' });
-        restaurants[i].value = this.mock_all.list[i][key]//修改点
-      }
-      // 去重
-      let hash = {};
-      restaurants = restaurants.reduce((preVal, curVal) => {
-        hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-        return preVal
-      }, [])
-      return restaurants
-    },
-    //搜索1
-    queryStringId(queryString, cb) {
-      let restaurants = this.restaurants('product_id')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    //搜索2
-    queryStringName(queryString, cb) {
-      let restaurants = this.restaurants('product_name')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
+    // // 搜索弹框数据，去重
+    // restaurants(key) {
+    //   let restaurants = [];
+    //   for (var i = 0; i < this.mock_all.list.length; i++) {
+    //     restaurants.push({ value: '' });
+    //     restaurants[i].value = this.mock_all.list[i][key]//修改点
+    //   }
+    //   // 去重
+    //   let hash = {};
+    //   restaurants = restaurants.reduce((preVal, curVal) => {
+    //     hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+    //     return preVal
+    //   }, [])
+    //   return restaurants
+    // },
+    // //搜索1
+    // queryStringId(queryString, cb) {
+    //   let restaurants = this.restaurants('product_id')
+    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // //搜索2
+    // queryStringName(queryString, cb) {
+    //   let restaurants = this.restaurants('product_name')
+    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // createFilter(queryString) {
+    //   return (restaurant) => {
+    //     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+    //   };
+    // },
 
     //列表显示
     tableShow(data) {

@@ -1,69 +1,42 @@
 <template>
-  <div class="page">
+  <div class="pmixPage" ref="scollElement">
     <ul class="navProduct">
-      <span>产品列表:</span>
-      <el-button type="primary" size="small" round v-for="(item,index) in product_store" :key="index"
-        @click="treeChange(index)">{{item.product_id+' '+item.product_name}}</el-button>
-
+      <span>产品跳转:</span>
+      <!-- <el-button type="primary" size="small" round v-for="(item,index) in chartList" :key="index"
+       @click="point(index)" >{{item.name}}</el-button> -->
+       <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择" @change="point">
+          <el-option v-for="(item,index) in chartList" :key="index" :label="item.name"
+            :value="index">
+          </el-option>
+        </el-select>
     </ul>
-    <div ref="chart" style="height:600px;">
+    <!-- <div ref="chart" class="listChart" v-for="(item,index) in product_store" :key="index">    </div> -->
+      <tree-chart v-for="(item,index) in chartList" :key="index" :chartli="item" :chartcount="index"></tree-chart>
 
-    </div>
 
   </div>
 </template>
 
 <script>
-import echarts from 'echarts/lib/echarts'
-import "echarts/lib/chart/tree"
+import treechart from './pChart'
 import { mapState } from 'vuex'
-
-
 export default {
-  // data() {
-  //   return {
-  //     chartData: {
-  //       "name": "flare",
-  //       "children": [
-  //         {
-  //           "name": "flex",
-  //           "children": [
-  //             { "name": "FlareVis" }
-  //           ]
-  //         },
-  //         {
-  //           "name": "scale",
-  //           "children": [
-  //             { "name": "IScaleMap" },
-  //             { "name": "LinearScale" },
-  //             { "name": "LogScale" },
-  //             { "name": "OrdinalScale" },
-  //             { "name": "QuantileScale" },
-  //             { "name": "QuantitativeScale" },
-  //             { "name": "RootScale" },
-  //             { "name": "Scale" },
-  //             { "name": "ScaleType" },
-  //             { "name": "TimeScale" }
-  //           ]
-  //         },
-  //         {
-  //           "name": "display",
-  //           "children": [
-  //             { "name": "DirtySprite" }
-  //           ]
-  //         }
-  //       ]
-  //     }
-  //   }
-  // },
 
+  components:{
+    [treechart.name]: treechart,
+  },
+  data(){
+    return{
+      idSearch:''
+    }
+  },
   computed: {
     ...mapState({
       // 获得菜单列表数据
       mock_all: state => state.materials.tableData,//{formData,list,columns}
       product_store: state => state.product.tableData.list,
     }),
-    //数据
+ //数据
     chartList() {
       return (() => {
         var data = this.mock_all.list
@@ -100,91 +73,34 @@ export default {
   watch: {
     chartList(val) {
       console.log(val)
-      this.treeChart()
+    },
+  },
+  methods:{
+    point(i){
+      console.log(i)
+      // this.$refs.scollElement.scrollTop= i*100+'px';
     }
-  },
+  }
 
-  methods: {
-    //点击换表
-    treeChange(index) {
-      this.treeChart(index)
-    },
-    treeChart(i) {
-      let _this = this.$refs.chart
-      this.chart = echarts.init(_this)
-      this.chart.on('contextmenu', params => {
-        console.log(params)
-        if (params.componentType === 'series') {
-          this.selectedOrg = params.data
-          this.popoverPanelShow = true
-        } else {
-          return
-        }
-      });
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'item',
-          triggerOn: 'mousemove'
-        },
-        series: [
-          {
-            type: 'tree',
-
-            data: [this.chartList[i]],
-
-            top: '1%',
-            left: '15%',
-            bottom: '1%',
-            right: '20%',
-
-            symbolSize: 24,
-
-            label: {
-              normal: {
-                position: 'left',
-                verticalAlign: 'middle',
-                align: 'right',
-                fontSize: 24
-              }
-            },
-
-            leaves: {
-              label: {
-                normal: {
-                  position: 'right',
-                  verticalAlign: 'middle',
-                  align: 'left'
-                }
-              }
-            },
-            expandAndCollapse: true,
-            animationDuration: 550,
-            animationDurationUpdate: 750
-          }
-        ]
-      })
-    },
-    hidePopoverPanel() {
-      this.popoverPanelShow = false;
-    },
-  },
-  //  created(){
-  //    this.$nextTick()
-  //   console.log(this.chartData)
-  // },
-  mounted() {
-    console.log(this.chartList)
-    this.treeChart(0)
-  },
 }
 </script>
 
 <style lang="scss" scoped>
 .navProduct {
   height: 48px;
+  width: 100%;
   padding: 8px;
+  background-color: #fff;
   button {
     margin-left: 10px;
   }
 }
+.pmixPage{
+  padding:20px 50px 50px 50px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+}
+
 </style>
