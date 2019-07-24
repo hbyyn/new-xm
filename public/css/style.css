@@ -9,6 +9,11 @@ body,
 .nav_tabs {
   height: 50px;
   background-color: #fff;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  z-index: 10;
 }
 .nav_tabs  ul {
     line-height: 50px;

@@ -4,7 +4,7 @@
       <div class="search">
         <span>工序编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.supplier_id" :label="item.work_id+' '+item.work_name"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.work_id+' '+item.work_name"
             :value="item.work_id">
           </el-option>
         </el-select>

@@ -1,36 +1,31 @@
 <template>
-  <div class="pmixPage" ref="scollElement">
-    <ul class="jumpProduct">
-      <span>产品跳转:</span>
-      <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择"
-        @change="point">
-        <el-option v-for="(item,index) in chartList" :key="index" :label="item.name" :value="index">
-        </el-option>
-      </el-select>
-    </ul>
-    <div style="width:100%;display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;">
-      <tree-chart v-for="(item,index) in chartList" :key="index" :chartli="item" :chartcount="index"></tree-chart>
+  <div class="listChartwarrper">
+    <div class="listChart" v-for="(item,index) in chartList" :key="index">
+      <ve-tree :data="{
+        columns: ['name', 'value'],
+        rows: [{
+            name: 'tree',
+            value: [item]
+          }]
+      }"></ve-tree>
     </div>
-
   </div>
+
 </template>
 
 <script>
-import treechart from './pChart'
+import VeTree from 'v-charts/lib/tree.common'
 import { mapState } from 'vuex'
+
 export default {
 
   components: {
-    [treechart.name]: treechart,
+    [VeTree.name]: VeTree,
   },
-  //刷新页面
-  // inject:['reload'],
+
   data() {
     return {
-      idSearch: '',
-      flagJump: false
+      chartDat: {},
     }
   },
   computed: {
@@ -73,47 +68,19 @@ export default {
       })()
     }
   },
-  // watch: {
-  //   chartList() {
-  //     // console.log(val)
-  //     this.reload()
-  //   },
-  // },
-//
-  methods: {
-    point(i) {
-      console.log(i)
-      this.$nextTick(() => {
-        // console.log(document.documentElement.scrollTop)
-        let anchorTop = Math.floor(i / 2) * 420
-        document.documentElement.scrollTop = anchorTop;
-      })
-    },
-
-  }
 
 }
 </script>
 
 <style lang="scss" scoped>
-.pmixPage {
-  padding: 20px 50px 550px 50px;
-  .jumpProduct {
-    position: fixed;
-    top: 100px;
-    left: 50px;
-    right: 50px;
-    z-index: 10;
-    padding-left: 20px;
-    box-sizing: border-box;
-    height: 40px;
-    border-radius: 0 0 10px 10px;
-    border: #f2f2f2 solid 1px;
-    border-top: 0;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-  }
+.listChartwarrper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.listChart {
+  height: 400px;
+  width: 49%;
+  background-color: #fff;
 }
 </style>

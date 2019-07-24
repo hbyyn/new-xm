@@ -4,7 +4,7 @@
       <div class="search">
         <span>产品编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id+' '+item.product_name"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.product_id+' '+item.product_name"
             :value="item.product_id">
           </el-option>
         </el-select>
@@ -160,7 +160,7 @@ export default {
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
       this.tableData = _data
-      // 分页条
+      // 分页条定位
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
           this.flagPaging = true;

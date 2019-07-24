@@ -4,7 +4,7 @@
       <div class="search">
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.format_id" :label="item.format_id+' '+item.format_name"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id+' '+item.format_name"
             :value="item.format_id">
           </el-option>
         </el-select>

@@ -4,12 +4,12 @@
       <div class="search">
         <span>订单编号:</span>
         <el-select class="selectSearch" v-model="orderSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.order_id" :label="item.order_id" :value="item.order_id">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.order_id" :value="item.order_id">
           </el-option>
         </el-select>
         <span>产品编号:</span>
         <el-select class="selectSearch" v-model="productSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.product_id"
             :value="item.product_id">
           </el-option>
         </el-select>

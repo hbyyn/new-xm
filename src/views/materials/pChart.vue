@@ -1,5 +1,5 @@
 <template>
-  <div ref="chart" class="listChart">
+  <div ref="chart">
 
   </div>
 </template>
@@ -12,20 +12,13 @@ import "echarts/lib/chart/tree"
 
 export default {
   name: 'tree-chart',
-  props: ['chartli', 'chartcount'],
-  // data(){
-  //   return {
-  //     chartitem:this.chartli
-  //   }
-  // },
+  props: ['chartli', 'chartcount',],
   watch: {
     chartli() {
       //  console.log(val)
       this.treeChart()
     },
-    chartcount(val) {
-      console.log(val)
-    }
+
   },
 
   methods: {
@@ -54,7 +47,7 @@ export default {
             left: '15%',
             bottom: '1%',
             right: '28%',
-            symbolSize: 24,
+            symbolSize: 12,
             label: {
               normal: {
                 position: 'left',
@@ -78,7 +71,7 @@ export default {
             animationDurationUpdate: 750
           }
         ]
-      })
+      },true)
     },
     hidePopoverPanel() {
       this.popoverPanelShow = false;
@@ -88,6 +81,7 @@ export default {
     console.log(this.chartcount)
     console.log(this.chartli)
     this.treeChart()
+
   },
 }
 </script>

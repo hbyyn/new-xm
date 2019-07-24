@@ -6,12 +6,12 @@
         <el-input v-model="nameSearch" type="text" size="small" placeholder="输入关键字搜索" /> -->
         <span>订购编号:</span>
         <el-select class="selectSearch" v-model="orderSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.order_id" :label="item.order_id" :value="item.order_id">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.order_id" :value="item.order_id">
           </el-option>
         </el-select>
         <span>客户编号:</span>
         <el-select class="selectSearch" v-model="customersSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.customers_id" :label="item.customers_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.customers_id"
             :value="item.customers_id">
           </el-option>
         </el-select>

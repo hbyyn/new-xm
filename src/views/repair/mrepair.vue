@@ -4,13 +4,13 @@
       <div class="search">
         <span>产品编号:</span>
         <el-select class="selectSearch" v-model="materialIdSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_id"
             :value="item.material_id">
           </el-option>
         </el-select>
         <span>返修编号:</span>
         <el-select class="selectSearch" v-model="repairIdSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.repair_id" :label="item.repair_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.repair_id"
             :value="item.repair_id">
           </el-option>
         </el-select>

@@ -43,7 +43,7 @@
       <!-- 改密码弹窗 -->
       <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%">
         <el-form label-position="right" label-width="120px">
-        <!-- <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"> -->
+          <!-- <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"> -->
 
           <el-form-item :label="columns[0].label+':'">
             <span>{{loginname}}</span>
@@ -132,54 +132,60 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tabs {
-
-  height: 50px;
-  background-color: #1183fb;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 50px 0 50px;
-  a {
-    color: white;
-  }
-  .log {
-  }
-  nav {
+.header_tabs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  .tabs {
+    height: 50px;
+    background-color: #1183fb;
     display: flex;
-    margin-left: -150px ;
     justify-content: space-between;
     align-items: center;
-    .tab {
-      width: 60px;
-      .router-link-active {
-        color: black;
+    padding: 0 50px 0 50px;
+    a {
+      color: white;
+    }
+    .log {
+    }
+    nav {
+      display: flex;
+      margin-left: -150px;
+      justify-content: space-between;
+      align-items: center;
+      .tab {
+        width: 60px;
+        .router-link-active {
+          color: black;
+        }
+      }
+    }
+    .login {
+      padding: 4px;
+      border-radius: 2px;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
       }
     }
   }
-  .login {
-    padding: 4px;
-    border-radius: 2px;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-}
-.loginList {
-  width: 150px;
-  .loginListHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 50px;
-    .iconA {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 30px;
-      background-color: #16a8f8;
-      color: white;
+  .loginList {
+    width: 150px;
+    .loginListHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 50px;
+      .iconA {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+        background-color: #16a8f8;
+        color: white;
+      }
     }
   }
 }

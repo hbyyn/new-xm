@@ -4,7 +4,7 @@
       <div class="search">
         <span>供应商编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.supplier_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index"
             :label="item.supplier_id+' '+item.supplier_name" :value="item.supplier_id">
           </el-option>
         </el-select>

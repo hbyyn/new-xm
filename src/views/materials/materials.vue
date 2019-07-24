@@ -4,54 +4,54 @@
       <div class="search">
         <span>物料编号:</span>
         <el-select class="selectSearch" v-model="materialIdSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_id" :label="item.material_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_id"
             :value="item.material_id">
           </el-option>
         </el-select>
         <span>物料类型:</span>
         <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small"
           placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_type" :label="item.material_type"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_type"
             :value="item.material_type">
           </el-option>
         </el-select>
         <span>物料名称:</span>
         <el-select class="selectSearch" v-model="materialNameSearch" clearable filterable size="small"
           placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_name" :label="item.material_name"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_name"
             :value="item.material_name">
           </el-option>
         </el-select>
 
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="formatSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.format_id" :label="item.format_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id"
             :value="item.format_id">
           </el-option>
         </el-select>
         <span>供应商编号:</span>
         <el-select class="selectSearch" v-model="supplierSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.supplier_id" :label="item.supplier_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.supplier_id"
             :value="item.supplier_id">
           </el-option>
         </el-select>
         <span>ERP编号:</span>
         <el-select class="selectSearch" v-model="materialErpidSearch" clearable filterable size="small"
           placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_erpid" :label="item.material_erpid"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_erpid"
             :value="item.material_erpid">
           </el-option>
         </el-select>
         <span>领料人:</span>
         <el-select class="selectSearch" v-model="materialOperateridSearch" clearable filterable size="small"
           placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.material_operaterid" :label="item.material_operaterid"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_operaterid"
             :value="item.material_operaterid">
           </el-option>
         </el-select>
         <span>产品编号:</span>
         <el-select class="selectSearch" v-model="productSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="item in mock_all.list" :key="item.product_id" :label="item.product_id"
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.product_id"
             :value="item.product_id">
           </el-option>
         </el-select>
