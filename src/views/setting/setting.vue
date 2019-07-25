@@ -28,15 +28,16 @@
       <el-table-column v-for="col in mock_all.columns" :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
+
       <!-- //操作 -->
       <el-table-column fixed="right" width="240" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
           </el-button>
-          <el-button size="mini" type="primary" @click="roleChang(scope.$index,scope.row)">
+          <!-- <el-button size="mini" type="primary" @click="roleChang(scope.$index,scope.row)">
             权限管理
-          </el-button>
+          </el-button> -->
           <el-button size="mini" type="danger" @click="rowDel(scope.$index, scope.row)">
             删除
           </el-button>
@@ -61,6 +62,15 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.login_acode"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[3].label" prop="role_list">
+          <el-select v-model="mock_all.formData.role_id" :readonly="readonlyFlat" placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in role_list" :key="item.id" :label="item.role_id+' '+item.role_name"
+              :value="item">
+              <!-- <span>{{'ID:'+item.role_id}}</span>
+              <span>{{'材料名:'+item.role_id}}</span> -->
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -90,7 +100,7 @@ export default {
       pageSize: 10,
       pageCurrent: 1,
       flagPaging: false,
-      createtimeSearch:{
+      createtimeSearch: {
         start: '',
         end: ''
       },
@@ -109,14 +119,15 @@ export default {
       mock_all: state => state.setting.tableData,//{formData,list,columns}
       changeIndex: state => state.setting.changeIndex,
       formadd: state => state.setting.formadd,
+      role_list: state => state.role.tableData.list,
     }),
 
   },
   watch: {
-     //弹窗回车
+    //弹窗回车
     centerDialogVisible(val) {
       if (val) {
-        document.onkeydown =  (e)=> {
+        document.onkeydown = (e) => {
           let ev = e || window.event
           if (ev.keyCode == 13) {
             this.formOr('ruleForm');
@@ -206,7 +217,7 @@ export default {
           });
           this.$store.commit('setting/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
-          console.log(this.multipleSelection)
+          // console.log(this.multipleSelection)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -228,6 +239,7 @@ export default {
       this.addorChange = true;
       this.readonlyFlat = false;
       this.formtitle = '新增';
+
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
@@ -255,6 +267,7 @@ export default {
               type: 'success',
               message: '新增成功!'
             })
+            // console.log(this.mock_all.formData)
           } else {
             this.$store.commit('setting/pwdChange')
             this.$message({

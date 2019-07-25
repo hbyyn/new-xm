@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       list: [
-        { id: 1, urlname: '管理员设置', url: '/setting/setting' },
+        { id: 1, urlname: '管理账号设置', url: '/setting/setting' },
         { id: 2, urlname: '角色设置', url: '/setting/role' },
       ]
     }

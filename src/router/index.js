@@ -49,6 +49,17 @@ router.beforeEach((to,from,next) => {
       next()
   }
 })
+router.beforeEach((to,from,next) => {
+  let client_id=sessionStorage.getItem('client_id')
+  if(to.path == '/materials/format'){
+    if (!client_id) {
+      next()
+    }
+
+  }else{
+      next()
+  }
+})
 
 
 export default router

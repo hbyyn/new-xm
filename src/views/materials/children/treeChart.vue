@@ -1,49 +1,31 @@
 <template>
-  <div ref="chart">
-
+  <div ref="chart" class="listChart">
+    <v-chart :options="polar"></v-chart>
   </div>
 </template>
 
 <script>
-import echarts from 'echarts/lib/echarts'
-import "echarts/lib/chart/tree"
-// import { mapState } from 'vuex'
-
+import ECharts from 'vue-echarts'
+import 'echarts/lib/chart/tree'
 
 export default {
   name: 'tree-chart',
-  props: ['chartli', 'chartcount',],
-  watch: {
-    chartli() {
-      //  console.log(val)
-      this.treeChart()
-    },
-
+   components: {
+    'v-chart': ECharts
   },
-
-  methods: {
-    treeChart() {
-      let _this = this.$refs.chart
-      this.chart = echarts.init(_this)
-      this.chart.on('contextmenu', params => {
-        console.log(params)
-        if (params.componentType === 'series') {
-          this.selectedOrg = params.data
-          this.popoverPanelShow = true
-        } else {
-          return
-        }
-      });
-      this.chart.setOption({
+  props: ['chartli'],
+  computed:{
+    polar(){
+      return {
         tooltip: {
           trigger: 'item',
           triggerOn: 'mousemove'
         },
-        series: [
+        series:[
           {
             type: 'tree',
             data: [this.chartli],
-            top: '1%',
+             top: '1%',
             left: '15%',
             bottom: '1%',
             right: '28%',
@@ -56,7 +38,6 @@ export default {
                 fontSize: 12
               }
             },
-
             leaves: {
               label: {
                 normal: {
@@ -71,17 +52,8 @@ export default {
             animationDurationUpdate: 750
           }
         ]
-      },true)
-    },
-    hidePopoverPanel() {
-      this.popoverPanelShow = false;
-    },
-  },
-  mounted() {
-    console.log(this.chartcount)
-    console.log(this.chartli)
-    this.treeChart()
-
+      }
+    }
   },
 }
 </script>

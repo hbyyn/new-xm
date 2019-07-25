@@ -30,7 +30,7 @@
 
       <!-- //操作 -->
       <el-table-column fixed="right" width="240" label="操作" show-overflow-tooltip>
-        <template slot-scope="scope" >
+        <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
           </el-button>
@@ -67,18 +67,20 @@
       </span>
     </el-dialog>
     <!-- 权限编辑 -->
-    <el-dialog title="角色编辑" :visible.sync="roleVisible" width="540px">
-      <el-form label-position="left" label-width="80px" >
-        <el-form-item :label="i.label" v-for="(i,index) in listRole" :key="index">
-          <el-checkbox-group v-model="checkedRole">
-            <el-checkbox v-for="item in checkboxList" :label="item" :key="item">{{item}}</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
+    <el-dialog class="rolePower" title="角色编辑" :visible.sync="roleVisible" width="340px">
+      <el-form label-position="left" label-width="80px">
+        <!-- <el-form-item hieght="20px" :label="item.label" v-for="(item,index) in listPower" :key="index"> -->
+        <div v-for="(item,index) in listPower" :key="index">
+          <span class="labelPower">{{item.label}} : </span>
+          <el-checkbox v-model="item.visible" label="可见"></el-checkbox>
+          <el-checkbox v-model="item.Operable" label="编辑"></el-checkbox>
+        </div>
+
       </el-form>
       <span class="dialog-footer">
-          <el-button type="primary" @click="rolesSubmit">确 定</el-button>
-          <el-button @click="roleVisible = false">取 消</el-button>
-        </span>
+        <el-button type="primary" @click="rolesSubmit">确 定</el-button>
+        <el-button @click="roleVisible = false">取 消</el-button>
+      </span>
 
     </el-dialog>
 
@@ -90,13 +92,24 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      listRole:[{
-        label:'首页',
-
-      }],
-      checkedRole: [],
-      checkboxList: ['可编辑', '可查看', '不可见'],
-      multipleSelection: [],
+      listPower: [
+        {
+          label: '首页',
+          visible: true,
+          Operable: true,
+        },
+        {
+          label: '物料表',
+          visible: true,
+          Operable: true,
+        },
+        {
+          label: '规格表',
+          visible: true,
+          Operable: true,
+        },
+      ],
+      multipleSelection: [],//多选
       centerDialogVisible: false,
       formtitle: '',
       addorChange: true,//判断修改新增
@@ -146,8 +159,21 @@ export default {
     }
   },
   methods: {
-    rolesSubmit(){
-      console.log(this.checkedRole,this.checkboxList)
+      // 权限
+    roleChang(index,row) {
+      this.roleVisible = true;
+      this.$store.commit('role/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
+      if(row.role_power){
+        console.log(row.role_power)
+        this.listPower =  [...row.role_power]
+      }
+
+    },
+    rolesSubmit() {
+      this.roleVisible = false;
+      var xxx=this.listPower
+      this.$store.commit('role/setRolePower',{xxx})
+      console.log(this.listPower)
     },
     //列表显示
     tableShow(data) {
@@ -223,7 +249,6 @@ export default {
           });
           this.$store.commit('role/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
-          console.log(this.multipleSelection)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -288,11 +313,7 @@ export default {
         }
       });
     },
-    //
-    roleChang(index, row) {
-      this.roleVisible = true;
-      console.log(index, row)
-    },
+
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
@@ -325,5 +346,17 @@ export default {
 .page .tableTop .search .selecDate .el-input {
   width: 190px;
   margin: 0 2px;
+}
+.rolePower {
+  .labelPower {
+    display: inline-block;
+    width: 80px;
+    margin-right: 20px;
+  }
+
+  .el-checkbox {
+    height: 20px;
+    line-height: 20px;
+  }
 }
 </style>

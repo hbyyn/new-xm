@@ -18,14 +18,14 @@
 </template>
 
 <script>
-import treechart from './pChart'
+import treechart from './children/treeChart'
 import { mapState } from 'vuex'
 export default {
 
   components: {
     [treechart.name]: treechart,
   },
-  //刷新页面
+  //刷新页面///
   // inject:['reload'],
   data() {
     return {
