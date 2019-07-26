@@ -154,11 +154,11 @@ export default {
       customers_store: state => state.customers.tableData.list,
     }),
   },
-   watch: {
-     //弹窗回车
+  watch: {
+    //弹窗回车
     centerDialogVisible(val) {
       if (val) {
-        document.onkeydown =  (e)=> {
+        document.onkeydown = (e) => {
           let ev = e || window.event
           if (ev.keyCode == 13) {
             this.formOr('ruleForm');
@@ -219,14 +219,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -245,7 +245,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('order/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
@@ -253,14 +253,14 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }
@@ -294,15 +294,15 @@ export default {
           this.$store.commit('order/setNowTime')
           if (this.addorChange) {
             this.$store.commit('order/rowAddStore')
-             this.$message({
+            this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
             })
           } else {
             this.$store.commit('order/pwdChange')
             this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false

@@ -10,8 +10,7 @@
         </el-select>
         <span>返修编号:</span>
         <el-select class="selectSearch" v-model="repairIdSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.repair_id"
-            :value="item.repair_id">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.repair_id" :value="item.repair_id">
           </el-option>
         </el-select>
         <span>启动日期:</span>
@@ -156,11 +155,11 @@ export default {
     }),
 
   },
-   watch: {
-     //弹窗回车
+  watch: {
+    //弹窗回车
     centerDialogVisible(val) {
       if (val) {
-        document.onkeydown =  (e)=> {
+        document.onkeydown = (e) => {
           let ev = e || window.event
           if (ev.keyCode == 13) {
             this.formOr('ruleForm');
@@ -237,14 +236,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -263,7 +262,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('mrepair/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
@@ -271,14 +270,14 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }
@@ -314,13 +313,13 @@ export default {
             this.$store.commit('mrepair/rowAddStore')
             this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
             })
           } else {
             this.$store.commit('mrepair/pwdChange')
-             this.$message({
+            this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false

@@ -25,8 +25,7 @@
 
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="formatSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id"
-            :value="item.format_id">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id" :value="item.format_id">
           </el-option>
         </el-select>
         <span>供应商编号:</span>
@@ -156,8 +155,8 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[7].label">
             <!-- <el-input v-model="formData.material_indate"></el-input> -->
-            <el-date-picker v-model="formData.material_indate" type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
+            <el-date-picker v-model="formData.material_indate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[8].label">
@@ -169,15 +168,14 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[10].label">
             <!-- <el-input v-model="formData.material_operaterdate"></el-input> -->
-            <el-date-picker v-model="formData.material_operaterdate" type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期">
+            <el-date-picker v-model="formData.material_operaterdate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
             <!-- <el-input v-model="formData.parent_id"></el-input> -->
-            <el-select v-model="formData.parent_id" clearable :disabled="flagParentId"  placeholder="请选择" >
-              <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id"
-                :value="item.material_id">
+            <el-select v-model="formData.parent_id" clearable :disabled="flagParentId" placeholder="请选择">
+              <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.material_id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -229,8 +227,8 @@ export default {
       addorChange: true,//判断修改新增
       readonlyFlat: false,
       tableData: '',
-      flagParentId:false,
-      flagProductId:false,
+      flagParentId: false,
+      flagProductId: false,
       formData: {
         client_id: "",
         material_id: "",
@@ -290,10 +288,10 @@ export default {
       supplier_store: state => state.supplier.tableData.list,
       product_store: state => state.product.tableData.list,
     }),
-     fromParentId(){
+    fromParentId() {
       return this.formData.parent_id
     },
-    fromProductId(){
+    fromProductId() {
       return this.formData.product_id
     },
   },
@@ -311,18 +309,18 @@ export default {
         document.onkeydown = undefined;
       }
     },
-    fromParentId(val){
-      if(val){
-        this.flagProductId=true
-      }else{
-        this.flagProductId=false
+    fromParentId(val) {
+      if (val) {
+        this.flagProductId = true
+      } else {
+        this.flagProductId = false
       }
     },
     fromProductId(val) {
-      if(val){
-        this.flagParentId=true
-      }else{
-        this.flagParentId=false
+      if (val) {
+        this.flagParentId = true
+      } else {
+        this.flagParentId = false
       }
     },
 
@@ -424,14 +422,14 @@ export default {
             this.$store.commit('materials/rowAddStore')
             this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
             })
 
           } else {
             this.$store.commit('materials/pwdChange')
             this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false
@@ -454,14 +452,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -480,7 +478,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
@@ -488,14 +486,14 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }

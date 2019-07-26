@@ -28,9 +28,8 @@
       <el-table-column v-for="col in mock_all.columns" :key="col.id" :prop="col.prop" :label="col.label">
       </el-table-column>
 
-
       <!-- //操作 -->
-      <el-table-column fixed="right" width="240" label="操作" show-overflow-tooltip>
+      <el-table-column fixed="right" width="140" label="操作" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="pwdChange(scope.$index,scope.row)">
             修改
@@ -63,12 +62,10 @@
         <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.login_acode"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[3].label" prop="role_list">
-          <el-select v-model="mock_all.formData.role_id" :readonly="readonlyFlat" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in role_list" :key="item.id" :label="item.role_id+' '+item.role_name"
-              :value="item">
-              <!-- <span>{{'ID:'+item.role_id}}</span>
-              <span>{{'材料名:'+item.role_id}}</span> -->
+        <el-form-item :label="mock_all.columns[3].label">
+          <el-select v-model="mock_all.formData.role_id" value-key="role_id" clearable filterable placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in role_list" :key="item.role_id" :value="item"
+              :label="item.role_id+' '+item.role_name">
             </el-option>
           </el-select>
         </el-form-item>
@@ -79,9 +76,9 @@
       </span>
     </el-dialog>
     <!-- 权限管理 -->
-    <el-dialog title="权限设置" :visible.sync="roleVisible" width="540px">
+    <!-- <el-dialog title="权限设置" :visible.sync="roleVisible" width="540px">
 
-    </el-dialog>
+    </el-dialog> -->
 
   </div>
 </template>
@@ -187,14 +184,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -213,7 +210,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('setting/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
@@ -221,14 +218,14 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }
@@ -239,6 +236,7 @@ export default {
       this.addorChange = true;
       this.readonlyFlat = false;
       this.formtitle = '新增';
+      console.log(this.mock_all.formData.role_id)
 
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
@@ -247,6 +245,7 @@ export default {
     },
     //修改
     pwdChange(index, row) {
+      console.log(row)
       this.formtitle = '修改';
       this.$store.commit('setting/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
@@ -265,14 +264,15 @@ export default {
             this.$store.commit('setting/rowAddStore')
             this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
+
             })
-            // console.log(this.mock_all.formData)
+            console.log(this.mock_all.formData.role_id)
           } else {
             this.$store.commit('setting/pwdChange')
             this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false

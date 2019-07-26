@@ -4,8 +4,8 @@
       <div class="search">
         <span>供应商编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index"
-            :label="item.supplier_id+' '+item.supplier_name" :value="item.supplier_id">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.supplier_id+' '+item.supplier_name"
+            :value="item.supplier_id">
           </el-option>
         </el-select>
         <el-button type="primary" size="small" round @click="onFilter">查找</el-button>
@@ -82,7 +82,7 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      multipleSelection:[],
+      multipleSelection: [],
       centerDialogVisible: false,//弹框
       formtitle: '',
       addorChange: true,//判断修改新增
@@ -108,11 +108,11 @@ export default {
       formadd: state => state.supplier.formadd,
     }),
   },
-   watch: {
-     //弹窗回车
+  watch: {
+    //弹窗回车
     centerDialogVisible(val) {
       if (val) {
-        document.onkeydown =  (e)=> {
+        document.onkeydown = (e) => {
           let ev = e || window.event
           if (ev.keyCode == 13) {
             this.formOr('ruleForm');
@@ -149,7 +149,7 @@ export default {
 
       this.tableShow(filterData)
     },
-   //移除
+    //移除
     rowDel(index) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -158,14 +158,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -184,7 +184,7 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('supplier/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
@@ -192,14 +192,14 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }
@@ -235,13 +235,13 @@ export default {
             this.$store.commit('supplier/rowAddStore')
             this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
             })
           } else {
             this.$store.commit('supplier/pwdChange')
             this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false

@@ -28,7 +28,7 @@ const state = {
       login_id: '',
       login_name: '',
       login_acode: '',
-      role_id:{},
+      role_id:{role_name:''},
       client_creator: '',
       client_createtime: '',
       client_updator: '',

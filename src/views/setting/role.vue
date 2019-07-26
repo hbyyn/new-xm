@@ -92,23 +92,27 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      listPower: [
+      initlistPower: [
         {
-          label: '首页',
+          label: '供应商表',
           visible: true,
           Operable: true,
+          url: '/materials/supplier',
         },
         {
           label: '物料表',
           visible: true,
           Operable: true,
+          url: '/materials/product'
         },
         {
           label: '规格表',
           visible: true,
           Operable: true,
+          url: '/materials/format'
         },
       ],
+      listPower: () => (JSON.parse(JSON.stringify(this.initlistPower))),
       multipleSelection: [],//多选
       centerDialogVisible: false,
       formtitle: '',
@@ -159,21 +163,21 @@ export default {
     }
   },
   methods: {
-      // 权限
-    roleChang(index,row) {
+    // 权限
+    roleChang(index, row) {
       this.roleVisible = true;
       this.$store.commit('role/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
-      if(row.role_power){
-        console.log(row.role_power)
-        this.listPower =  [...row.role_power]
+      if (row.role_power) {
+        this.listPower = [...row.role_power]
+      } else {
+        this.listPower = JSON.parse(JSON.stringify(this.initlistPower))
       }
 
     },
     rolesSubmit() {
       this.roleVisible = false;
-      var xxx=this.listPower
-      this.$store.commit('role/setRolePower',{xxx})
-      console.log(this.listPower)
+      var xxx = this.listPower
+      this.$store.commit('role/setRolePower', [...xxx])
     },
     //列表显示
     tableShow(data) {
@@ -219,14 +223,14 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          showClose: true, duration: 2000, message: '删除成功!'
         });
         this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          showClose: true, duration: 2000, message: '已取消删除'
         });
       });
 
@@ -245,21 +249,21 @@ export default {
         }).then(() => {
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            showClose: true, duration: 2000, message: '删除成功!'
           });
           this.$store.commit('role/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            showClose: true, duration: 2000, message: '已取消删除'
           });
         });
       }
       else {
         this.$message({
           type: "warning",
-          message: "请选择需要删除的选项"
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
         });
         return false;
       }
@@ -295,13 +299,13 @@ export default {
             this.$store.commit('role/rowAddStore')
             this.$message({
               type: 'success',
-              message: '新增成功!'
+              showClose: true, duration: 2000, message: '新增成功!'
             })
           } else {
             this.$store.commit('role/pwdChange')
             this.$message({
               type: 'success',
-              message: '修改成功!'
+              showClose: true, duration: 2000, message: '修改成功!'
             })
           }
           this.centerDialogVisible = false

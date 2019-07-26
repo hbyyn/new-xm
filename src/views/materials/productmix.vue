@@ -11,22 +11,20 @@
     <div style="width:100%;display: flex;
   justify-content: space-between;
   flex-wrap: wrap;">
-      <tree-chart v-for="(item,index) in chartList" :key="index" :chartli="item" :chartcount="index"></tree-chart>
+      <tree-chart v-for="(item,index) in chartList" :key="index" :chartData="item" ></tree-chart>
     </div>
 
   </div>
 </template>
 
 <script>
-import treechart from './children/treeChart'
+import treechart from '../../components/treeChart'
 import { mapState } from 'vuex'
 export default {
 
   components: {
     [treechart.name]: treechart,
   },
-  //刷新页面///
-  // inject:['reload'],
   data() {
     return {
       idSearch: '',
@@ -42,20 +40,21 @@ export default {
     //数据
     chartList() {
       return (() => {
-        var data = this.mock_all.list
-        const chartData = []
-        for (var z = 0; z < this.product_store.length; z++) {
-          chartData[z] = {
-            'name': this.product_store[z].product_id + ' ' + this.product_store[z].product_name,
+        const data = this.mock_all.list
+        const productList=this.product_store
+        const chartAll = []
+        for (var z = 0; z < productList.length; z++) {
+          chartAll.push({
+            'name': productList[z].product_id + ' ' + productList[z].product_name,
             children: []
-          }
-          var tree = chartData[z].children;
+          })
+          var tree = chartAll[z].children;
           //加载父节点
           for (var k = 0; k < data.length; k++) {//为每个节点赋予id，text
             //初始化children属性
             data[k].children = [];
             data[k].name = data[k].material_id + ' ' + data[k].material_name
-            if (data[k].product_id == chartData[z].name) {//加载一级节点
+            if (data[k].product_id == chartAll[z].name) {//加载一级节点
               tree.push(data[k]);
             }
           }
@@ -69,25 +68,18 @@ export default {
             }
           }
         }
-        return chartData;
+        return chartAll;
       })()
     }
   },
-  // watch: {
-  //   chartList() {
-  //     // console.log(val)
-  //     this.reload()
-  //   },
-  // },
-//
   methods: {
     point(i) {
       console.log(i)
       this.$nextTick(() => {
-        // console.log(document.documentElement.scrollTop)
         let anchorTop = Math.floor(i / 2) * 420
         document.documentElement.scrollTop = anchorTop;
       })
+
     },
 
   }

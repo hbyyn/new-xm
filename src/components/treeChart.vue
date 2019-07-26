@@ -24,9 +24,10 @@ export default {
         series:[
           {
             type: 'tree',
+            initialTreeDepth: -1,
             data: [this.chartData],
-             top: '1%',
-            left: '15%',
+            top: '1%',
+            left: '25%',
             bottom: '1%',
             right: '28%',
             symbolSize: 12,

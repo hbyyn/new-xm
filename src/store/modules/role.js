@@ -22,7 +22,17 @@ const state = {
         client_createtime: "2016/05/03/14:06:45",
         client_updator: "jj-55",
         client_updatetime: "2016/05/03/14:16:58"
-      }
+      },
+      {
+        client_id: "2127",
+        role_id: "v777",
+        role_name: "小明",
+        role_power:'',
+        client_creator: "jj-85",
+        client_createtime: "2016/05/03/14:06:35",
+        client_updator: "jj-75",
+        client_updatetime: "2016/05/03/14:16:18"
+      },
     ],
     columns: [
       { id: 1, prop: "role_id", label: "角色编号" },
