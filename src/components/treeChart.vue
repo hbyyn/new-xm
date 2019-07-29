@@ -1,6 +1,6 @@
 <template>
   <div ref="chart" class="listChart">
-    <v-chart :options="polar"></v-chart>
+    <v-chart :options="polar" ></v-chart>
   </div>
 </template>
 
@@ -10,26 +10,30 @@ import 'echarts/lib/chart/tree'
 
 export default {
   name: 'tree-chart',
-   components: {
+  components: {
     'v-chart': ECharts
   },
-  props: ['chartData'],
-  computed:{
-    polar(){
+  props: ['chartData', 'treename'],
+  computed: {
+    polar() {
       return {
+        title: {
+          text: '大数据量面积图',
+        },
         tooltip: {
           trigger: 'item',
           triggerOn: 'mousemove'
         },
-        series:[
+
+        series: [
           {
             type: 'tree',
             initialTreeDepth: -1,
             data: [this.chartData],
-            top: '1%',
-            left: '25%',
-            bottom: '1%',
-            right: '28%',
+            top: '2%',
+            left: '26%',
+            bottom: '2%',
+            right: '26%',
             symbolSize: 12,
             label: {
               normal: {
@@ -66,5 +70,9 @@ export default {
   background-color: #fff;
   display: flex;
   margin-top: 20px;
+  .echarts {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -57,6 +57,13 @@
           <el-input v-model="mock_all.formData.repair_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
+          <el-select v-model="mock_all.formData.parent_id" clearable placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.repair_id"
+              :label="item.repair_id+ ' ' +item.repair_name">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.repair_desc"></el-input>
         </el-form-item>
         <!--富文本编辑器组件-->
@@ -265,6 +272,7 @@ export default {
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
+      obj.form_fileList = []
     },
     //修改
     pwdChange(index, row) {

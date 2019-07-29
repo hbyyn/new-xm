@@ -150,7 +150,7 @@ export default {
       changeIndex: state => state.mwork.changeIndex,
       formadd: state => state.mwork.formadd,
       materials_store: state => state.materials.tableData.list,
-      work_store: state => state.work.tableData.list,
+      work_store: state => state.work.tableData.list.filter(item=>!item.parent_id),
     }),
 
   },

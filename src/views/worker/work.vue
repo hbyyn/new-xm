@@ -57,6 +57,13 @@
           <el-input v-model="mock_all.formData.work_name"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[2].label">
+          <el-select v-model="mock_all.formData.parent_id" clearable placeholder="请选择">
+            <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.work_id"
+              :label="item.work_id+ ' ' +item.work_name">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.work_desc"></el-input>
         </el-form-item>
 

@@ -173,9 +173,8 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
-            <!-- <el-input v-model="formData.parent_id"></el-input> -->
             <el-select v-model="formData.parent_id" clearable :disabled="flagParentId" placeholder="请选择">
-              <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.material_id">
+              <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.material_id" :label="item.material_id+ ' ' +item.material_name">
               </el-option>
             </el-select>
           </el-form-item>
@@ -220,7 +219,6 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-
       multipleSelection: [],
       centerDialogVisible: false,//弹框
       formtitle: '',
@@ -244,7 +242,6 @@ export default {
         material_operaterdate: "",
         parent_id: "",
         product_id: "",
-
         client_creator: "",
         client_createtime: "",
         client_updator: "",

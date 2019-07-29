@@ -24,6 +24,7 @@ export default {
         // { id: 1, urlname: '物料', url: '/worker/materials' },
         { id: 2, urlname: '物料工序', url: '/worker/mwork' },
         { id: 3, urlname: '工序', url: '/worker/work' },
+        {id:5,urlname:'工序报表',url:'/worker/workcharts'}
       ]
     }
   }

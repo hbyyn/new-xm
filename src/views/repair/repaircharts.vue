@@ -4,7 +4,7 @@
       <span>产品跳转:</span>
       <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择"
         @change="point">
-        <el-option v-for="(item,index) in chartList" :key="index" :label="item.name" :value="index">
+        <el-option v-for="(item,index) in chartList" :key="index" :label="`${item.id} ${item.name}`"  :value="index">
         </el-option>
       </el-select>
     </ul>
@@ -34,42 +34,38 @@ export default {
   computed: {
     ...mapState({
       // 获得菜单列表数据
-      mock_all: state => state.materials.tableData,//{formData,list,columns}
-      product_store: state => state.product.tableData.list,
+      mock_all: state => state.repair.tableData,//{formData,list,columns}
     }),
     //数据
     chartList() {
-      return (() => {
-        const data = this.mock_all.list
-        const productList=this.product_store
-        const chartAll = []
-        for (var z = 0; z < productList.length; z++) {
-          chartAll.push({
-            'name': productList[z].product_id + ' ' + productList[z].product_name,
-            children: []
-          })
-          var tree = chartAll[z].children;
+      //简化list
+        const data =[]//{id:'',name:'',parent_id:''}
+        this.mock_all.list.map((item)=>{
+          const newList={}
+          newList.id=item.repair_id
+          newList.name=item.repair_name
+          newList.parent_id=item.parent_id
+          data.push(newList)
+        })
+          var tree = [];
           //加载父节点
-          for (var k = 0; k < data.length; k++) {//为每个节点赋予id，text
+          for (var k = 0; k < data.length; k++) {//为每个节点赋予id
             //初始化children属性
             data[k].children = [];
-            data[k].name = data[k].material_id + ' ' + data[k].material_name
-            if (data[k].product_id == chartAll[z].name) {//加载一级节点
+            if (data[k].parent_id == '') {//加载一级节点
               tree.push(data[k]);
             }
           }
-          //加载子节点
+          // 加载子节点
           for (var i = 0; i < data.length; i++) {
             for (var j = 0; j < data.length; j++) {//找到data[i]的父节点data[j]
-              if (data[i].parent_id == data[j].material_id) {
+              if (data[i].parent_id == data[j].id) {
                 data[j].children.push(data[i])
                 break;
               }
             }
           }
-        }
-        return chartAll;
-      })()
+      return  tree;
     }
   },
   methods: {
@@ -79,11 +75,8 @@ export default {
         let anchorTop = Math.floor(i / 2) * 420
         document.documentElement.scrollTop = anchorTop;
       })
-
     },
-
-  }
-
+  },
 }
 </script>
 

@@ -14,7 +14,11 @@ const route = {
     {
       path: "materials",
       component: () => import("../views/materials/materials")
-    }
+    },
+    {
+      path: "repaircharts",
+      component: () => import("../views/repair/repaircharts")
+    },
   ]
 };
 

@@ -7,6 +7,7 @@ const state = {
         client_id: "a555",
         repair_id: "e12315",
         repair_name: "xxxxx",
+        parent_id:'',
         repair_desc: "xxxxxxx",
         form_content: "",
         form_fileList: [],
@@ -14,12 +15,26 @@ const state = {
         client_createtime: "2016/05/03/14:06:55",
         client_updator: "jj-57",
         client_updatetime: "2016/05/03/14:16:55"
+      },
+      {
+        client_id: "a5556",
+        repair_id: "e123156",
+        repair_name: "xxxxx6",
+        parent_id:'e12315',
+        repair_desc: "xxxxxxx6",
+        form_content: "",
+        form_fileList: [],
+        client_creator: "jj-566",
+        client_createtime: "2016/05/03/14:06:35",
+        client_updator: "jj-567",
+        client_updatetime: "2016/05/03/14:16:35"
       }
     ],
     columns: [
       // { id: 1, prop: "client_id", label: "公司编号" },
       { id: 2, prop: "repair_id", label: "返修编号" },
       { id: 6, prop: "repair_name", label: "返修名称" },
+      { id: 12, prop: "parent_id", label: "父级编号" },
       { id: 7, prop: "repair_desc", label: "修理说明标题" },
       { id: 14, prop: "client_creator", label: "创建人" },
       { id: 15, prop: "client_createtime", label: "创建时间" },
@@ -28,9 +43,10 @@ const state = {
     ],
     formData: {
       client_id: "",
-      repair_id: "e12315+",
-      repair_name: "xxxxxxx+",
-      repair_desc: "xxxxxxx+",
+      repair_id: "",
+      repair_name: "",
+      parent_id:'',
+      repair_desc: "",
       form_content: "",
       form_fileList: [],
       client_creator: "",
@@ -38,7 +54,6 @@ const state = {
       client_updator: "",
       client_updatetime: ""
     }, //弹窗,
-    total: 10 //list数据数量
   },
   changeIndex: "",
   formadd: "",

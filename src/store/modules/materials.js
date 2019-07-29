@@ -1,6 +1,5 @@
 import Date from "../time"
 
-
 const state = {
   tableData: {
     list: [{
@@ -21,6 +20,27 @@ const state = {
 
       client_creator: "xxx",
       client_createtime: "xxx",
+      client_updator: "",
+      client_updatetime: ""
+    },
+    {
+      client_id: "xxx2",
+      material_id: "xxx2",
+      material_type: "xxx2",
+      material_name: "zz2",
+      format_id: "xxx2",
+      material_unit: "xxx2",
+      supplier_id: "xxx2",
+      material_erpid: "xxx2",
+      material_indate: "xxx2",
+      material_storeid: "xxx2",
+      material_operaterid: "xxx2",
+      material_operaterdate: "xxx2",
+      parent_id: "",
+      product_id: "88 SSSS",
+
+      client_creator: "xxx2",
+      client_createtime: "xxx2",
       client_updator: "",
       client_updatetime: ""
     }],
@@ -44,27 +64,6 @@ const state = {
       { id: 16, prop: "client_updator", label: "修改人" },
       { id: 17, prop: "client_updatetime", label: "修改时间" }
     ],
-    formData: {
-      client_id: "",
-      material_id: "",
-      material_type: "",
-      material_name: "",
-      format_id: "",
-      material_unit: "",
-      supplier_id: "",
-      material_erpid: "",
-      material_indate: "",
-      material_storeid: "",
-      material_operaterid: "",
-      material_operaterdate: "",
-      parent_id: "",
-      product_id: "",
-
-      client_creator: "",
-      client_createtime: "",
-      client_updator: "",
-      client_updatetime: ""
-    },
   },
   changeIndex: "",
   formadd: "",

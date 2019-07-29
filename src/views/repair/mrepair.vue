@@ -151,7 +151,7 @@ export default {
       changeIndex: state => state.mrepair.changeIndex,
       formadd: state => state.mrepair.formadd,
       materials_store: state => state.materials.tableData.list,
-      repair_store: state => state.repair.tableData.list,
+      repair_store: state => state.repair.tableData.list.filter(item=>!item.parent_id),
     }),
 
   },

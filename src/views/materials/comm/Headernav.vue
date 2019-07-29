@@ -25,7 +25,7 @@ export default {
         { id: 2, urlname: '供应商表', url: '/materials/supplier' },
         { id: 3, urlname: '规格表', url: '/materials/format' },
         { id: 4, urlname: '产品表', url: '/materials/product' },
-        {id:5,urlname:'产品组成报表',url:'/materials/productmix'}
+        {id:5,urlname:'产品组成报表',url:'/materials/productcharts'}
       ]
     }
   }

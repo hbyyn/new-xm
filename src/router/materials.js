@@ -22,8 +22,8 @@ const route = {
       component: ()=>import('../views/materials/product')
     },
     {
-      path: 'productmix',
-      component: ()=>import('../views/materials/productmix')
+      path: 'productcharts',
+      component: ()=>import('../views/materials/productcharts')
 
     }
   ]
