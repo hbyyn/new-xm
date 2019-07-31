@@ -1,13 +1,14 @@
 const route = {
   path: "/home",
   component: () => import("../views/home/root"),
-  redirect:"/home/root",
+  redirect:'home/home',
   children: [
     {
-      path: "root",
-      component: () => import("../views/home/root")
+      path: "home",
+      component: () => import("../views/home/home")
     }
   ]
 };
+
 
 export default route;

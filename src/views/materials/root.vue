@@ -1,5 +1,5 @@
 <template>
-  <div class="XXX">
+  <div>
     <Tabs></Tabs>
     <header-nav />
     <div class="pageWrapper">

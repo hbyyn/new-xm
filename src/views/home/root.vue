@@ -3,9 +3,7 @@
     <Tabs></Tabs>
     <header-nav />
     <div class="pageWrapper">
-      <!-- <keep-alive>
         <router-view />
-      </keep-alive> -->
     </div>
     <footer class="footer"></footer>
   </div>

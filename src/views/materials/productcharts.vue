@@ -11,14 +11,14 @@
     <div style="width:100%;display: flex;
   justify-content: space-between;
   flex-wrap: wrap;">
-      <tree-chart v-for="(item,index) in chartList" :key="index" :chartData="item" ></tree-chart>
+      <tree-chart v-for="(item,index) in chartList" :key="index" :chartData="item" :columns="mock_all.columns" :columnsProduct="product_store.columns"></tree-chart>
     </div>
 
   </div>
 </template>
 
 <script>
-import treechart from '../../components/treeChart'
+import treechart from './children/treeChart'
 import { mapState } from 'vuex'
 export default {
 
@@ -35,32 +35,26 @@ export default {
     ...mapState({
       // 获得菜单列表数据
       mock_all: state => state.materials.tableData,//{formData,list,columns}
-      product_store: state => state.product.tableData.list,
+      product_store: state => state.product.tableData,
     }),
     //数据
     chartList() {
       //简化list
         const data =[]//{id:'',name:'',product_id:'',parent_id:''}
         this.mock_all.list.map((item)=>{
-          const newList={}
+          const newList={...item}
           newList.id=item.material_id
           newList.name=item.material_name
-          if(item.product_id){
-            newList.product_id=item.product_id
-          }
-          if(item.parent_id){
-            newList.parent_id=item.parent_id
-          }
           data.push(newList)
         })
-        const productList=this.product_store
+        const productList=this.product_store.list
         const chartAll = []
         for (var z = 0; z < productList.length; z++) {
-          chartAll.push({
-            id:productList[z].product_id + ' ' + productList[z].product_name,
-            name: productList[z].product_name,
-            children: []
-          })
+          const originTree ={...productList[z]}
+            originTree.id = productList[z].product_id + ' ' + productList[z].product_name
+            originTree.name = productList[z].product_name
+            originTree.children = []
+          chartAll.push(originTree)
           var tree = chartAll[z].children;
           //加载父节点
           for (var k = 0; k < data.length; k++) {//为每个节点赋予id，text
@@ -86,7 +80,6 @@ export default {
   },
   methods: {
     point(i) {
-      console.log(i)
       this.$nextTick(() => {
         let anchorTop = Math.floor(i / 2) * 420
         document.documentElement.scrollTop = anchorTop;

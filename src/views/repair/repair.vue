@@ -49,7 +49,7 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="60%">
-      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="repair_id">
           <el-input v-model="mock_all.formData.repair_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
@@ -331,6 +331,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .rowAdd {
   float: right;
   margin-right: 50px;

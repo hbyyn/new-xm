@@ -49,7 +49,7 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
-      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="work_id">
           <el-input v-model="mock_all.formData.work_id" :readonly="readonlyFlat"></el-input>
         </el-form-item>
@@ -63,7 +63,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.work_desc"></el-input>
         </el-form-item>
 

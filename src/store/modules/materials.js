@@ -47,8 +47,8 @@ const state = {
     columns: [
       // { id: 1, prop: "client_id", label: "公司编号" },
       { id: 2, prop: "material_id", label: "物料编号" },
-      { id: 3, prop: "material_type", label: "物料类型" },
       { id: 4, prop: "material_name", label: "物料名称" },
+      { id: 3, prop: "material_type", label: "物料类型" },
       { id: 13, prop: "format_id", label: "规格编号" },
       { id: 5, prop: "material_unit", label: "物料单位" },
       { id: 6, prop: "supplier_id", label: "供应商编号" },

@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       list: [
-        { id: 1, urlname: '首页', url: '/home/root' },
+        { id: 1, urlname: '首页', url: '/home/home' },
       ]
     }
   }

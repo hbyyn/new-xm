@@ -125,6 +125,8 @@ export default {
   },
   created() {
     this.tableShow(this.mock_all.list)
+    // 请求商品总数
+    this.$store.dispatch('customers/getTotalAction');
   },
   methods: {
     // 搜索弹框数据，去重
@@ -300,8 +302,6 @@ export default {
       this.onFilter()
     }
   },
-
-
 }
 </script>
 

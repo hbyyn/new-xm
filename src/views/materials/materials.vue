@@ -8,13 +8,6 @@
             :value="item.material_id">
           </el-option>
         </el-select>
-        <span>物料类型:</span>
-        <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small"
-          placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_type"
-            :value="item.material_type">
-          </el-option>
-        </el-select>
         <span>物料名称:</span>
         <el-select class="selectSearch" v-model="materialNameSearch" clearable filterable size="small"
           placeholder="请选择">
@@ -22,6 +15,14 @@
             :value="item.material_name">
           </el-option>
         </el-select>
+        <span>物料类型:</span>
+        <el-select class="selectSearch" v-model="materialTypeSearch" clearable filterable size="small"
+          placeholder="请选择">
+          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.material_type"
+            :value="item.material_type">
+          </el-option>
+        </el-select>
+
 
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="formatSearch" clearable filterable size="small" placeholder="请选择">
@@ -121,11 +122,12 @@
             <el-input v-model="formData.material_id" :readonly="readonlyFlat"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[1].label">
-            <el-input v-model="formData.material_type"></el-input>
-          </el-form-item>
-          <el-form-item :label="mock_all.columns[2].label">
             <el-input v-model="formData.material_name"></el-input>
           </el-form-item>
+          <el-form-item :label="mock_all.columns[2].label">
+            <el-input v-model="formData.material_type"></el-input>
+          </el-form-item>
+
           <el-form-item :label="mock_all.columns[3].label">
             <el-select @keyup.enter.native.self.prevent v-model="formData.format_id" filterable clearable
               placeholder="请选择">

@@ -14,7 +14,7 @@ export default {
   components: {
     'v-chart': ECharts
   },
-  props: ['chartData', 'treename', 'columns'],
+  props: ['chartData', 'treename', 'columns','columnsProduct'],
   computed: {
     polar() {
       return {
@@ -22,12 +22,18 @@ export default {
           text: '大数据量面积图',
         },
         tooltip: {
-          position:'right',
+          position: 'right',
           trigger: 'item',
           formatter: (params) => {
-            var res = ''
-            for (let k of this.columns) {
-              res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+            var res = '';
+            if (params.data.product_name) {
+              for (let k of this.columnsProduct) {
+                res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+              }
+            }else{
+              for (let k of this.columns) {
+                res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+              }
             }
             return res;
           },

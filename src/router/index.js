@@ -17,7 +17,7 @@ const routes= [
   settingRoute,
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/home/home'
   },
   {
     path:'/register',
@@ -32,11 +32,13 @@ const routes= [
   //   redirect: '/home'
   // }
 ]
+console.log(routes)
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
+
 
 router.beforeEach((to,from,next) => {
   let client_id=sessionStorage.getItem('client_id')
@@ -51,7 +53,7 @@ router.beforeEach((to,from,next) => {
 })
 // router.beforeEach((to,from,next) => {
 //   let client_id=sessionStorage.getItem('client_id')
-//   if(to.path == '/materials/format'){
+//   if(to.path.indexOf('/materials') != -1 ){
 //     if (!client_id) {
 //       next()
 //     }

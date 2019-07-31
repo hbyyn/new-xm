@@ -1,4 +1,5 @@
 import Date from "../time"
+import {api, request} from '../../ajax'
 
 
 const state = {
@@ -75,9 +76,20 @@ const mutations = {
     state.tableData.list.splice(state.changeIndex, 1, state.formadd);
   }
 };
+//
+const actions = {
+  // 请求商品总数
+  async getTotalAction(){
+      let result = await request.get(api.GOODS_TOTAL_API);
+      let total = result.data;
+      console.log(total)
+      // context.commit('setTotal', total);
+  },
+}
 
 export default {
   namespaced: true,
   state,
-  mutations
+  mutations,
+  actions
 };

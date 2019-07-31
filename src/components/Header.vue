@@ -9,7 +9,6 @@
           <router-link :to="item.url">{{item.navurl}}</router-link>
         </li>
       </nav>
-
       <el-dropdown trigger="click" @command="handleCommand">
         <a href="javascript:;" class="login" @click="showList">{{loginname}}<i class="el-icon-caret-bottom"></i></a>
         <el-dropdown-menu slot="dropdown" class="loginList">
@@ -24,7 +23,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 个人档案弹窗 -->
-      <el-dialog title="修改密码" :visible.sync="personalDialogVisible" width="30%">
+      <el-dialog title="修改密码" :visible.sync="personalDialogVisible" width="30%" :append-to-body="true" >
         <el-form label-position="right" label-width="50%">
           <el-form-item :label="personal_list[0].label+':'">
             <span>{{loginname}}</span>
@@ -41,10 +40,9 @@
         </el-form>
       </el-dialog>
       <!-- 改密码弹窗 -->
-      <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%">
+      <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%" :append-to-body="true" >
         <el-form label-position="right" label-width="120px">
           <!-- <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"> -->
-
           <el-form-item :label="columns[0].label+':'">
             <span>{{loginname}}</span>
           </el-form-item>

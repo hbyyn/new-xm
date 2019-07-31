@@ -11,7 +11,7 @@
     <div style="width:100%;display: flex;
   justify-content: space-between;
   flex-wrap: wrap;">
-      <tree-chart v-for="(item,index) in chartList" :key="index" :chartData="item" ></tree-chart>
+      <tree-chart v-for="(item,index) in chartList" :key="index" :chartData="item" :columns="mock_all.columns"></tree-chart>
     </div>
 
   </div>
@@ -41,7 +41,7 @@ export default {
       //简化list
         const data =[]//{id:'',name:'',parent_id:''}
         this.mock_all.list.map((item)=>{
-          const newList={}
+          const newList={...item}
           newList.id=item.work_id
           newList.name=item.work_name
           newList.parent_id=item.parent_id
@@ -70,7 +70,6 @@ export default {
   },
   methods: {
     point(i) {
-      console.log(i)
       this.$nextTick(() => {
         let anchorTop = Math.floor(i / 2) * 420
         document.documentElement.scrollTop = anchorTop;
