@@ -63,9 +63,10 @@
           <el-input v-model="mock_all.formData.login_acode"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
-          <el-select v-model="mock_all.formData.role_id" value-key="role_id" clearable filterable placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in role_list" :key="item.role_id" :value="item"
-              :label="item.role_id+' '+item.role_name">
+          <el-select v-model="mock_all.formData.role_id"  clearable filterable placeholder="请选择">
+            <!-- 对象加value-key="role_id" -->
+            <el-option class="dialog_select" v-for="item in role_list" :key="item.role_id" :value="`${item.role_id} ${item.role_name}`"
+              :label="`${item.role_id} ${item.role_name}`">
             </el-option>
           </el-select>
         </el-form-item>
@@ -236,8 +237,6 @@ export default {
       this.addorChange = true;
       this.readonlyFlat = false;
       this.formtitle = '新增';
-      console.log(this.mock_all.formData.role_id)
-
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
@@ -245,7 +244,6 @@ export default {
     },
     //修改
     pwdChange(index, row) {
-      console.log(row)
       this.formtitle = '修改';
       this.$store.commit('setting/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;

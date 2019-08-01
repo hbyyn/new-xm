@@ -9,8 +9,20 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
+
+
 new Vue({
   store,
   router,
   render: h => h(App)
 }).$mount('#app')
+
+// router.beforeEach((to,from,next) => {
+//   let list=store.getters.use_role.map((item)=>{
+//     const arr=[]
+//     arr.push(item.url)
+//     return arr
+//   })
+//   console.log(list)
+//   next()
+// })

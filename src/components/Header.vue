@@ -62,12 +62,10 @@
         </span>
       </el-dialog>
     </div>
-
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Tabs',
   data() {
@@ -146,8 +144,7 @@ export default {
     a {
       color: white;
     }
-    .log {
-    }
+
     nav {
       display: flex;
       margin-left: -150px;

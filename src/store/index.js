@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import getters from './getters'
 import format from "./modules/format";
 import materials from "./modules/materials";
 import product from "./modules/product";
@@ -13,6 +14,7 @@ import work from "./modules/work";
 import mwork from "./modules/mwork";
 import setting from "./modules/setting"
 import role from "./modules/role"
+import user from "./modules/user"
 
 Vue.use(Vuex);
 
@@ -31,7 +33,9 @@ const store = new Vuex.Store({
     mwork,
     setting,
     role,
-  }
+    user
+  },
+  getters
 });
 
 export default store;
