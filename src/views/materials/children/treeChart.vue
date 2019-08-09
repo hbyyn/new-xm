@@ -18,9 +18,6 @@ export default {
   computed: {
     polar() {
       return {
-        title: {
-          text: '大数据量面积图',
-        },
         tooltip: {
           position: 'right',
           trigger: 'item',

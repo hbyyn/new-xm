@@ -21,10 +21,10 @@
               <el-input placeholder="admin" type="text" v-model="loginForm.username"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password" >
-              <el-input placeholder="123456" v-model="loginForm.password" show-password @keyup.enter.native="handLeLong"></el-input>
+              <el-input placeholder="123456" v-model="loginForm.password" show-password @keyup.enter.native="handleLong"></el-input>
             </el-form-item>
             <el-form-item label-position="left">
-              <el-button type="primary" @click="handLeLong" >登录</el-button>
+              <el-button type="primary" @click="handleLong" >登录</el-button>
               <el-button>
                 <router-link to="/register" style="color:#000">注册</router-link>
               </el-button>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -57,9 +58,11 @@ export default {
       ],
       value: 'zh-cn',
       loginForm: {
-        client_id: '',
-        username: '',
-        password: ''
+        client_id: 'Test001',
+        username: 'admin',
+        password: '123123',
+        loginLoading:false,
+        remember: sessionStorage.getItem("remember") || false
       },
       loginXXX: {
         client_id: 'Test001',
@@ -70,15 +73,53 @@ export default {
     }
   },
   methods: {
-    handLeLong() {
-      if (this.loginForm.client_id == this.loginXXX.client_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
-        sessionStorage.setItem("client_id", this.loginForm.client_id);
-        sessionStorage.setItem("user_name", this.loginForm.username);
-        sessionStorage.setItem("password", this.loginForm.password);
-        this.$router.push('/');
-      }
+    handleLong() {
+      axios(
+        {
+            method: "post",
+            url:"http://192.168.10.219:5687/api/UserLogin/login",
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            timeout: 5000,
+            data: JSON.stringify({
+              clientId: this.loginForm.client_id,
+              userId: this.loginForm.username,
+              userPassword: this.loginForm.password
+            })
+          }
+      ).then(res=>{
+        console.log(res)
+        if(res.data.statusCode == "10000"){
+          console.log(res)
+           this.$store.state.headerBool = true;
+                sessionStorage.setItem(
+                  "loginPrefix",
+                  res.data.data.tokenResult.accessPrefix
+                );
+                sessionStorage.setItem("loginToken", res.data.data.tokenResult.accessToken);
+                sessionStorage.setItem("user_name", this.loginForm.username);
+                sessionStorage.setItem("client_id", this.loginForm.client_id);
+                sessionStorage.setItem("remember", this.loginForm.remember);
+                // this.storage.set("language", this.$i18n.locale);
+                this.loginForm.loginLoading = false;
+                this.$router.push('/')
+        }
+
+      })
+    //   if (this.loginForm.client_id == this.loginXXX.client_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
+    //     sessionStorage.setItem("client_id", this.loginForm.client_id);
+    //     sessionStorage.setItem("user_name", this.loginForm.username);
+    //     sessionStorage.setItem("password", this.loginForm.password);
+    //     this.$router.push('/');
+    //   }
     }
-  }
+  },
+// created(){
+//   //规格
+//    this.$store.dispatch('user/getUserAction');
+// }
 }
 </script>
 

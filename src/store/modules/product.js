@@ -51,7 +51,6 @@ const state = {
       client_updator: "",
       client_updatetime: ""
     }, //弹窗,
-    total: 10 //list数据数量
   },
   changeIndex: "",
   formadd: "",
