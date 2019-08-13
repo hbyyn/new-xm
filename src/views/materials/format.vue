@@ -102,6 +102,11 @@ export default {
 
   },
   created() {
+    this.$store.dispatch('format/getListAction');
+
+    //规格
+  },
+  mounted(){
     this.tableShow(this.mock_all.list)
   },
   watch: {
@@ -141,17 +146,20 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index, row) {
+
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$store.dispatch('format/deleteSingleAction', row.format_id);
         this.$message({
           type: 'success',
           showClose: true, duration: 2000, message: '删除成功!'
         });
-        this.mock_all.list.splice(index, 1);
+
+        // this.mock_all.list.splice(index, 1);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -163,19 +171,30 @@ export default {
     // 选择
     handleSelectionChange(val) {
       this.multipleSelection = val;
+
     },
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let xxx = this.multipleSelection
+        xxx.map(item => {
+          listRemove.push(item.format_id)
+          return listRemove
+        })
+        console.log(listRemove)
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.$store.dispatch('format/deleteListAction', listRemove)
           this.$message({
             type: 'success',
             showClose: true, duration: 2000, message: '删除成功!'
           });
+
+
           this.$store.commit('format/rowRemoveStore', this.multipleSelection)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
@@ -222,13 +241,15 @@ export default {
           this.$store.commit('format/setformadd', { ...this.mock_all.formData })
           this.$store.commit('format/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('format/rowAddStore')
+            this.$store.dispatch('format/addListAction');
+            this.$store.dispatch('format/getListAction');
             this.$message({
               type: 'success',
               showClose: true, duration: 2000, message: '新增成功!'
             })
           } else {
             this.$store.commit('format/pwdChange')
+            this.$store.dispatch('format/editListAction');
             this.$message({
               type: 'success',
               showClose: true, duration: 2000, message: '修改成功!'

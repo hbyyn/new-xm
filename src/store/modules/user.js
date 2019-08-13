@@ -12,7 +12,7 @@ const actions = {
   async getUserAction(context) {
     let result = await request.post(api.FORMAT_BASE_API);
     let data = result;
-    console.log(data);
+    // console.log(data);
     context.commit("setUser", data);
   }
 };

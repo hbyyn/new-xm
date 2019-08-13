@@ -24,7 +24,7 @@
               <el-input placeholder="123456" v-model="loginForm.password" show-password @keyup.enter.native="handleLong"></el-input>
             </el-form-item>
             <el-form-item label-position="left">
-              <el-button type="primary" @click="handleLong" >登录</el-button>
+              <el-button type="primary" v-loading.fullscreen.lock="loginForm.loginLoading" @click="handleLong" >登录</el-button>
               <el-button>
                 <router-link to="/register" style="color:#000">注册</router-link>
               </el-button>
@@ -39,6 +39,7 @@
 
 <script>
 import axios from 'axios'
+import api from "../ajax/api"
 export default {
   data() {
     return {
@@ -77,7 +78,7 @@ export default {
       axios(
         {
             method: "post",
-            url:"http://192.168.10.219:5687/api/UserLogin/login",
+            url:api.HOST+"/api/UserLogin/login",
             headers: {
               accept: "application/json",
               "Content-Type": "application/json"
@@ -105,7 +106,23 @@ export default {
                 // this.storage.set("language", this.$i18n.locale);
                 this.loginForm.loginLoading = false;
                 this.$router.push('/')
-        }
+        }else if(res.data.statusCode == "30004"){
+          this.loginForm.loginLoading = false;
+                this.$message({
+                  showClose: true,
+                  duration: 2000,
+                  message: "用户不存在",
+                  type: "error"
+                });
+        }else if (res.data.statusCode == "20002") {
+                this.loginForm.loginLoading = false;
+                this.$message({
+                  showClose: true,
+                  duration: 2000,
+                  message: "用户名或密码错误",
+                  type: "error"
+                });
+              }
 
       })
     //   if (this.loginForm.client_id == this.loginXXX.client_id && this.loginForm.username == this.loginXXX.username && this.loginForm.password == this.loginXXX.password) {
@@ -116,10 +133,7 @@ export default {
     //   }
     }
   },
-// created(){
-//   //规格
-//    this.$store.dispatch('user/getUserAction');
-// }
+
 }
 </script>
 
