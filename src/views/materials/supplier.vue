@@ -107,8 +107,14 @@ export default {
       changeIndex: state => state.supplier.changeIndex,
       formadd: state => state.supplier.formadd,
     }),
+    tableList(){
+      return this.mock_all.list
+    }
   },
   watch: {
+    tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -124,6 +130,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('supplier/getListAction');
     this.tableShow(this.mock_all.list)
 
   },
@@ -150,17 +157,18 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+        // this.$message({
+        //   type: 'success',
+        //   showClose: true, duration: 2000, message: '删除成功!'
+        // });
+        // this.mock_all.list.splice(index, 1);
+        this.$store.dispatch('supplier/deleteSingleAction', row.supplier_id);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -177,16 +185,23 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let Selection = this.multipleSelection
+        Selection.map(item => {
+          listRemove.push(item.supplier_id)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('supplier/rowRemoveStore', this.multipleSelection)
+          // this.$message({
+          //   type: 'success',
+          //   showClose: true, duration: 2000, message: '删除成功!'
+          // });
+          // this.$store.commit('supplier/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('supplier/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -224,25 +239,26 @@ export default {
       this.readonlyFlat = true;
       this.mock_all.formData = { ...row };
     },
-    //submit
+    //弹窗确认
     formOr(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // submit
           this.$store.commit('supplier/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('supplier/setNowTime')
+          // this.$store.commit('supplier/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('supplier/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            // this.$store.commit('supplier/rowAddStore')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '新增成功!'
+            // })
+            this.$store.dispatch('supplier/addListAction');
           } else {
-            this.$store.commit('supplier/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            // this.$store.commit('supplier/pwdChange')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '修改成功!'
+            // })
+            this.$store.dispatch('supplier/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

@@ -35,15 +35,6 @@ const state = {
       client_updator: "",
       client_updatetime: ""
     },
-    formInit: {
-      client_id: "",
-      format_id: "",
-      format_name: "",
-      client_creator: "",
-      client_createtime: "",
-      client_updator: "",
-      client_updatetime: ""
-    }
   },
   changeIndex: "",
   formadd: "",
@@ -55,7 +46,6 @@ const mutations = {
   // },
   setformadd(state, param) {
     state.formadd = param;
-    state.tableData.formData = { ...state.tableData.formInit };
   },
   setChangeIndex(state, param) {
     state.changeIndex = param;
@@ -246,3 +236,4 @@ export default {
   mutations,
   actions
 };
+

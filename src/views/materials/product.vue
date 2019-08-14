@@ -101,8 +101,14 @@ export default {
       changeIndex: state => state.product.changeIndex,
       formadd: state => state.product.formadd,
     }),
+    tableList(){
+      return this.mock_all.list
+    }
   },
   watch: {
+     tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -118,43 +124,10 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('product/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
-    // // 搜索弹框数据，去重
-    // restaurants(key) {
-    //   let restaurants = [];
-    //   for (var i = 0; i < this.mock_all.list.length; i++) {
-    //     restaurants.push({ value: '' });
-    //     restaurants[i].value = this.mock_all.list[i][key]//修改点
-    //   }
-    //   // 去重
-    //   let hash = {};
-    //   restaurants = restaurants.reduce((preVal, curVal) => {
-    //     hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-    //     return preVal
-    //   }, [])
-    //   return restaurants
-    // },
-    // //搜索1
-    // queryStringId(queryString, cb) {
-    //   let restaurants = this.restaurants('product_id')
-    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
-    // },
-    // //搜索2
-    // queryStringName(queryString, cb) {
-    //   let restaurants = this.restaurants('product_name')
-    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-    //   // 调用 callback 返回建议列表的数据
-    //   cb(results);
-    // },
-    // createFilter(queryString) {
-    //   return (restaurant) => {
-    //     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-    //   };
-    // },
 
     //列表显示
     tableShow(data) {
@@ -177,17 +150,18 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+        // this.$message({
+        //   type: 'success',
+        //   showClose: true, duration: 2000, message: '删除成功!'
+        // });
+        // this.mock_all.list.splice(index, 1);
+        this.$store.dispatch('product/deleteSingleAction', row.product_id);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -204,18 +178,24 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let listSelection = this.multipleSelection
+        listSelection.map(item => {
+          listRemove.push(item.product_id)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('product/rowRemoveStore', this.multipleSelection)
+          // this.$message({
+          //   type: 'success',
+          //   showClose: true, duration: 2000, message: '删除成功!'
+          // });
+          // this.$store.commit('product/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('product/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
-          console.log(this.multipleSelection)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -251,25 +231,27 @@ export default {
       this.readonlyFlat = true;
       this.mock_all.formData = { ...row };
     },
-    //submit
+    //弹窗确认
     formOr(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // submit
           this.$store.commit('product/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('product/setNowTime')
+          // this.$store.commit('product/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('product/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            // this.$store.commit('product/rowAddStore')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '新增成功!'
+            // })
+            this.$store.dispatch('product/addListAction');
           } else {
-            this.$store.commit('product/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            // this.$store.commit('product/pwdChange')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '修改成功!'
+            // })
+             this.$store.dispatch('product/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

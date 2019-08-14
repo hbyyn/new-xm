@@ -104,10 +104,6 @@ export default {
     }
 
   },
-  created() {
-    this.$store.dispatch('format/getListAction');
-    this.tableShow(this.mock_all.list)
-  },
   watch: {
     tableList(){
       this.tableShow(this.mock_all.list)
@@ -125,6 +121,10 @@ export default {
         document.onkeydown = undefined;
       }
     }
+  },
+  created() {
+    this.$store.dispatch('format/getListAction');
+    this.tableShow(this.mock_all.list)
   },
   methods: {
     //列表显示
@@ -177,8 +177,8 @@ export default {
     rowRemove() {
       if (this.multipleSelection.length) {
         let listRemove = []
-        let xxx = this.multipleSelection
-        xxx.map(item => {
+        let Selection = this.multipleSelection
+        Selection.map(item => {
           listRemove.push(item.format_id)
           return listRemove
         })
@@ -194,7 +194,6 @@ export default {
           // this.$store.commit('format/rowRemoveStore', this.multipleSelection)
           this.$store.dispatch('format/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
-          console.log(this.multipleSelection)
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -234,7 +233,6 @@ export default {
     formOr(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // submit
           this.$store.commit('format/setformadd', { ...this.mock_all.formData })
           // this.$store.commit('format/setNowTime')
           if (this.addorChange) {
