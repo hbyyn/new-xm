@@ -287,6 +287,9 @@ export default {
       supplier_store: state => state.supplier.tableData.list,
       product_store: state => state.product.tableData.list,
     }),
+    tableList(){
+      return this.mock_all.list
+    },
     fromParentId() {
       return this.formData.parent_id
     },
@@ -295,6 +298,9 @@ export default {
     },
   },
   watch: {
+    tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -326,6 +332,7 @@ export default {
 
   },
   created() {
+    this.$store.dispatch('materials/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -386,7 +393,69 @@ export default {
       })
       this.tableShow(filterData)
     },
+    //移除
+    rowDel(index,row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // this.$message({
+        //   type: 'success',
+        //   showClose: true, duration: 2000, message: '删除成功!'
+        // });
+        // this.mock_all.list.splice(index, 1);
+        this.$store.dispatch('materials/deleteSingleAction', row.material_id);
+        this.tableShow(this.mock_all.list)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          showClose: true, duration: 2000, message: '已取消删除'
+        });
+      });
 
+    },
+    // 选择
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    //批量删除
+    rowRemove() {
+      if (this.multipleSelection.length) {
+         let listRemove = []
+        let xxx = this.multipleSelection
+        xxx.map(item => {
+          listRemove.push(item.material_id)
+          return listRemove
+        })
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // this.$message({
+          //   type: 'success',
+          //   showClose: true, duration: 2000, message: '删除成功!'
+          // });
+          // this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('materials/deleteListAction', listRemove)
+          this.tableShow(this.mock_all.list)
+          console.log(this.multipleSelection)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            showClose: true, duration: 2000, message: '已取消删除'
+          });
+        });
+      }
+      else {
+        this.$message({
+          type: "warning",
+          showClose: true, duration: 2000, message: "请选择需要删除的选项"
+        });
+        return false;
+      }
+    },
     //新增
     rowAdd() {
       this.addorChange = true;
@@ -414,22 +483,24 @@ export default {
       //验证
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // alert('submit!');
+          // submit
           this.$store.commit('materials/setformadd', { ...this.formData })
-          this.$store.commit('materials/setNowTime')
+          // this.$store.commit('materials/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('materials/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            // this.$store.commit('materials/rowAddStore')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '新增成功!'
+            // })
+            this.$store.dispatch('materials/addListAction');
 
           } else {
-            this.$store.commit('materials/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            // this.$store.commit('materials/pwdChange')
+            // this.$message({
+            //   type: 'success',
+            //   showClose: true, duration: 2000, message: '修改成功!'
+            // })
+            this.$store.dispatch('materials/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
@@ -442,61 +513,7 @@ export default {
 
     },
 
-    //移除
-    rowDel(index) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
-        this.tableShow(this.mock_all.list)
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          showClose: true, duration: 2000, message: '已取消删除'
-        });
-      });
 
-    },
-    // 选择
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    },
-    //批量删除
-    rowRemove() {
-      if (this.multipleSelection.length) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('materials/rowRemoveStore', this.multipleSelection)
-          this.tableShow(this.mock_all.list)
-          console.log(this.multipleSelection)
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            showClose: true, duration: 2000, message: '已取消删除'
-          });
-        });
-      }
-      else {
-        this.$message({
-          type: "warning",
-          showClose: true, duration: 2000, message: "请选择需要删除的选项"
-        });
-        return false;
-      }
-    },
     //分页
     handleSizeChange(val) {
       this.pageSize = val;

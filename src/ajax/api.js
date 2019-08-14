@@ -79,12 +79,56 @@ const FORMAT_ADIT_API = '/api/Format/edit';
 const FORMAT_DELETE_SINGLE_API = '/api/Format/delete/single';
 
 /*
-说明： 规格删除
+说明： 规格选择删除
 请求方式：delete
 参数： 无
 */
 const FORMAT_DELETE_API = '/api/Format/delete';
 
+// Materials物料////////
+
+/*
+说明： 规格数据
+请求方式：POST
+参数： 无
+*/
+const MATERIALS_SELECT_API = '/api/Materials/select';
+
+/*
+说明： 规格查询
+请求方式：POST
+参数： 无
+*/
+const MATERIALS_BASE_API = '/api/Materials/select/base';
+
+
+/*
+说明： 规格新增
+请求方式：POST
+参数： 无
+*/
+const MATERIALS_ADD_API = '/api/Materials/add/single';
+
+/*
+说明： 规格修改
+请求方式：put
+参数： 无
+*/
+const MATERIALS_ADIT_API = '/api/Materials/edit';
+
+/*
+说明： 规格删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALS_DELETE_SINGLE_API = '/api/Materials/delete/single';
+
+/*
+说明： 规格选择删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALS_DELETE_API = '/api/Materials/delete';
 
 export default {
     HOST: DEV_HOST,
@@ -98,6 +142,23 @@ export default {
     FORMAT_ADD_API,
     FORMAT_ADIT_API,
     FORMAT_DELETE_SINGLE_API,
-    FORMAT_DELETE_API
+    FORMAT_DELETE_API,
+    MATERIALS_SELECT_API,
+    MATERIALS_BASE_API,
+    MATERIALS_ADD_API,
+    MATERIALS_ADIT_API,
+    MATERIALS_DELETE_SINGLE_API,
+    MATERIALS_DELETE_API,
 }
-
+    newItem.material_name=item.materialsName;
+      newItem.material_type=item.materialsType;
+      newItem.format_id=item.formatId+' '+item.formatName;
+      newItem.material_unit=item.materialsUnit;
+      newItem.supplier_id=item.supplierId+' '+item.supplierName;
+      newItem.material_erpid=item.materialsErpid;
+      newItem.material_indate=item.materialsIndate;
+      newItem.material_storeid=item.materialsStoreid;
+      newItem.material_operaterid=item.materialsOperaterid;
+      newItem.material_operaterdate=item.materialsOperaterdate;
+      newItem.parent_id=item.parentId;
+      newItem.product_id=item.productId+' '+item.productName;
