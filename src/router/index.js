@@ -5,7 +5,7 @@ import materialsRoute from './materials'
 import orderRoute from './order'
 import repairRoute from './repair'
 import workRoute from './worker'
-import settingRoute from './setting'
+// import settingRoute from './setting'
 
 Vue.use(Router)
 const routes= [
@@ -14,7 +14,7 @@ const routes= [
   orderRoute,
   repairRoute,
   workRoute,
-  settingRoute,
+  // settingRoute,
   {
     path: '/',
     redirect: '/home/home'

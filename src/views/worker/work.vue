@@ -107,9 +107,14 @@ export default {
       changeIndex: state => state.work.changeIndex,
       formadd: state => state.work.formadd,
     }),
-
+    tableList(){
+      return this.mock_all.list
+    }
   },
   watch: {
+    tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -125,6 +130,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('work/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -150,17 +156,13 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+       this.$store.dispatch('work/deleteSingleAction', row.work_id);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -177,16 +179,18 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+         let listRemove = []
+        let Selection = this.multipleSelection
+        Selection.map(item => {
+          listRemove.push(item.work_id)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('work/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('work/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -230,19 +234,10 @@ export default {
         if (valid) {
           // submit
           this.$store.commit('work/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('work/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('work/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+           this.$store.dispatch('work/addListAction');
           } else {
-            this.$store.commit('work/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            this.$store.dispatch('work/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

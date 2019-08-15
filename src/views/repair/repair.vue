@@ -157,9 +157,15 @@ export default {
       changeIndex: state => state.repair.changeIndex,
       formadd: state => state.repair.formadd,
     }),
+    tableList(){
+      return this.mock_all.list
+    }
 
   },
   watch: {
+     tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -175,6 +181,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('repair/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -208,17 +215,13 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+        this.$store.dispatch('repair/deleteSingleAction', row.repair_id);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -235,16 +238,18 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let Selection = this.multipleSelection
+        Selection.map(item => {
+          listRemove.push(item.repair_id)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('repair/rowRemoveStore', this.multipleSelection)
+         this.$store.dispatch('repair/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -289,19 +294,10 @@ export default {
         if (valid) {
           // submit
           this.$store.commit('repair/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('repair/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('repair/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            this.$store.dispatch('repair/addListAction');
           } else {
-            this.$store.commit('repair/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            this.$store.dispatch('repair/editListAction');
           }
           this.$refs.upload.submit();
           this.centerDialogVisible = false

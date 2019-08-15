@@ -131,7 +131,6 @@ export default {
   created() {
     this.$store.dispatch('customers/getListAction');
     this.tableShow(this.mock_all.list)
-    // 请求商品总数
   },
   methods: {
     // 搜索弹框数据，去重
@@ -191,7 +190,8 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

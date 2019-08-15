@@ -310,6 +310,186 @@ const ORDER_DELETE_SINGLE_API = '/api/Order/delete/single';
 */
 const ORDER_DELETE_API = '/api/Order/delete';
 
+// /////  ORDERPRODUCT  产品订单///
+
+/*
+说明： 产品订单表数据
+请求方式：POST
+参数： 无
+*/
+const ORDERPRODUCT_SELECT_API = '/api/OrderProduct/select';
+
+/*
+说明： 产品订单表查询
+请求方式：POST
+参数： 无
+*/
+const ORDERPRODUCT_BASE_API = '/api/OrderProduct/select/base';
+
+
+/*
+说明： 产品订单表新增
+请求方式：POST
+参数： 无
+*/
+const ORDERPRODUCT_ADD_API = '/api/OrderProduct/add/single';
+
+/*
+说明： 产品订单表修改
+请求方式：put
+参数： 无
+*/
+const ORDERPRODUCT_ADIT_API = '/api/OrderProduct/edit';
+
+/*
+说明： 产品订单表删除
+请求方式：delete
+参数： 无
+*/
+const ORDERPRODUCT_DELETE_SINGLE_API = '/api/OrderProduct/delete/single';
+
+/*
+说明： 产品订单表选择删除
+请求方式：delete
+参数： 无
+*/
+const ORDERPRODUCT_DELETE_API = '/api/OrderProduct/delete';
+
+// /////  REPAIR  返修表///
+
+/*
+说明： 返修表数据
+请求方式：POST
+参数： 无
+*/
+const REPAIR_SELECT_API = '/api/Repair/select';
+
+/*
+说明： 返修表查询
+请求方式：POST
+参数： 无
+*/
+const REPAIR_BASE_API = '/api/Repair/select/base';
+
+
+/*
+说明： 返修表新增
+请求方式：POST
+参数： 无
+*/
+const REPAIR_ADD_API = '/api/Repair/add/single';
+
+/*
+说明： 返修表修改
+请求方式：put
+参数： 无
+*/
+const REPAIR_ADIT_API = '/api/Repair/edit';
+
+/*
+说明： 返修表删除
+请求方式：delete
+参数： 无
+*/
+const REPAIR_DELETE_SINGLE_API = '/api/Repair/delete/single';
+
+/*
+说明： 返修表选择删除
+请求方式：delete
+参数： 无
+*/
+const REPAIR_DELETE_API = '/api/Repair/delete';
+
+// /////  REPAIR  物料返修表///
+
+/*
+说明： 物料返修表数据
+请求方式：POST
+参数： 无
+*/
+const MATERIALSREPAIR_SELECT_API = '/api/MaterialsRepair/select';
+
+/*
+说明： 物料返修表查询
+请求方式：POST
+参数： 无
+*/
+const MATERIALSREPAIR_BASE_API = '/api/MaterialsRepair/select/base';
+
+
+/*
+说明： 物料返修表新增
+请求方式：POST
+参数： 无
+*/
+const MATERIALSREPAIR_ADD_API = '/api/MaterialsRepair/add/single';
+
+/*
+说明： 物料返修表修改
+请求方式：put
+参数： 无
+*/
+const MATERIALSREPAIR_ADIT_API = '/api/MaterialsRepair/edit';
+
+/*
+说明： 物料返修表删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALSREPAIR_DELETE_SINGLE_API = '/api/MaterialsRepair/delete/single';
+
+/*
+说明： 物料返修表选择删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALSREPAIR_DELETE_API = '/api/MaterialsRepair/delete';
+
+// /////  WORK  工序表///
+
+/*
+说明： 工序表数据
+请求方式：POST
+参数： 无
+*/
+const WORK_SELECT_API = '/api/Work/select';
+
+/*
+说明： 工序表查询
+请求方式：POST
+参数： 无
+*/
+const WORK_BASE_API = '/api/Work/select/base';
+
+
+/*
+说明： 工序表新增
+请求方式：POST
+参数： 无
+*/
+const WORK_ADD_API = '/api/Work/add/single';
+
+/*
+说明： 工序表修改
+请求方式：put
+参数： 无
+*/
+const WORK_ADIT_API = '/api/Work/edit';
+
+/*
+说明： 工序表删除
+请求方式：delete
+参数： 无
+*/
+const WORK_DELETE_SINGLE_API = '/api/Work/delete/single';
+
+/*
+说明： 工序表选择删除
+请求方式：delete
+参数： 无
+*/
+const WORK_DELETE_API = '/api/Work/delete';
+
 export default {
     HOST: DEV_HOST,
     // USER_ADD_API,
@@ -352,5 +532,29 @@ export default {
     ORDER_ADD_API,
     ORDER_ADIT_API,
     ORDER_DELETE_SINGLE_API,
-    ORDER_DELETE_API
+    ORDER_DELETE_API,
+    ORDERPRODUCT_SELECT_API,
+    ORDERPRODUCT_BASE_API,
+    ORDERPRODUCT_ADD_API,
+    ORDERPRODUCT_ADIT_API,
+    ORDERPRODUCT_DELETE_SINGLE_API,
+    ORDERPRODUCT_DELETE_API,
+    REPAIR_SELECT_API,
+    REPAIR_BASE_API,
+    REPAIR_ADD_API,
+    REPAIR_ADIT_API,
+    REPAIR_DELETE_SINGLE_API,
+    REPAIR_DELETE_API,
+    MATERIALSREPAIR_SELECT_API,
+    MATERIALSREPAIR_BASE_API,
+    MATERIALSREPAIR_ADD_API,
+    MATERIALSREPAIR_ADIT_API,
+    MATERIALSREPAIR_DELETE_SINGLE_API,
+    MATERIALSREPAIR_DELETE_API,
+    WORK_SELECT_API,
+    WORK_BASE_API,
+    WORK_ADD_API,
+    WORK_ADIT_API,
+    WORK_DELETE_SINGLE_API,
+    WORK_DELETE_API
 }

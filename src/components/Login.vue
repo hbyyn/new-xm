@@ -65,11 +65,7 @@ export default {
         loginLoading:false,
         remember: sessionStorage.getItem("remember") || false
       },
-      loginXXX: {
-        client_id: 'Test001',
-        username: 'admin',
-        password: '123456'
-      }
+
 
     }
   },

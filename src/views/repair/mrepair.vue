@@ -76,8 +76,6 @@
           <el-select v-model="mock_all.formData.material_id" :readonly="readonlyFlat" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
               :value="item.material_id+' '+item.material_name">
-              <span>{{'ID:'+item.material_id}}</span>
-              <span>{{'材料名:'+item.material_name}}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -85,8 +83,6 @@
           <el-select v-model="mock_all.formData.repair_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in repair_store" :key="item.id"
               :value="item.repair_id+' '+item.repair_name">
-              <span>{{'ID:'+item.repair_id}}</span>
-              <span>{{'返修名:'+item.repair_name}}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -153,9 +149,14 @@ export default {
       materials_store: state => state.materials.tableData.list,
       repair_store: state => state.repair.tableData.list.filter(item=>!item.parent_id),
     }),
-
+    tableList(){
+      return this.mock_all.list
+    }
   },
   watch: {
+    tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -171,6 +172,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('mrepair/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -228,17 +230,13 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+        this.$store.dispatch('mrepair/deleteSingleAction', row);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -255,16 +253,24 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let Selection = this.multipleSelection
+        Selection.map(item => {
+          let obj={
+            "repairId":'',
+            "materialsId":''
+          }
+          obj.repairId=item.repair_id.split(' ')[0]
+          obj.materialsId=item.material_id.split(' ')[0]
+          listRemove.push(obj)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('mrepair/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('mrepair/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -308,19 +314,10 @@ export default {
         if (valid) {
           // submit
           this.$store.commit('mrepair/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('mrepair/setNowTime')
           if (this.addorChange) {
-            this.$store.commit('mrepair/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            this.$store.dispatch('mrepair/addListAction');
           } else {
-            this.$store.commit('mrepair/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+            this.$store.dispatch('mrepair/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

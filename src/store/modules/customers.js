@@ -252,3 +252,9 @@ export default {
   mutations,
   actions
 };
+
+//   {
+    //    newItem.work_id=item.workId;
+      // newItem.work_name=item.workName;
+      // newItem.parent_id=item.parentId;
+      // newItem.work_desc=item.workDesc;

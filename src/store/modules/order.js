@@ -91,9 +91,8 @@ const actions = {
       newItem.client_id=item.clientId;
       newItem.order_id=item.orderId;
       newItem.customers_id=item.customersId;
-      newItem.order_date=item.orderDate;
-      newItem.order_outdate=item.orderOutdate;
-
+      newItem.order_date=item.orderDate?item.orderDate.replace(/T/," "):item.orderDate;
+      newItem.order_outdate=item.orderOutdate?item.orderOutdate.replace(/T/," "):item.orderOutdate;
       newItem.client_creator=item.orderCreator;
       newItem.client_createtime=item.orderCreatetime;
       newItem.client_updator=item.orderUpdator;
@@ -106,7 +105,7 @@ const actions = {
   async addListAction({ dispatch }) {
     let formAdd={
       "orderId":state.formadd.order_id,
-      "customersId":state.formadd.customers_id,
+      "customersId":state.formadd.customers_id.split(' ')[0],
       "orderDate":state.formadd.order_date,
       "orderOutdate":state.formadd.order_outdate,
     }
@@ -140,7 +139,7 @@ const actions = {
   async editListAction({ dispatch }) {
     let formEdit={
       "orderId":state.formadd.order_id,
-      "customersId":state.formadd.customers_id,
+      "customersId":state.formadd.customers_id.split(' ')[0],
       "orderDate":state.formadd.order_date,
       "orderOutdate":state.formadd.order_outdate,
     }

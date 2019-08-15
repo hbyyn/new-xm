@@ -176,7 +176,7 @@
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
             <el-select v-model="formData.parent_id" clearable :disabled="flagParentId" placeholder="请选择">
-              <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.material_id" :label="item.material_id+ ' ' +item.material_name">
+              <el-option class="dialog_select" v-for="(item,index) in mock_all.list" :key="index" :value="item.material_id" :label="item.material_id+ ' ' +item.material_name">
               </el-option>
             </el-select>
           </el-form-item>
@@ -314,20 +314,20 @@ export default {
         document.onkeydown = undefined;
       }
     },
-    fromParentId(val) {
-      if (val) {
-        this.flagProductId = true
-      } else {
-        this.flagProductId = false
-      }
-    },
-    fromProductId(val) {
-      if (val) {
-        this.flagParentId = true
-      } else {
-        this.flagParentId = false
-      }
-    },
+    // fromParentId(val) {
+    //   if (val) {
+    //     this.flagProductId = true
+    //   } else {
+    //     this.flagProductId = false
+    //   }
+    // },
+    // fromProductId(val) {
+    //   if (val) {
+    //     this.flagParentId = true
+    //   } else {
+    //     this.flagParentId = false
+    //   }
+    // },
 
 
   },
@@ -500,6 +500,7 @@ export default {
             //   type: 'success',
             //   showClose: true, duration: 2000, message: '修改成功!'
             // })
+            console.log(this.formData.parent_id)
             this.$store.dispatch('materials/editListAction');
           }
           this.centerDialogVisible = false
