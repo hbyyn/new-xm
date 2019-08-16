@@ -64,13 +64,13 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="order_id">
-          <el-select v-model="mock_all.formData.order_id" placeholder="请选择">
-            <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id+' '+item.product_name">
+          <el-select v-model="mock_all.formData.order_id" placeholder="请选择" :disabled="readonlyFlat">
+            <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[1].label">
-          <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
+        <el-form-item :label="mock_all.columns[1].label" >
+          <el-select v-model="mock_all.formData.product_id" placeholder="请选择" :disabled="readonlyFlat">
             <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
               :value="item.product_id+' '+item.product_name">
             </el-option>
@@ -202,7 +202,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch('orderproduct/deleteSingleAction', row.order_id);
+        let deleteRow={
+          "productId":row.product_id.split(' ')[0] ,
+          "orderId":row.order_id
+        }
+        this.$store.dispatch('orderproduct/deleteSingleAction', deleteRow);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -222,7 +226,13 @@ export default {
         let listRemove = []
         let Selection = this.multipleSelection
         Selection.map(item => {
-          listRemove.push(item.order_id)
+           let obj={
+            "orderId":'',
+            "productId":''
+          }
+          obj.orderId=item.order_id
+          obj.productId=item.product_id.split(' ')[0]
+          listRemove.push(obj)
           return listRemove
         })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

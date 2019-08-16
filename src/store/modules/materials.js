@@ -191,7 +191,7 @@ const actions = {
       "materialsName":state.formadd.material_name,
       "materialsType":state.formadd.material_type,
       "formatId":state.formadd.format_id.split(' ')[0],
-      "formatName":state.formadd.format_id.split(' ')[0],
+      "formatName":state.formadd.format_id.split(' ')[1],
       "materialsUnit":state.formadd.material_unit,
       "supplierId":state.formadd.supplier_id.split(' ')[0],
       "supplierName":state.formadd.supplier_id.split(' ')[1],

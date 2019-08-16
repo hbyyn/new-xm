@@ -69,7 +69,7 @@
           <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[0].label" prop="order_id">
-          <el-input v-model="mock_all.formData.order_id" :readonly="readonlyFlat"></el-input>
+          <el-input v-model="mock_all.formData.order_id" :disabled="readonlyFlat"></el-input>
         </el-form-item>
         <!-- <el-form-item :label="mock_all.columns[2].label">
           <el-input v-model="mock_all.formData.customers_id"></el-input>
@@ -224,12 +224,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // this.$message({
-        //   type: 'success',
-        //   showClose: true, duration: 2000, message: '删除成功!'
-        // });
-        // this.mock_all.list.splice(index, 1);
-        this.$store.dispatch('order/deleteSingleAction', row.order_id);
+        let deleteRow={
+          "orderId":row.order_id
+        }
+        this.$store.dispatch('order/deleteSingleAction', deleteRow);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({

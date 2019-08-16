@@ -90,7 +90,7 @@ const actions = {
       const newItem={};
       newItem.client_id=item.clientId;
       newItem.order_id=item.orderId;
-      newItem.customers_id=item.customersId;
+      newItem.customers_id=item.customersId+" "+item.customersName;
       newItem.order_date=item.orderDate?item.orderDate.replace(/T/," "):item.orderDate;
       newItem.order_outdate=item.orderOutdate?item.orderOutdate.replace(/T/," "):item.orderOutdate;
       newItem.client_creator=item.orderCreator;
@@ -106,6 +106,7 @@ const actions = {
     let formAdd={
       "orderId":state.formadd.order_id,
       "customersId":state.formadd.customers_id.split(' ')[0],
+      "customersName":state.formadd.customers_id.split(' ')[1],
       "orderDate":state.formadd.order_date,
       "orderOutdate":state.formadd.order_outdate,
     }
@@ -140,6 +141,7 @@ const actions = {
     let formEdit={
       "orderId":state.formadd.order_id,
       "customersId":state.formadd.customers_id.split(' ')[0],
+      "customersName":state.formadd.customers_id.split(' ')[1],
       "orderDate":state.formadd.order_date,
       "orderOutdate":state.formadd.order_outdate,
     }
@@ -172,14 +174,8 @@ const actions = {
 
   },
   // 删除
-  async deleteSingleAction({ dispatch },param) {
-
-    let formDelete={
-      "orderId":param
-    }
-    console.log(formDelete);
-
-    let result = await request.oDelete(api.ORDER_DELETE_SINGLE_API,formDelete);
+  async deleteSingleAction({ dispatch },params) {
+    let result = await request.oDelete(api.ORDER_DELETE_SINGLE_API,params);
     let data = result.data;
     if(data.statusCode==10000){
       Message({

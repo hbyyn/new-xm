@@ -41,7 +41,7 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime:"",
+  parentOption:[]
 };
 const mutations = {
   setformadd(state, param) {
@@ -53,12 +53,38 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list)
-  }
+  },
+  setParentOption(state, param) {
+    state.parentOption= param;
+    console.log(state.parentOption)
+  },
+
 };
 
 
 
 const actions = {
+  async getParentOptionAction(context) {
+    let result = await request.post(api.WORK_BASETREE_API);
+    let data=result.data.data
+    console.log(data)
+    let newarr = []
+    function render (arr, newarr) {
+        for (let i=0;i < arr.length; i++) {
+          newarr.push({value:arr[i].workId,label:arr[i].workId+''+arr[i].workName,children:[]})
+          if (arr[i].childNodes && arr[i].childNodes.length > 0) {
+            render(arr[i].childNodes, newarr[i].children)
+          }else if(newarr[i].children.length == 0){
+            newarr[i].children=''
+          }
+        }
+        return newarr
+      }
+      render(data,newarr)
+      console.log(newarr)
+    context.commit("setParentOption", newarr);
+
+  },
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.WORK_SELECT_API);
@@ -73,9 +99,9 @@ const actions = {
       newItem.work_name=item.workName;
       newItem.parent_id=item.workParentid;
       newItem.work_desc=item.workDesc;
-      newItem.client_creator=item.handleCreator;
+      newItem.client_creator=item.workCreator;
       newItem.client_createtime=item.workCreatetime;
-      newItem.client_updator=item.handleUpdator;
+      newItem.client_updator=item.workUpdator;
       newItem.client_updatetime=item.workUpdatetime;
       return newItem
     })
@@ -86,7 +112,7 @@ const actions = {
     let formAdd={
       "workId":state.formadd.work_id,
       "workName":state.formadd.work_name,
-      "workParentid":state.formadd.parent_id,
+      "workParentid":state.formadd.parent_id.pop(),
       "workDesc":state.formadd.work_desc,
     }
     let result = await request.post(api.WORK_ADD_API,formAdd);

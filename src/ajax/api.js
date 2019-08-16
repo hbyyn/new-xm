@@ -490,6 +490,59 @@ const WORK_DELETE_SINGLE_API = '/api/Work/delete/single';
 */
 const WORK_DELETE_API = '/api/Work/delete';
 
+/*
+说明： 工序表选择父级
+请求方式：delete
+参数： 无
+*/
+const WORK_BASETREE_API = '/api/Work/select/base/tree';
+
+
+// /////  MATERIALSWORK  工序表///
+
+/*
+说明： 工序表数据
+请求方式：POST
+参数： 无
+*/
+const MATERIALSWORK_SELECT_API = '/api/MaterialsWork/select';
+
+/*
+说明： 工序表查询
+请求方式：POST
+参数： 无
+*/
+const MATERIALSWORK_BASE_API = '/api/MaterialsWork/select/base';
+
+
+/*
+说明： 工序表新增
+请求方式：POST
+参数： 无
+*/
+const MATERIALSWORK_ADD_API = '/api/MaterialsWork/add/single';
+
+/*
+说明： 工序表修改
+请求方式：put
+参数： 无
+*/
+const MATERIALSWORK_ADIT_API = '/api/MaterialsWork/edit';
+
+/*
+说明： 工序表删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALSWORK_DELETE_SINGLE_API = '/api/MaterialsWork/delete/single';
+
+/*
+说明： 工序表选择删除
+请求方式：delete
+参数： 无
+*/
+const MATERIALSWORK_DELETE_API = '/api/MaterialsWork/delete';
+
 export default {
     HOST: DEV_HOST,
     // USER_ADD_API,
@@ -556,5 +609,12 @@ export default {
     WORK_ADD_API,
     WORK_ADIT_API,
     WORK_DELETE_SINGLE_API,
-    WORK_DELETE_API
+    WORK_DELETE_API,
+    WORK_BASETREE_API,
+    MATERIALSWORK_SELECT_API,
+    MATERIALSWORK_BASE_API,
+    MATERIALSWORK_ADD_API,
+    MATERIALSWORK_ADIT_API,
+    MATERIALSWORK_DELETE_SINGLE_API,
+    MATERIALSWORK_DELETE_API
 }

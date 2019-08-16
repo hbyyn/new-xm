@@ -64,7 +64,7 @@ const actions = {
       const newItem={};
       newItem.client_id=item.clientId;
       newItem.order_id=item.orderId;
-      newItem.product_id=item.productId;
+      newItem.product_id=item.productId+' '+item.productName;
       newItem.order_product_date=item.orderProductDate ? item.orderProductDate.replace(/T/," ") : item.orderProductDate;
       newItem.client_creator=item.orderProductCreator;
       newItem.client_createtime=item.orderProductCreatetime;
@@ -77,8 +77,9 @@ const actions = {
   // 新增
   async addListAction({ dispatch }) {
     let formAdd={
-      "orderId":state.formadd.order_id.split(' ')[0],
+      "orderId":state.formadd.order_id,
       "productId":state.formadd.product_id.split(' ')[0],
+      "productName":state.formadd.product_id.split(' ')[1],
       "orderProductDate":state.formadd.order_product_date,
     }
     let result = await request.post(api.ORDERPRODUCT_ADD_API,formAdd);
@@ -110,8 +111,9 @@ const actions = {
   // 修改
   async editListAction({ dispatch }) {
     let formEdit={
-      "orderId":state.formadd.order_id.split(' ')[0],
+      "orderId":state.formadd.order_id,
       "productId":state.formadd.product_id.split(' ')[0],
+      "productName":state.formadd.product_id.split(' ')[1],
       "orderProductDate":state.formadd.order_product_date,
     }
     let result = await request.put(api.ORDERPRODUCT_ADIT_API,formEdit);
@@ -143,15 +145,10 @@ const actions = {
 
   },
   // 删除
-  async deleteSingleAction({ dispatch },param) {
-
-    let formDelete={
-      "orderId":param
-    }
-    console.log(formDelete);
-
-    let result = await request.oDelete(api.ORDERPRODUCT_DELETE_SINGLE_API,formDelete);
+  async deleteSingleAction({ dispatch },params) {
+    let result = await request.oDelete(api.ORDERPRODUCT_DELETE_SINGLE_API,params);
     let data = result.data;
+    console.log(data);
     if(data.statusCode==10000){
       Message({
         type: 'success',
@@ -173,14 +170,14 @@ const actions = {
         showClose: true, duration: 2000, message: '操作失败!'
       })
     }
-      console.log(data);
+
       await dispatch('getListAction')
   },
    // 删除多
    async deleteListAction({ dispatch },param) {
     console.log(param)
     let formDelete={
-      "orderIds":param
+      "primaryKeys":param
     }
     console.log(formDelete);
     let result = await request.oDelete(api.ORDERPRODUCT_DELETE_API,formDelete);

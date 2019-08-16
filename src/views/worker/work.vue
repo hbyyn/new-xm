@@ -56,12 +56,15 @@
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.work_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <!-- <el-form-item :label="mock_all.columns[2].label">
           <el-select v-model="mock_all.formData.parent_id" clearable placeholder="请选择">
             <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.work_id"
               :label="item.work_id+ ' ' +item.work_name">
             </el-option>
           </el-select>
+        </el-form-item> -->
+        <el-form-item :label="mock_all.columns[2].label">
+          <el-cascader placeholder="请选择" v-model="mock_all.formData.parent_id" :show-all-levels="false" :options="parentOption"  clearable filterable :props="{ checkStrictly: true }" style="width:350px;"></el-cascader>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.work_desc"></el-input>
@@ -106,12 +109,16 @@ export default {
       mock_all: state => state.work.tableData,//{formData,list,columns}
       changeIndex: state => state.work.changeIndex,
       formadd: state => state.work.formadd,
+      parentOption: state => state.work.parentOption,
     }),
     tableList(){
       return this.mock_all.list
     }
   },
   watch: {
+    parentOption(val){
+      console.log(val)
+    },
     tableList(){
       this.tableShow(this.mock_all.list)
     },
@@ -131,6 +138,8 @@ export default {
   },
   created() {
     this.$store.dispatch('work/getListAction');
+    this.$store.dispatch('work/getParentOptionAction');
+
     this.tableShow(this.mock_all.list)
   },
   methods: {

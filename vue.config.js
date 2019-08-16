@@ -2,7 +2,7 @@
 //   devServer: {
 //     proxy: {
 //       "/api": {
-//         target: "https://easy-mock.com/mock/5d414b8449d6fd3f971c59a4",
+//         target: "http://192.168.10.219:5687",
 //         changeOrigin: true
 //       }
 //     }

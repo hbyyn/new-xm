@@ -192,7 +192,7 @@ const actions = {
    async deleteListAction({ dispatch },param) {
     console.log(param)
     let formDelete={
-      "materialsIds":param,
+      "primaryKeys":param,
     }
     console.log(formDelete);
     let result = await request.oDelete(api.MATERIALSREPAIR_DELETE_API,formDelete);

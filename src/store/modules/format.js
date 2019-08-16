@@ -237,3 +237,11 @@ export default {
   actions
 };
 
+//   newItem.material_id=item.materialsId+' '+item.materialsName;
+// newItem.work_id=item.workId+' '+item.workName;
+// newItem.material_work_begindate=item.materialsWorkBegindate;
+// newItem.material_work_enddate=item.materialsWorkEnddate;
+// newItem.client_creator=item.materialsWorkCreator;
+// newItem.client_createtime=item.materialsWorkCreatetime;
+// newItem.client_updator=item.materialsWorkUpdator;
+// newItem.client_updatetime=item.materialsWorkUpdatetime;

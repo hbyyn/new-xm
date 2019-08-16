@@ -152,9 +152,14 @@ export default {
       materials_store: state => state.materials.tableData.list,
       work_store: state => state.work.tableData.list.filter(item=>!item.parent_id),
     }),
-
+    tableList(){
+      return this.mock_all.list
+    }
   },
   watch: {
+    tableList(){
+      this.tableShow(this.mock_all.list)
+    },
     //弹窗回车
     centerDialogVisible(val) {
       if (val) {
@@ -170,6 +175,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('mwork/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -225,17 +231,17 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index) {
+    rowDel(index,row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          showClose: true, duration: 2000, message: '删除成功!'
-        });
-        this.mock_all.list.splice(index, 1);
+        let DeleteRow={
+          workId:row.work_id.split(' ')[0],
+          materialsId:row.material_id.split(' ')[0]
+        }
+        this.$store.dispatch('mwork/deleteSingleAction',DeleteRow);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -252,16 +258,18 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
+        let listRemove = []
+        let Selection = this.multipleSelection
+        Selection.map(item => {
+          listRemove.push(item.material_id)
+          return listRemove
+        })
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            showClose: true, duration: 2000, message: '删除成功!'
-          });
-          this.$store.commit('mwork/rowRemoveStore', this.multipleSelection)
+          this.$store.dispatch('mwork/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -303,21 +311,10 @@ export default {
         if (valid) {
           // submit
           this.$store.commit('mwork/setformadd', { ...this.mock_all.formData })
-          this.$store.commit('mwork/setNowTime')
           if (this.addorChange) {
-            // this.mock_all.list.unshift(this.formadd)
-            this.$store.commit('mwork/rowAddStore')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '新增成功!'
-            })
+            this.$store.dispatch('mwork/addListAction');
           } else {
-            // this.mock_all.list.splice(this.changeIndex, 1, this.formadd)
-            this.$store.commit('mwork/pwdChange')
-            this.$message({
-              type: 'success',
-              showClose: true, duration: 2000, message: '修改成功!'
-            })
+           this.$store.dispatch('mwork/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)
