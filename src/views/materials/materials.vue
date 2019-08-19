@@ -119,7 +119,7 @@
           <el-input v-model="formData.client_id"></el-input>
         </el-form-item> -->
           <el-form-item :label="mock_all.columns[0].label" prop="material_id">
-            <el-input v-model="formData.material_id" :readonly="readonlyFlat"></el-input>
+            <el-input v-model="formData.material_id" :disabled="disabledFlat"></el-input>
           </el-form-item>
           <el-form-item :label="mock_all.columns[1].label">
             <el-input v-model="formData.material_name"></el-input>
@@ -190,6 +190,9 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item :label="mock_all.columns[13].label">
+          <el-input v-model="formData.material_meno"></el-input>
+        </el-form-item>
 
           <!-- <el-form-item :label="mock_all.columns[14].label">
           <el-input v-model="formData.client_creator"></el-input>
@@ -225,7 +228,7 @@ export default {
       centerDialogVisible: false,//弹框
       formtitle: '',
       addorChange: true,//判断修改新增
-      readonlyFlat: false,
+      disabledFlat: false,
       tableData: '',
       flagParentId: false,
       flagProductId: false,
@@ -244,6 +247,7 @@ export default {
         material_operaterdate: "",
         parent_id: "",
         product_id: "",
+        material_meno:'',
         client_creator: "",
         client_createtime: "",
         client_updator: "",
@@ -460,7 +464,7 @@ export default {
     rowAdd() {
       this.addorChange = true;
       this.centerDialogVisible = true;
-      this.readonlyFlat = false;
+      this.disabledFlat = false;
       this.formtitle = '新增';
 
       let obj = this.formData
@@ -475,7 +479,7 @@ export default {
       this.$store.commit('materials/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.readonlyFlat = true;
+      this.disabledFlat = true;
       this.formData = { ...row };
     },
     //弹窗确认

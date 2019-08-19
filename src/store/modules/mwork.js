@@ -23,6 +23,7 @@ const state = {
       {id:7,prop:'work_id',label:"工序编号"},
       {id:8,prop:'material_work_begindate',label:"开始日期"},
       {id:11,prop:'material_work_enddate',label:"结束日期"},
+      { id: 21, prop: "material_work_meno", label: "备注" },
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
@@ -34,6 +35,7 @@ const state = {
       work_id: 'c222+',
       material_work_begindate: '',
       material_work_enddate: '',
+      material_work_meno:'',
       client_creator: '',
       client_createtime: '',
       client_updator: '',
@@ -72,6 +74,7 @@ const actions = {
       newItem.work_id=item.workId+' '+item.workName;
       newItem.material_work_begindate=item.materialsWorkBegindate.replace(/T/," ");
       newItem.material_work_enddate=item.materialsWorkEnddate.replace(/T/," ");
+      newItem.material_work_meno = item.materialsWorkMeno;
       newItem.client_creator=item.materialsWorkCreator;
       newItem.client_createtime=item.materialsWorkCreatetime;
       newItem.client_updator=item.materialsWorkUpdator;
@@ -89,6 +92,7 @@ const actions = {
       "workName":state.formadd.work_id.split(' ')[1],
       "materialsWorkBegindate":state.formadd.material_work_begindate,
       "materialsWorkEnddate":state.formadd.material_work_enddate,
+      "materialsWorkMeno": state.formadd.material_work_meno,
     }
     let result = await request.post(api.MATERIALSWORK_ADD_API,formAdd);
     let data = result.data;
@@ -125,6 +129,7 @@ const actions = {
       "workName":state.formadd.work_id.split(' ')[1],
       "materialsWorkBegindate":state.formadd.material_work_begindate,
       "materialsWorkEnddate":state.formadd.material_work_enddate,
+      "materialsWorkMeno": state.formadd.material_work_meno,
     }
     let result = await request.put(api.MATERIALSWORK_ADIT_API,formEdit);
     let data = result.data;

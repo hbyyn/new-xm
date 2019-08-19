@@ -491,11 +491,18 @@ const WORK_DELETE_SINGLE_API = '/api/Work/delete/single';
 const WORK_DELETE_API = '/api/Work/delete';
 
 /*
-说明： 工序表选择父级
-请求方式：delete
+说明： 工序表父级tree
+请求方式：post
 参数： 无
 */
-const WORK_BASETREE_API = '/api/Work/select/base/tree';
+const WORK_BASE_TREE_API = '/api/Work/select/base/tree';
+
+/*
+说明： 工序图表tree
+请求方式：post
+参数： 无
+*/
+const WORK_SELECT_CHILDTREE_API = '/api/Work/select/childtree';
 
 
 // /////  MATERIALSWORK  工序表///
@@ -610,11 +617,12 @@ export default {
     WORK_ADIT_API,
     WORK_DELETE_SINGLE_API,
     WORK_DELETE_API,
-    WORK_BASETREE_API,
+    WORK_BASE_TREE_API,
     MATERIALSWORK_SELECT_API,
     MATERIALSWORK_BASE_API,
     MATERIALSWORK_ADD_API,
     MATERIALSWORK_ADIT_API,
     MATERIALSWORK_DELETE_SINGLE_API,
-    MATERIALSWORK_DELETE_API
+    MATERIALSWORK_DELETE_API,
+    WORK_SELECT_CHILDTREE_API
 }

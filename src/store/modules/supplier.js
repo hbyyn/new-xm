@@ -26,6 +26,8 @@ const state = {
       { id: 4, prop: 'supplier_tel', label: "供应商电话" },
       { id: 5, prop: 'supplier_address', label: "供应商地址" },
       { id: 6, prop: 'supplier_fax', label: "供应商传真" },
+      // supplierMeno
+      { id: 21, prop: "supplier_meno", label: "备注" },
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
@@ -39,6 +41,7 @@ const state = {
       supplier_tel: "333+",
       supplier_address: "333+",
       supplier_fax: "333+",
+      supplier_meno:'',
       client_creator: "",
       client_createtime: "",
       client_updator: "",
@@ -97,6 +100,7 @@ const actions = {
       newItem.supplier_tel=item.supplierTel;
       newItem.supplier_address=item.supplierAddress;
       newItem.supplier_fax=item.supplierFax;
+      newItem.supplier_meno = item.supplierMeno;
       newItem.client_creator=item.supplierCreator;
       newItem.client_createtime=item.supplierCreatetime;
       newItem.client_updator=item.supplierUpdator;
@@ -113,6 +117,7 @@ const actions = {
       "supplierTel":state.formadd.supplier_tel,
       "supplierAddress":state.formadd.supplier_address,
       "supplierFax":state.formadd.supplier_fax,
+      "supplierMeno": state.formadd.supplier_meno,
     }
     let result = await request.post(api.SUPPLIER_ADD_API,formAdd);
     let data = result.data;
@@ -148,6 +153,7 @@ const actions = {
       "supplierTel":state.formadd.supplier_tel,
       "supplierAddress":state.formadd.supplier_address,
       "supplierFax":state.formadd.supplier_fax,
+      "supplierMeno": state.formadd.supplier_meno,
     }
     let result = await request.put(api.SUPPLIER_ADIT_API,formEdit);
     let data = result.data;

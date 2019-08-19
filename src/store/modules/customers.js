@@ -25,6 +25,7 @@ const state = {
       { id: 4, prop: "customers_tel", label: "客户电话" },
       { id: 5, prop: "customers_address", label: "客户地址" },
       { id: 6, prop: "customers_fax", label: "客户传真" },
+      { id: 21, prop: "customers_meno", label: "备注" },
       { id: 14, prop: "client_creator", label: "创建人" },
       { id: 15, prop: "client_createtime", label: "创建时间" },
       { id: 16, prop: "client_updator", label: "修改人" },
@@ -37,6 +38,7 @@ const state = {
       customers_tel: "",
       customers_address: "",
       customers_fax: "",
+      customers_meno:'',
       client_creator: "",
       client_createtime: "",
       client_updator: "",
@@ -97,6 +99,7 @@ const actions = {
       newItem.customers_tel=item.customersTel;
       newItem.customers_address=item.customersAddress;
       newItem.customers_fax=item.customersFax;
+      newItem.customers_meno = item.customersMeno;
       newItem.client_creator=item.customersCreator;
       newItem.client_createtime=item.customersCreatetime;
       newItem.client_updator=item.customersUpdator;
@@ -113,6 +116,7 @@ const actions = {
       "customersTel":state.formadd.customers_tel,
       "customersAddress":state.formadd.customers_address,
       "customersFax":state.formadd.customers_fax,
+      "customersMeno": state.formadd.customers_meno,
     }
     let result = await request.post(api.CUSTOMERS_ADD_API,formAdd);
     let data = result.data;
@@ -148,6 +152,7 @@ const actions = {
       "customersTel":state.formadd.customers_tel,
       "customersAddress":state.formadd.customers_address,
       "customersFax":state.formadd.customers_fax,
+      "customersMeno": state.formadd.customers_meno,
     }
     let result = await request.put(api.CUSTOMERS_ADIT_API,formEdit);
     let data = result.data;

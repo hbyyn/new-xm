@@ -52,10 +52,13 @@
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
 
         <el-form-item :label="mock_all.columns[0].label" prop="format_id">
-          <el-input v-model="mock_all.formData.format_id" :readonly="readonlyFlat"></el-input>
+          <el-input v-model="mock_all.formData.format_id" :disabled="disabledFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.format_name"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[2].label">
+          <el-input v-model="mock_all.formData.format_meno"></el-input>
         </el-form-item>
 
       </el-form>
@@ -77,7 +80,7 @@ export default {
       centerDialogVisible: false,
       formtitle: '',
       addorChange: true,//判断修改新增
-      readonlyFlat: false,
+      disabledFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
@@ -213,7 +216,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
-      this.readonlyFlat = false;
+      this.disabledFlat = false;
       this.formtitle = '新增';
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
@@ -226,7 +229,7 @@ export default {
       this.$store.commit('format/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.readonlyFlat = true;
+      this.disabledFlat = true;
       this.mock_all.formData = { ...row };
     },
     //弹窗确认

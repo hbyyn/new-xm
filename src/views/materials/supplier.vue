@@ -53,7 +53,7 @@
           <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[0].label" prop="supplier_id">
-          <el-input v-model="mock_all.formData.supplier_id" :readonly="readonlyFlat"></el-input>
+          <el-input v-model="mock_all.formData.supplier_id" :disabled="disabledFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.supplier_name"></el-input>
@@ -66,6 +66,9 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[4].label">
           <el-input v-model="mock_all.formData.supplier_fax"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[5].label">
+          <el-input v-model="mock_all.formData.supplier_meno"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -86,7 +89,7 @@ export default {
       centerDialogVisible: false,//弹框
       formtitle: '',
       addorChange: true,//判断修改新增
-      readonlyFlat: false,
+      disabledFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
@@ -223,7 +226,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
-      this.readonlyFlat = false;
+      this.disabledFlat = false;
       this.formtitle = '新增';
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
@@ -236,7 +239,7 @@ export default {
       this.$store.commit('supplier/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.readonlyFlat = true;
+      this.disabledFlat = true;
       this.mock_all.formData = { ...row };
     },
     //弹窗确认

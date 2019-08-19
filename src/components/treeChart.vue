@@ -14,20 +14,17 @@ export default {
   components: {
     'v-chart': ECharts
   },
-  props: ['chartData', 'treename', 'columns'],
+  props: ['chartData', 'columns'],
   computed: {
     polar() {
       return {
-        title: {
-          text: '大数据量面积图',
-        },
         tooltip: {
           position:'right',
           trigger: 'item',
           formatter: (params) => {
             var res = ''
             for (let k of this.columns) {
-              res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+              res ='</p>' + res + k.label + ':' + params.data[k.prop] + '</p>'
             }
             return res;
           },

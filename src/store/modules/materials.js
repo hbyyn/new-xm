@@ -62,6 +62,7 @@ const state = {
       { id: 11, prop: "material_operaterdate", label: "领料时间" },
       { id: 12, prop: "parent_id", label: "父级编号" },
       { id: 18, prop: "product_id", label: "产品编号" },
+      { id: 21, prop: "material_meno", label: "备注" },
       { id: 14, prop: "client_creator", label: "创建人" },
       { id: 15, prop: "client_createtime", label: "创建时间" },
       { id: 16, prop: "client_updator", label: "修改人" },
@@ -135,6 +136,7 @@ const actions = {
       newItem.material_operaterdate=item.materialsOperaterdate;
       newItem.parent_id=item.parentId;
       newItem.product_id=item.productId+' '+item.productName;
+      newItem.material_meno = item.materialsMeno;
       newItem.client_creator=item.materialsCreator;
       newItem.client_createtime=item.materialsCreatetime;
       newItem.client_updator=item.materialsUpdator;
@@ -162,6 +164,7 @@ const actions = {
       "parentId":state.formadd.parent_id,
       "productId":state.formadd.product_id.split(' ')[0],
       "productName":state.formadd.product_id.split(' ')[1],
+      "materialsMeno": state.formadd.material_meno,
     }
     let result = await request.post(api.MATERIALS_ADD_API,formAdd);
     let data = result.data;
@@ -174,6 +177,11 @@ const actions = {
       Message({
         type: 'success',
         showClose: true, duration: 2000, message: '登录超时!'
+      })
+    }else if(data.statusCode==40001){
+      Message({
+        type: 'success',
+        showClose: true, duration: 2000, message: '业务逻辑异常!查看是否已存在编号'
       })
     }else{
       Message({
@@ -203,6 +211,7 @@ const actions = {
       "parentId":state.formadd.parent_id,
       "productId":state.formadd.product_id.split(' ')[0],
       "productName":state.formadd.product_id.split(' ')[1],
+      "materialsMeno": state.formadd.material_meno,
     }
     let result = await request.put(api.MATERIALS_ADIT_API,formEdit);
     let data = result.data;
@@ -216,6 +225,11 @@ const actions = {
       Message({
         type: 'success',
         showClose: true, duration: 2000, message: '登录超时!'
+      })
+    }else if(data.statusCode==40001){
+      Message({
+        type: 'success',
+        showClose: true, duration: 2000, message: '业务逻辑异常!'
       })
     }else{
       Message({
@@ -247,6 +261,11 @@ const actions = {
         type: 'success',
         showClose: true, duration: 2000, message: '登录超时!'
       })
+    }else if(data.statusCode==40001){
+      Message({
+        type: 'success',
+        showClose: true, duration: 2000, message: '业务逻辑异常，查看是否其它地方有引用此数据!'
+      })
     }else{
       Message({
         type: 'success',
@@ -274,6 +293,11 @@ const actions = {
       Message({
         type: 'success',
         showClose: true, duration: 2000, message: '登录超时!'
+      })
+    }else if(data.statusCode==4001){
+      Message({
+        type: 'success',
+        showClose: true, duration: 2000, message: '业务逻辑异常，查看是否其它地方有引用此数据!'
       })
     }else{
       Message({

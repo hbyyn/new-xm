@@ -49,9 +49,10 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
-      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules"
+        ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="work_id">
-          <el-input v-model="mock_all.formData.work_id" :readonly="readonlyFlat"></el-input>
+          <el-input v-model="mock_all.formData.work_id" :disabled="disabledFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.work_name"></el-input>
@@ -64,10 +65,15 @@
           </el-select>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[2].label">
-          <el-cascader placeholder="请选择" v-model="mock_all.formData.parent_id" :show-all-levels="false" :options="parentOption"  clearable filterable :props="{ checkStrictly: true }" style="width:350px;"></el-cascader>
+          <el-cascader placeholder="请选择" v-model="mock_all.formData.parent_id" :show-all-levels="false"
+            :options="parentOption" clearable filterable :props="{ checkStrictly: true }" style="width:350px;">
+          </el-cascader>
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.work_desc"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[4].label">
+          <el-input v-model="mock_all.formData.work_meno"></el-input>
         </el-form-item>
 
       </el-form>
@@ -89,7 +95,7 @@ export default {
       centerDialogVisible: false,
       formtitle: '',
       addorChange: true,//判断修改新增
-      readonlyFlat: false,
+      disabledFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
@@ -111,15 +117,12 @@ export default {
       formadd: state => state.work.formadd,
       parentOption: state => state.work.parentOption,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     }
   },
   watch: {
-    parentOption(val){
-      console.log(val)
-    },
-    tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -138,7 +141,7 @@ export default {
   },
   created() {
     this.$store.dispatch('work/getListAction');
-    this.$store.dispatch('work/getParentOptionAction');
+
 
     this.tableShow(this.mock_all.list)
   },
@@ -165,13 +168,13 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-       this.$store.dispatch('work/deleteSingleAction', row.work_id);
+        this.$store.dispatch('work/deleteSingleAction', row.work_id);
         this.tableShow(this.mock_all.list)
       }).catch(() => {
         this.$message({
@@ -188,7 +191,7 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
-         let listRemove = []
+        let listRemove = []
         let Selection = this.multipleSelection
         Selection.map(item => {
           listRemove.push(item.work_id)
@@ -221,12 +224,13 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
-      this.readonlyFlat = false;
+      this.disabledFlat = false;
       this.formtitle = '新增';
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
+      this.$store.dispatch('work/getParentOptionAction');
     },
     //修改
     pwdChange(index, row) {
@@ -234,8 +238,9 @@ export default {
       this.$store.commit('work/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.readonlyFlat = true;
+      this.disabledFlat = true;
       this.mock_all.formData = { ...row };
+      this.$store.dispatch('work/editParentOptionAction', row.work_id);
     },
     //submit
     formOr(formName) {
@@ -244,7 +249,7 @@ export default {
           // submit
           this.$store.commit('work/setformadd', { ...this.mock_all.formData })
           if (this.addorChange) {
-           this.$store.dispatch('work/addListAction');
+            this.$store.dispatch('work/addListAction');
           } else {
             this.$store.dispatch('work/editListAction');
           }

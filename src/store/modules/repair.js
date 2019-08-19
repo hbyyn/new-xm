@@ -37,6 +37,7 @@ const state = {
       { id: 6, prop: "repair_name", label: "返修名称" },
       { id: 12, prop: "parent_id", label: "父级编号" },
       { id: 7, prop: "repair_desc", label: "修理说明标题" },
+      { id: 21, prop: "repair_meno", label: "备注" },
       { id: 14, prop: "client_creator", label: "创建人" },
       { id: 15, prop: "client_createtime", label: "创建时间" },
       { id: 16, prop: "client_updator", label: "修改人" },
@@ -50,6 +51,7 @@ const state = {
       repair_desc: "",
       form_content: "",
       form_fileList: [],
+      repair_meno:'',
       client_creator: "",
       client_createtime: "",
       client_updator: "",
@@ -89,6 +91,7 @@ const actions = {
       newItem.parent_id=item.repairParentid;
       newItem.repair_desc=item.repairDesc;
       // newItem.form_fileList=item.repairMeno;
+      newItem.repair_meno = item.repairMeno;
       newItem.client_creator=item.repairCreator;
       newItem.client_createtime=item.repairCreatetime;
       newItem.client_updator=item.repairUpdator;
@@ -105,6 +108,7 @@ const actions = {
       "repairParentid":state.formadd.parent_id,
       "repairDesc":state.formadd.repair_desc,
       // "repairMeno":state.formadd.form_fileList,
+      "repairMeno": state.formadd.repair_meno,
     }
     let result = await request.post(api.REPAIR_ADD_API,formAdd);
     let data = result.data;
@@ -140,6 +144,7 @@ const actions = {
       "repairParentid":state.formadd.parent_id,
       "repairDesc":state.formadd.repair_desc,
       // "repairMeno":state.formadd.form_fileList,
+      "repairMeno": state.formadd.repair_meno,
     }
     let result = await request.put(api.REPAIR_ADIT_API,formEdit);
     let data = result.data;

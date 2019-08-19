@@ -21,6 +21,7 @@ const state = {
       // { id: 1, prop: 'client_id', label: "公司编号" },
       { id: 2, prop: "format_id", label: "规格编号" },
       { id: 3, prop: "format_name", label: "规格名称" },
+      { id: 21, prop: "format_meno", label: "备注" },
       { id: 14, prop: "client_creator", label: "创建人" },
       { id: 15, prop: "client_createtime", label: "创建时间" },
       { id: 16, prop: "client_updator", label: "修改人" },
@@ -30,6 +31,7 @@ const state = {
       client_id: "",
       format_id: "",
       format_name: "",
+      format_meno:'',
       client_creator: "",
       client_createtime: "",
       client_updator: "",
@@ -87,6 +89,7 @@ const actions = {
       newItem.client_id=item.clientId;
       newItem.format_id=item.formatId;
       newItem.format_name=item.formatName;
+      newItem.format_meno = item.formatMeno;
       newItem.client_creator=item.formatCreator;
       newItem.client_createtime=item.formatCreatetime;
       newItem.client_updator=item.formatUpdator;
@@ -99,7 +102,8 @@ const actions = {
   async addListAction({ dispatch }) {
     let formAdd={
       "formatName":state.formadd.format_name,
-      "formatId":state.formadd.format_id
+      "formatId":state.formadd.format_id,
+      "formatMeno": state.formadd.format_meno,
     }
     let result = await request.post(api.FORMAT_ADD_API,formAdd);
     let data = result.data;
@@ -131,7 +135,8 @@ const actions = {
   async editListAction({ dispatch }) {
     let formEdit={
       "formatName":state.formadd.format_name,
-      "formatId":state.formadd.format_id
+      "formatId":state.formadd.format_id,
+      "formatMeno": state.formadd.format_meno,
     }
     let result = await request.put(api.FORMAT_ADIT_API,formEdit);
     let data = result.data;

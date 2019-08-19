@@ -49,7 +49,7 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="product_id">
-          <el-input v-model="mock_all.formData.product_id" :readonly="readonlyFlat"></el-input>
+          <el-input v-model="mock_all.formData.product_id" :disabled="disabledFlat"></el-input>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.product_name"></el-input>
@@ -59,6 +59,9 @@
         </el-form-item>
         <el-form-item :label="mock_all.columns[3].label">
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="mock_all.formData.product_desc"></el-input>
+        </el-form-item>
+        <el-form-item :label="mock_all.columns[4].label">
+          <el-input v-model="mock_all.formData.product_meno"></el-input>
         </el-form-item>
 
       </el-form>
@@ -80,7 +83,7 @@ export default {
       centerDialogVisible: false,
       formtitle: '',
       addorChange: true,//判断修改新增
-      readonlyFlat: false,
+      disabledFlat: false,
       tableData: '',
       pageSize: 10,
       pageCurrent: 1,
@@ -215,7 +218,7 @@ export default {
     rowAdd() {
       this.centerDialogVisible = true;
       this.addorChange = true;
-      this.readonlyFlat = false;
+      this.disabledFlat = false;
       this.formtitle = '新增';
       let obj = this.mock_all.formData
       for (let k of Object.keys(obj)) {
@@ -228,7 +231,7 @@ export default {
       this.$store.commit('product/setChangeIndex', (index + (this.pageCurrent - 1) * this.pageSize))
       this.addorChange = false;
       this.centerDialogVisible = true;
-      this.readonlyFlat = true;
+      this.disabledFlat = true;
       this.mock_all.formData = { ...row };
     },
     //弹窗确认

@@ -20,6 +20,7 @@ const state = {
       { id: 3, prop: 'order_id', label: "订单编号" },
       { id: 2, prop: 'product_id', label: "产品编号" },
       { id: 4, prop: 'order_product_date', label: "订单时间" },
+      { id: 21, prop: "order_product_meno", label: "备注" },
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
@@ -30,6 +31,7 @@ const state = {
       order_id: '6564564+',
       product_id: 'b54+6',
       order_product_date: '',
+      order_product_meno:'',
       client_creator: '',
       client_createtime: '',
       client_updator: '',
@@ -66,6 +68,7 @@ const actions = {
       newItem.order_id=item.orderId;
       newItem.product_id=item.productId+' '+item.productName;
       newItem.order_product_date=item.orderProductDate ? item.orderProductDate.replace(/T/," ") : item.orderProductDate;
+      newItem.order_product_meno = item.orderProductMeno;
       newItem.client_creator=item.orderProductCreator;
       newItem.client_createtime=item.orderProductCreatetime;
       newItem.client_updator=item.orderProductUpdator;
@@ -81,6 +84,7 @@ const actions = {
       "productId":state.formadd.product_id.split(' ')[0],
       "productName":state.formadd.product_id.split(' ')[1],
       "orderProductDate":state.formadd.order_product_date,
+      "orderProductMeno": state.formadd.order_product_meno,
     }
     let result = await request.post(api.ORDERPRODUCT_ADD_API,formAdd);
     let data = result.data;
@@ -115,6 +119,7 @@ const actions = {
       "productId":state.formadd.product_id.split(' ')[0],
       "productName":state.formadd.product_id.split(' ')[1],
       "orderProductDate":state.formadd.order_product_date,
+      "orderProductMeno": state.formadd.order_product_meno,
     }
     let result = await request.put(api.ORDERPRODUCT_ADIT_API,formEdit);
     let data = result.data;

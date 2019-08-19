@@ -36,6 +36,7 @@ const state = {
       { id: 3, prop: 'product_name', label: "产品名称" },
       { id: 4, prop: 'product_color', label: "产品颜色" },
       { id: 5, prop: 'product_desc', label: "产品描述" },
+      { id: 21, prop: "product_meno", label: "备注" },
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
@@ -48,6 +49,7 @@ const state = {
       product_name: "",
       product_color:"",
       product_desc: "",
+      product_meno:'',
 
       client_creator: "",
       client_createtime: "",
@@ -106,6 +108,7 @@ const actions = {
       newItem.product_name=item.productName;
       newItem.product_color=item.productColor;
       newItem.product_desc=item.productDesc;
+      newItem.product_meno = item.productMeno;
       newItem.client_creator=item.productCreator;
       newItem.client_createtime=item.productCreatetime;
       newItem.client_updator=item.productUpdator;
@@ -120,7 +123,8 @@ const actions = {
       "productName":state.formadd.product_name,
       "productId":state.formadd.product_id,
       "productColor":state.formadd.product_color,
-      "productDesc":state.formadd.product_desc
+      "productDesc":state.formadd.product_desc,
+      "productMeno": state.formadd.product_meno,
     }
     let result = await request.post(api.PRODUCT_ADD_API,formAdd);
     let data = result.data;
@@ -154,7 +158,8 @@ const actions = {
       "productName":state.formadd.product_name,
       "productId":state.formadd.product_id,
       "productColor":state.formadd.product_color,
-      "productDesc":state.formadd.product_desc
+      "productDesc":state.formadd.product_desc,
+      "productMeno": state.formadd.product_meno,
     }
     let result = await request.put(api.PRODUCT_ADIT_API,formEdit);
     let data = result.data;

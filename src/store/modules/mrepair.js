@@ -22,6 +22,7 @@ const state = {
       {id:6,prop:'repair_id',label:"返修编号"},
       {id:7,prop:'material_repair_begindate',label:"维修启动日期"},
       {id:8,prop:'material_repair_enddate',label:"维修结束日期"},
+      { id: 21, prop: "material_repair_meno", label: "备注" },
       { id: 14, prop: 'client_creator', label: "创建人" },
       { id: 15, prop: 'client_createtime', label: "创建时间" },
       { id: 16, prop: 'client_updator', label: "修改人" },
@@ -33,6 +34,7 @@ const state = {
       repair_id: '',
       material_repair_begindate: '',
       material_repair_enddate: '',
+      material_repair_meno:'',
       client_creator: '',
       client_createtime: '',
       client_updator: '',
@@ -71,6 +73,7 @@ const actions = {
       newItem.repair_id=item.repairId+' '+item.repairName;
       newItem.material_repair_begindate=item.materialsRepairBegindate?item.materialsRepairBegindate.replace(/T/," "):item.materialsRepairBegindate;
       newItem.material_repair_enddate=item.materialsRepairEnddate?item.materialsRepairEnddate.replace(/T/," "):item.materialsRepairEnddate;
+      newItem.material_repair_meno = item.materialsRepairMeno;
       newItem.client_creator=item.materialsRepairCreator;
       newItem.client_createtime=item.materialsRepairCreatetime;
       newItem.client_updator=item.materialsRepairUpdator;
@@ -88,6 +91,7 @@ const actions = {
       // "repairName":state.formadd.repair_id.split(' ')[1],
       "materialsRepairBegindate":state.formadd.material_repair_begindate,
       "materialsRepairEnddate":state.formadd.material_repair_enddate,
+      "materialsRepairMeno": state.formadd.material_repair_meno,
     }
     let result = await request.post(api.MATERIALSREPAIR_ADD_API,formAdd);
     let data = result.data;
@@ -124,6 +128,7 @@ const actions = {
       // "repairName":state.formadd.repair_id.split(' ')[1],
       "materialsRepairBegindate":state.formadd.material_repair_begindate,
       "materialsRepairEnddate":state.formadd.material_repair_enddate,
+      "materialsRepairMeno": state.formadd.material_repair_meno,
     }
     let result = await request.put(api.MATERIALSREPAIR_ADIT_API,formEdit);
     let data = result.data;
