@@ -35,38 +35,43 @@ export default {
     ...mapState({
       // 获得菜单列表数据
       mock_all: state => state.repair.tableData,//{formData,list,columns}
+      chartList:state => state.repair.chartList,
     }),
-    //数据
-    chartList() {
-      //简化list
-        const data =[]//{id:'',name:'',parent_id:''}
-        this.mock_all.list.map((item)=>{
-          const newList={...item}
-          newList.id=item.repair_id
-          newList.name=item.repair_name
-          newList.parent_id=item.parent_id
-          data.push(newList)
-        })
-          var tree = [];
-          //加载父节点
-          for (var k = 0; k < data.length; k++) {//为每个节点赋予id
-            //初始化children属性
-            data[k].children = [];
-            if (data[k].parent_id == '') {//加载一级节点
-              tree.push(data[k]);
-            }
-          }
-          // 加载子节点
-          for (var i = 0; i < data.length; i++) {
-            for (var j = 0; j < data.length; j++) {//找到data[i]的父节点data[j]
-              if (data[i].parent_id == data[j].id) {
-                data[j].children.push(data[i])
-                break;
-              }
-            }
-          }
-      return  tree;
-    }
+  //   //数据
+  //   chartList() {
+  //     //简化list
+  //       const data =[]//{id:'',name:'',parent_id:''}
+  //       this.mock_all.list.map((item)=>{
+  //         const newList={...item}
+  //         newList.id=item.repair_id
+  //         newList.name=item.repair_name
+  //         newList.parent_id=item.parent_id
+  //         data.push(newList)
+  //       })
+  //         var tree = [];
+  //         //加载父节点
+  //         for (var k = 0; k < data.length; k++) {//为每个节点赋予id
+  //           //初始化children属性
+  //           data[k].children = [];
+  //           if (data[k].parent_id == '') {//加载一级节点
+  //             tree.push(data[k]);
+  //           }
+  //         }
+  //         // 加载子节点
+  //         for (var i = 0; i < data.length; i++) {
+  //           for (var j = 0; j < data.length; j++) {//找到data[i]的父节点data[j]
+  //             if (data[i].parent_id == data[j].id) {
+  //               data[j].children.push(data[i])
+  //               break;
+  //             }
+  //           }
+  //         }
+  //     return  tree;
+  //   },
+  },
+  created(){
+    // console.log(this.chartList)
+    this.$store.dispatch('repair/getChartListAction')
   },
   methods: {
     point(i) {

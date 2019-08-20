@@ -5,7 +5,15 @@ function get(url, data) {
     let params = data || {};
     axios.get(url, {
         params,
-        baseURL: api.HOST
+        baseURL: api.HOST,
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization:
+            sessionStorage.getItem("loginPrefix") +
+            " " +
+            sessionStorage.getItem("loginToken")
+        }
       })
       .then(result => {
         resolve(result);

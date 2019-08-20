@@ -101,6 +101,12 @@ export default {
                 sessionStorage.setItem("remember", this.loginForm.remember);
                 // this.storage.set("language", this.$i18n.locale);
                 this.loginForm.loginLoading = false;
+                this.$message({
+                  showClose: true,
+                  duration: 2000,
+                  message: "登录成功",
+                  type: "success"
+                });
                 this.$router.push('/')
         }else if(res.data.statusCode == "30004"){
           this.loginForm.loginLoading = false;
@@ -116,6 +122,14 @@ export default {
                   showClose: true,
                   duration: 2000,
                   message: "用户名或密码错误",
+                  type: "error"
+                });
+              }else{
+                this.loginForm.loginLoading = false;
+                this.$message({
+                  showClose: true,
+                  duration: 2000,
+                  message: res.data.message,
                   type: "error"
                 });
               }

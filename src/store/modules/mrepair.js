@@ -85,15 +85,21 @@ const actions = {
   // 新增
   async addListAction({ dispatch }) {
     let formAdd={
-      "materialsId":state.formadd.material_id.split(' ')[0],
-      // "materialsName":state.formadd.material_id.split(' ')[1],
-      "repairId":state.formadd.repair_id.split(' ')[0],
-      // "repairName":state.formadd.repair_id.split(' ')[1],
+      "isMaterialsView": true,
+      "associatedIds":[
+        state.formadd.material_id.split(' ')[0],
+      ],
+      "objectIds": [
+        state.formadd.repair_id.split(' ')[0],
+      ],
+      // "materialsId":state.formadd.material_id.split(' ')[0],
+      // "repairId":state.formadd.repair_id.split(' ')[0],
       "materialsRepairBegindate":state.formadd.material_repair_begindate,
       "materialsRepairEnddate":state.formadd.material_repair_enddate,
       "materialsRepairMeno": state.formadd.material_repair_meno,
     }
     let result = await request.post(api.MATERIALSREPAIR_ADD_API,formAdd);
+    console.log('result',result)
     let data = result.data;
     if(data.statusCode==10000){
       Message({

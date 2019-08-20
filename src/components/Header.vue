@@ -17,48 +17,46 @@
           </el-dropdown-item>
           <el-dropdown-item command="personal" divided>个人档案</el-dropdown-item>
           <el-dropdown-item command="changePassword">更改密码</el-dropdown-item>
-          <el-dropdown-item divided>
-            <router-link to="/login">退出</router-link>
-          </el-dropdown-item>
+          <el-dropdown-item divided command="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 个人档案弹窗 -->
-      <el-dialog title="修改密码" :visible.sync="personalDialogVisible" width="30%" :append-to-body="true" >
+      <el-dialog title="修改密码" :visible.sync="personalDialogVisible" width="30%" :append-to-body="true">
         <el-form label-position="right" label-width="50%">
-          <el-form-item :label="personal_list[0].label+':'">
+          <el-form-item :label="personalList[0].label+':'">
             <span>{{loginname}}</span>
           </el-form-item>
-          <el-form-item :label="personal_list[1].label+':'">
-            <span>{{personal_list[1].text}}</span>
+          <el-form-item :label="personalList[1].label+':'">
+            <span>{{personalList[1].text}}</span>
           </el-form-item>
-          <el-form-item :label="personal_list[2].label+':'">
-            <span>{{personal_list[2].text}}</span>
+          <el-form-item :label="personalList[2].label+':'">
+            <span>{{personalList[2].text}}</span>
           </el-form-item>
-          <el-form-item :label="personal_list[3].label+':'">
-            <span>{{personal_list[3].text}}</span>
+          <el-form-item :label="personalList[3].label+':'">
+            <span>{{personalList[3].text}}</span>
           </el-form-item>
         </el-form>
       </el-dialog>
       <!-- 改密码弹窗 -->
-      <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%" :append-to-body="true" >
-        <el-form label-position="right" label-width="120px">
+      <el-dialog title="修改密码" :visible.sync="centerDialogVisible" width="40%" :append-to-body="true">
+        <el-form label-position="right" label-width="120px" :model="passwordFrom" :rules="rules" ref="passwordFrom">
           <!-- <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm"> -->
-          <el-form-item :label="columns[0].label+':'">
+          <el-form-item :label="changePassword[0].label+':'">
             <span>{{loginname}}</span>
           </el-form-item>
-          <el-form-item :label="columns[1].label+':'">
+          <el-form-item :label="changePassword[1].label+':'" prop="old_password">
             <el-input v-model="passwordFrom.old_password"></el-input>
           </el-form-item>
-          <el-form-item :label="columns[2].label+':'">
-            <el-input v-model="passwordFrom.new_password"></el-input>
+          <el-form-item :label="changePassword[2].label+':'" prop="new_password">
+            <el-input show-password v-model="passwordFrom.new_password" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item :label="columns[3].label+':'">
-            <el-input v-model="passwordFrom.repeat_password"></el-input>
+          <el-form-item :label="changePassword[3].label+':'" prop="repeat_password">
+            <el-input show-password v-model="passwordFrom.repeat_password" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="centerDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="changeAdd">确 定</el-button>
+          <el-button type="primary" @click="onChangePassword('passwordFrom')">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -66,9 +64,30 @@
 </template>
 
 <script>
+import { api, request } from "../ajax";
+
 export default {
   name: 'Tabs',
   data() {
+    let validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'));
+      } else {
+        if (this.passwordFrom.repeat_password !== '') {
+          this.$refs.passwordFrom.validateField('repeat_password');
+        }
+        callback();
+      }
+    };
+    let validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.passwordFrom.new_password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
       list: [
         { id: 1, navurl: '首页', url: '/home' },
@@ -79,13 +98,13 @@ export default {
         // { id: 6, navurl: '设置', url: '/setting' },
       ],
       float: false,
-      personal_list: [
+      personalList: [
         { id: 1, text: 'admin', label: "账号" },
         { id: 2, text: 'xxx', label: "用户名" },
         { id: 3, text: 'xxxxx', label: "职位" },
         { id: 14, text: 'xxxxxx', label: "部门" },
       ],
-      columns: [
+      changePassword: [
         { id: 1, prop: 'admin_name', label: "用户名" },
         { id: 2, prop: 'old_password', label: "原密码" },
         { id: 3, prop: 'new_password', label: "新密码" },
@@ -98,6 +117,17 @@ export default {
       },
       personalDialogVisible: false,
       centerDialogVisible: false,
+      rules: {
+        old_password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+        ],
+        new_password: [
+          { validator: validatePass, trigger: 'blur' },
+        ],
+        repeat_password: [
+          { validator: validatePass2, trigger: 'blur' },
+        ],
+      }
     }
   },
   computed: {
@@ -119,10 +149,77 @@ export default {
       if (command === "changePassword") {
         this.centerDialogVisible = true
       }
+      if (command === "logout") {
+        request.get(api.USER_LOGOUT_API).then(res => {
+          if (res.data.statusCode == 10000) {
+            sessionStorage.removeItem('loginPrefix');
+            sessionStorage.removeItem('loginToken');
+            sessionStorage.removeItem('user_name')
+            sessionStorage.removeItem('remember')
+            this.$message({
+              type: 'success',
+              message: '退出账号',
+              showClose: true,
+              duration: 2000
+            });
+            this.$router.push('/login');
+          } else {
+            console.log(res)
+            this.$message({
+              type: 'error',
+              message: res.data.message,
+              showClose: true,
+              duration: 2000
+            });
+            this.$router.push('/login');
+          }
+        })
+      }
     },
-    changeAdd() {
-      console.log('add')
-    }
+    onChangePassword(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let obj = {
+            "oldPassword": this.passwordFrom.old_password,
+            "newPassword": this.passwordFrom.new_password
+          }
+          request.put(api.USER_CHANGE_PASSWORD_API, obj).then(res => {
+            if (res.data.statusCode == 10000) {
+              // sessionStorage.setItem(
+              //   "loginPrefix",
+              //   res.data.data.tokenResult.accessPrefix
+              // );
+              // sessionStorage.setItem("loginToken", res.data.data.tokenResult.accessToken);
+              this.centerDialogVisible = false;
+              this.$message({
+                type: 'success',
+                message: res.data.message,
+                showClose: true,
+                duration: 2000
+              });
+
+            } else {
+              this.$message({
+                type: 'success',
+                message: res.data.message,
+                showClose: true,
+                duration: 2000
+              });
+            }
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: "填写错误",
+            showClose: true,
+            duration: 2000
+          });
+          return false;
+        }
+      });
+
+
+    },
   }
 }
 </script>

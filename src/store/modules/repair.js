@@ -60,7 +60,8 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime: ""
+  nowTime: "",
+  chartList:[],
 };
 const mutations = {
   setformadd(state, param) {
@@ -72,10 +73,50 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list)
+  },
+  setChartList(state, param) {
+    state.chartList = param;
   }
 };
 
 const actions = {
+  // 树形报表数据
+  async getChartListAction(context) {
+    let result = await request.post(api.REPAIR_SELECT_CHILDTREE_API);
+    let data = result.data.data;
+    console.log(data);
+    // 修改树形参数属性
+    const newarr = [];
+    function renderChart(arr, newarr) {
+      for (let i = 0; i < arr.length; i++) {
+        let addArrObj = {
+          id: arr[i].repairId,
+          name: arr[i].repairName,
+          children: [],
+          client_id: arr[i].clientId,
+          work_id: arr[i].repairId,
+          work_name: arr[i].repairName,
+          parent_id: arr[i].repairParentid,
+          work_desc: arr[i].repairDesc,
+          work_meno: arr[i].repairMenorepairId,
+          client_creator: arr[i].repairCreator,
+          client_createtime: arr[i].repairCreatetime,
+          client_updator: arr[i].repairUpdator,
+          client_updatetime: arr[i].repairUpdatetime
+        };
+        newarr.push(addArrObj);
+        if (arr[i].childNodes && arr[i].childNodes.length > 0) {
+          renderChart(arr[i].childNodes, newarr[i].children);
+        } else if (newarr[i].children.length == 0) {
+          newarr[i].children = "";
+        }
+      }
+      return newarr;
+    }
+    renderChart(data, newarr);
+    console.log(newarr);
+    context.commit("setChartList", newarr);
+  },
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.REPAIR_SELECT_API);

@@ -70,7 +70,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label" prop="product_id">
-          <el-select v-model="mock_all.formData.product_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
               :value="item.product_id+' '+item.product_name">
             </el-option>

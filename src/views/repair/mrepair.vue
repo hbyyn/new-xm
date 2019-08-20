@@ -80,7 +80,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label"  prop="repair_id">
-          <el-select v-model="mock_all.formData.repair_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.repair_id" placeholder="请选择" >
             <el-option class="dialog_select" v-for="item in repair_store" :key="item.id"
               :value="item.repair_id+' '+item.repair_name">
             </el-option>

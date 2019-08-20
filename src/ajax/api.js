@@ -33,7 +33,7 @@ const USER_LOGIN_API = '/api/UserLogin/login';
 请求方式：POST
 参数： 无
 */
-const USER_CHANGE_API = '/api/UserLogin/private/change/password';
+const USER_CHANGE_PASSWORD_API = '/api/UserLogin/private/change/password';
 
 /*
 说明： 用户注销接口
@@ -130,6 +130,13 @@ const MATERIALS_DELETE_SINGLE_API = '/api/Materials/delete/single';
 参数： 无
 */
 const MATERIALS_DELETE_API = '/api/Materials/delete';
+
+/*
+说明： 物料数据
+请求方式：POST
+参数： 无
+*/
+const MATERIALS_SELECT_CHILDTREE_API = '/api/Materials/select/childtree';
 
 ///////product产品///////////////
 /*
@@ -332,7 +339,7 @@ const ORDERPRODUCT_BASE_API = '/api/OrderProduct/select/base';
 请求方式：POST
 参数： 无
 */
-const ORDERPRODUCT_ADD_API = '/api/OrderProduct/add/single';
+const ORDERPRODUCT_ADD_API = '/api/OrderProduct/add';
 
 /*
 说明： 产品订单表修改
@@ -400,7 +407,14 @@ const REPAIR_DELETE_SINGLE_API = '/api/Repair/delete/single';
 */
 const REPAIR_DELETE_API = '/api/Repair/delete';
 
-// /////  REPAIR  物料返修表///
+/*
+说明： 返修报表tree
+请求方式：POST
+参数： 无
+*/
+const REPAIR_SELECT_CHILDTREE_API = '/api/Repair/select/childtree';
+
+// /////    物料返修表///
 
 /*
 说明： 物料返修表数据
@@ -422,7 +436,7 @@ const MATERIALSREPAIR_BASE_API = '/api/MaterialsRepair/select/base';
 请求方式：POST
 参数： 无
 */
-const MATERIALSREPAIR_ADD_API = '/api/MaterialsRepair/add/single';
+const MATERIALSREPAIR_ADD_API = '/api/MaterialsRepair/add';
 
 /*
 说明： 物料返修表修改
@@ -505,17 +519,17 @@ const WORK_BASE_TREE_API = '/api/Work/select/base/tree';
 const WORK_SELECT_CHILDTREE_API = '/api/Work/select/childtree';
 
 
-// /////  MATERIALSWORK  工序表///
+// /////  MATERIALSWORK  物料工序表///
 
 /*
-说明： 工序表数据
+说明： 物料工序表数据
 请求方式：POST
 参数： 无
 */
 const MATERIALSWORK_SELECT_API = '/api/MaterialsWork/select';
 
 /*
-说明： 工序表查询
+说明： 物料工序表查询
 请求方式：POST
 参数： 无
 */
@@ -523,28 +537,28 @@ const MATERIALSWORK_BASE_API = '/api/MaterialsWork/select/base';
 
 
 /*
-说明： 工序表新增
+说明： 物料工序表新增
 请求方式：POST
 参数： 无
 */
-const MATERIALSWORK_ADD_API = '/api/MaterialsWork/add/single';
+const MATERIALSWORK_ADD_API = '/api/MaterialsWork/add';
 
 /*
-说明： 工序表修改
+说明： 物料工序表修改
 请求方式：put
 参数： 无
 */
 const MATERIALSWORK_ADIT_API = '/api/MaterialsWork/edit';
 
 /*
-说明： 工序表删除
+说明： 物料工序表删除
 请求方式：delete
 参数： 无
 */
 const MATERIALSWORK_DELETE_SINGLE_API = '/api/MaterialsWork/delete/single';
 
 /*
-说明： 工序表选择删除
+说明： 物料工序表选择删除
 请求方式：delete
 参数： 无
 */
@@ -555,7 +569,7 @@ export default {
     // USER_ADD_API,
     USER_CHECK_API,
     USER_LOGIN_API,
-    USER_CHANGE_API,
+    USER_CHANGE_PASSWORD_API,
     USER_LOGOUT_API,
     FORMAT_SELECT_API,
     FORMAT_BASE_API,
@@ -569,6 +583,7 @@ export default {
     MATERIALS_ADIT_API,
     MATERIALS_DELETE_SINGLE_API,
     MATERIALS_DELETE_API,
+    MATERIALS_SELECT_CHILDTREE_API,
     PRODUCT_SELECT_API,
     PRODUCT_BASE_API,
     PRODUCT_ADD_API,
@@ -605,6 +620,7 @@ export default {
     REPAIR_ADIT_API,
     REPAIR_DELETE_SINGLE_API,
     REPAIR_DELETE_API,
+    REPAIR_SELECT_CHILDTREE_API,
     MATERIALSREPAIR_SELECT_API,
     MATERIALSREPAIR_BASE_API,
     MATERIALSREPAIR_ADD_API,
@@ -626,3 +642,5 @@ export default {
     MATERIALSWORK_DELETE_API,
     WORK_SELECT_CHILDTREE_API
 }
+
+

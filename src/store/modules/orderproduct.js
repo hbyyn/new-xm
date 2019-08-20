@@ -80,9 +80,16 @@ const actions = {
   // 新增
   async addListAction({ dispatch }) {
     let formAdd={
-      "orderId":state.formadd.order_id,
-      "productId":state.formadd.product_id.split(' ')[0],
-      "productName":state.formadd.product_id.split(' ')[1],
+      "isOrderView": true,
+      "associatedIds": [
+        state.formadd.order_id
+      ],
+      "objectIds": [
+        state.formadd.product_id.split(' ')[0]
+      ],
+      // "orderId":state.formadd.order_id,
+      // "productId":state.formadd.product_id.split(' ')[0],
+      // "productName":state.formadd.product_id.split(' ')[1],
       "orderProductDate":state.formadd.order_product_date,
       "orderProductMeno": state.formadd.order_product_meno,
     }

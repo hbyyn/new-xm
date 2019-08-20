@@ -82,7 +82,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label" prop="work_id">
-          <el-select v-model="mock_all.formData.work_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.work_id" placeholder="请选择">
             <el-option class="dialog_select" v-for="item in work_store" :key="item.id"
               :value="item.work_id+' '+item.work_name">
               <span>{{'ID:'+item.work_id}}</span>
