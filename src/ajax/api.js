@@ -136,7 +136,7 @@ const MATERIALS_DELETE_API = '/api/Materials/delete';
 请求方式：POST
 参数： 无
 */
-const MATERIALS_SELECT_CHILDTREE_API = '/api/Materials/select/childtree';
+const MATERIALS_SELECT_PRODUCT_TREE_API = '/api/Materials/select/product/tree';
 
 ///////product产品///////////////
 /*
@@ -583,7 +583,7 @@ export default {
     MATERIALS_ADIT_API,
     MATERIALS_DELETE_SINGLE_API,
     MATERIALS_DELETE_API,
-    MATERIALS_SELECT_CHILDTREE_API,
+    MATERIALS_SELECT_PRODUCT_TREE_API,
     PRODUCT_SELECT_API,
     PRODUCT_BASE_API,
     PRODUCT_ADD_API,

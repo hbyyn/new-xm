@@ -131,13 +131,27 @@ export default {
       mock_all: state => state.orderproduct.tableData,//{formData,list,columns}
       changeIndex: state => state.orderproduct.changeIndex,
       formadd: state => state.orderproduct.formadd,
-      order_store: state => state.order.tableData.list,
-      product_store: state => state.product.tableData.list,
+      order_store: state =>{
+        let arr=state.order.tableData.list
+        let arr2=state.orderproduct.tableData.list
+        let newArr=[]
+        arr2.forEach(item => {
+          newArr.push(item.order_id)
+        })
+        for (let order_id of newArr) {
+          arr = arr.filter(item => {
+            return order_id !== item.order_id
+          })
+        }
+        return arr
+      } ,
+      product_store: state =>state.product.tableData.list,
     }),
     tableList(){
       return this.mock_all.list
     }
   },
+
   watch: {
     tableList(){
       this.tableShow(this.mock_all.list)
@@ -158,6 +172,8 @@ export default {
   },
   created() {
     this.$store.dispatch('orderproduct/getListAction');
+    this.$store.dispatch('order/getListAction');
+    this.$store.dispatch('product/getListAction');
     this.tableShow(this.mock_all.list)
   },
   mounted(){

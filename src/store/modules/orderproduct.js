@@ -82,10 +82,10 @@ const actions = {
     let formAdd={
       "isOrderView": true,
       "associatedIds": [
-        state.formadd.order_id
+        state.formadd.product_id.split(' ')[0]
       ],
       "objectIds": [
-        state.formadd.product_id.split(' ')[0]
+        state.formadd.order_id
       ],
       // "orderId":state.formadd.order_id,
       // "productId":state.formadd.product_id.split(' ')[0],

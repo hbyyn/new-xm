@@ -179,6 +179,8 @@ export default {
   },
   created() {
     this.$store.dispatch('mrepair/getListAction');
+    this.$store.dispatch('repair/getListAction');
+    this.$store.dispatch('materials/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {

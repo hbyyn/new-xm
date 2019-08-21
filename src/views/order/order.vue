@@ -180,6 +180,7 @@ export default {
   },
   created() {
     this.$store.dispatch('order/getListAction');
+    this.$store.dispatch('customers/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {

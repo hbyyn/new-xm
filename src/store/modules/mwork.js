@@ -72,8 +72,8 @@ const actions = {
       newItem.client_id = item.clientId;
       newItem.material_id = item.materialsId + ' ' + item.materialsName;
       newItem.work_id = item.workId + ' ' + item.workName;
-      newItem.material_work_begindate = item.materialsWorkBegindate.replace(/T/, " ");
-      newItem.material_work_enddate = item.materialsWorkEnddate.replace(/T/, " ");
+      newItem.material_work_begindate = item.materialsWorkBegindate?item.materialsWorkBegindate.replace(/T/, " "):'';
+      newItem.material_work_enddate =item.materialsWorkEnddate? item.materialsWorkEnddate.replace(/T/, " "):'';
       newItem.material_work_meno = item.materialsWorkMeno;
       newItem.client_creator = item.materialsWorkCreator;
       newItem.client_createtime = item.materialsWorkCreatetime;
@@ -88,10 +88,10 @@ const actions = {
     let formAdd = {
       "isMaterialsView": true,
       "associatedIds": [
-        state.formadd.material_id.split(' ')[0]
+        state.formadd.work_id.split(' ')[0]
       ],
       "objectIds": [
-        state.formadd.work_id.split(' ')[0]
+        state.formadd.material_id.split(' ')[0]
       ],
       // "materialsId":state.formadd.material_id.split(' ')[0],
       // "materialsName":state.formadd.material_id.split(' ')[1],

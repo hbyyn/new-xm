@@ -81,7 +81,10 @@ export default {
   //   }
   },
   created(){
-    this.$store.dispatch('materials/getChartListAction')
+    this.$store.commit('materials/setDelChartList')
+    this.product_store.list.map(item=>{
+      return this.$store.dispatch('materials/getChartListAction',item.product_id)
+    })
   },
   methods: {
     point(i) {

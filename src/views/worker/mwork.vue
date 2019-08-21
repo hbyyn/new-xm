@@ -183,6 +183,8 @@ export default {
   },
   created() {
     this.$store.dispatch('mwork/getListAction');
+    this.$store.dispatch('work/getListAction');
+    this.$store.dispatch('materials/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {

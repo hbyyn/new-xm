@@ -1,6 +1,6 @@
 // import Date from "../time";
 import { api, request } from "../../ajax";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
 const state = {
   tableData: {
     list: [
@@ -19,7 +19,6 @@ const state = {
       //   material_operaterdate: "xxx",
       //   parent_id: "",
       //   product_id: "88 SSSS",
-
       //   client_creator: "xxx",
       //   client_createtime: "xxx",
       //   client_updator: "",
@@ -40,7 +39,6 @@ const state = {
       //   material_operaterdate: "xxx2",
       //   parent_id: "",
       //   product_id: "88 SSSS",
-
       //   client_creator: "xxx2",
       //   client_createtime: "xxx2",
       //   client_updator: "",
@@ -67,12 +65,12 @@ const state = {
       { id: 15, prop: "client_createtime", label: "创建时间" },
       { id: 16, prop: "client_updator", label: "修改人" },
       { id: 17, prop: "client_updatetime", label: "修改时间" }
-    ],
+    ]
   },
   changeIndex: "",
   formadd: "",
   nowTime: "",
-  chartList: [],
+  chartList: []
 };
 const mutations = {
   // setNowTime(state) {
@@ -108,47 +106,63 @@ const mutations = {
   // }
   setList(state, param) {
     state.tableData.list = param;
-    console.log(state.tableData.list)
+    console.log(state.tableData.list);
   },
   setChartList(state, param) {
-    state.chartList = param;
+    state.chartList.push(param);
   },
+  setDelChartList(state){
+    state.chartList=[]
+  }
 };
-
 
 const actions = {
   // 树形报表数据
-  async getChartListAction(context) {
-    let result = await request.post(api.MATERIALS_SELECT_CHILDTREE_API);
-    // let data = result.data.data;
-    let data = result;
+  async getChartListAction(context,param) {
+    console.log(param)
+    let result = await request.post(api.MATERIALS_SELECT_PRODUCT_TREE_API, {
+      productId: param
+    });
+    let data = result.data.data;
     console.log(data);
+
     // 修改树形参数属性
+      let newItem={
+        id:'',
+        name:'',
+        children:[]
+      };
+      newItem.id=data.productId;
+      newItem.name=data.productName;
+      newItem.children=data.childNodes;
     const newarr = [];
     function renderChart(arr, newarr) {
       for (let i = 0; i < arr.length; i++) {
         let addArrObj = {
-          id: arr[i].materialsId,
-          name: arr[i].materialsName,
-          // client_id: arr[i].clientId,
-          // material_id: arr[i].materialsId,
-          // material_name: arr[i].materialsName,
-          // material_type: arr[i].materialsType,
-          // format_id: arr[i].formatId + ' ' + arr[i].formatName,
-          // material_unit: arr[i].materialsUnit,
-          // supplier_id: arr[i].supplierId + ' ' + arr[i].supplierName,
-          // material_erpid: arr[i].materialsErpid,
-          // material_indate: arr[i].materialsIndate,
-          // material_storeid: arr[i].materialsStoreid,
-          // material_operaterid: arr[i].materialsOperaterid,
-          // material_operaterdate: arr[i].materialsOperaterdate,
-          // parent_id: arr[i].parentId,
-          // product_id: arr[i].productId + ' ' + arr[i].productName,
-          // material_meno :arr[i].materialsMeno,
-          // client_creator: arr[i].materialsCreator,
-          // client_createtime: arr[i].materialsCreatetime,
-          // client_updator: arr[i].materialsUpdator,
-          // client_updatetime: arr[i].materialsUpdatetime
+          id: arr[i].materialsId ? arr[i].materialsId : arr[i].productId,
+          name: arr[i].materialsName ? arr[i].materialsName : arr[i].productName,
+          children: [
+
+          ],
+          client_id: arr[i].clientId,
+          material_id: arr[i].materialsId,
+          material_name: arr[i].materialsName,
+          material_type: arr[i].materialsType,
+          format_id: arr[i].formatId + " " + arr[i].formatName,
+          material_unit: arr[i].materialsUnit,
+          supplier_id: arr[i].supplierId + " " + arr[i].supplierName,
+          material_erpid: arr[i].materialsErpid,
+          material_indate: arr[i].materialsIndate,
+          material_storeid: arr[i].materialsStoreid,
+          material_operaterid: arr[i].materialsOperaterid,
+          material_operaterdate: arr[i].materialsOperaterdate,
+          parent_id: arr[i].parentId,
+          product_id: arr[i].productId + " " + arr[i].productName,
+          material_meno: arr[i].materialsMeno,
+          client_creator: arr[i].materialsCreator,
+          client_createtime: arr[i].materialsCreatetime,
+          client_updator: arr[i].materialsUpdator,
+          client_updatetime: arr[i].materialsUpdatetime
         };
         newarr.push(addArrObj);
         if (arr[i].childNodes && arr[i].childNodes.length > 0) {
@@ -159,15 +173,16 @@ const actions = {
       }
       return newarr;
     }
-    renderChart(data, newarr);
-    console.log(newarr);
-    context.commit("setChartList", newarr);
+    renderChart(newItem.children, newarr);
+    newItem.children=newarr
+    console.log(newItem);
+    context.commit("setChartList", newItem);
   },
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.MATERIALS_SELECT_API);
-    let data = result.data
-    console.log('listShow', data)
+    let data = result.data;
+    console.log("listShow", data);
 
     let list = result.data.data.resultObjects;
 
@@ -177,188 +192,246 @@ const actions = {
       newItem.material_id = item.materialsId;
       newItem.material_name = item.materialsName;
       newItem.material_type = item.materialsType;
-      newItem.format_id = item.formatId + ' ' + item.formatName;
+      newItem.format_id = item.formatId
+        ? item.formatId
+        : "" + " " + item.formatName
+        ? item.formatName
+        : "";
       newItem.material_unit = item.materialsUnit;
-      newItem.supplier_id = item.supplierId + ' ' + item.supplierName;
+      newItem.supplier_id = item.supplierId
+        ? item.supplierId
+        : "" + " " + item.supplierName
+        ? item.supplierName
+        : "";
       newItem.material_erpid = item.materialsErpid;
       newItem.material_indate = item.materialsIndate;
       newItem.material_storeid = item.materialsStoreid;
       newItem.material_operaterid = item.materialsOperaterid;
       newItem.material_operaterdate = item.materialsOperaterdate;
       newItem.parent_id = item.parentId;
-      newItem.product_id = item.productId + ' ' + item.productName;
+      newItem.product_id = item.productId
+        ? item.productId
+        : "" + " " + item.productName
+        ? item.productName
+        : "";
       newItem.material_meno = item.materialsMeno;
       newItem.client_creator = item.materialsCreator;
       newItem.client_createtime = item.materialsCreatetime;
       newItem.client_updator = item.materialsUpdator;
       newItem.client_updatetime = item.materialsUpdatetime;
-      return newItem
-    })
+      return newItem;
+    });
     context.commit("setList", list);
   },
   // 新增
   async addListAction({ dispatch }) {
+    console.log(state.list);
     let formAdd = {
-      "materialsId": state.formadd.material_id,
-      "materialsName": state.formadd.material_name,
-      "materialsType": state.formadd.material_type,
-      "formatId": state.formadd.format_id.split(' ')[0],
-      "formatName": state.formadd.format_id.split(' ')[1],
-      "materialsUnit": state.formadd.material_unit,
-      "supplierId": state.formadd.supplier_id.split(' ')[0],
-      "supplierName": state.formadd.supplier_id.split(' ')[1],
-      "materialsErpid": state.formadd.material_erpid,
-      "materialsIndate": state.formadd.material_indate,
-      "materialsStoreid": state.formadd.material_storeid,
-      "materialsOperaterid": state.formadd.material_operaterid,
-      "materialsOperaterdate": state.formadd.material_operaterdate,
-      "parentId": state.formadd.parent_id,
-      "productId": state.formadd.product_id.split(' ')[0],
-      "productName": state.formadd.product_id.split(' ')[1],
-      "materialsMeno": state.formadd.material_meno,
-    }
+      materialsId: state.formadd.material_id,
+      materialsName: state.formadd.material_name,
+      materialsType: state.formadd.material_type,
+      formatId: state.formadd.format_id.split(" ")[0],
+      formatName: state.formadd.format_id.split(" ")[1],
+      materialsUnit: state.formadd.material_unit,
+      supplierId: state.formadd.supplier_id.split(" ")[0],
+      supplierName: state.formadd.supplier_id.split(" ")[1],
+      materialsErpid: state.formadd.material_erpid,
+      materialsIndate: state.formadd.material_indate,
+      materialsStoreid: state.formadd.material_storeid,
+      materialsOperaterid: state.formadd.material_operaterid,
+      materialsOperaterdate: state.formadd.material_operaterdate,
+      parentId: state.formadd.parent_id,
+      productId: state.formadd.product_id.split(" ")[0],
+      productName: state.formadd.product_id.split(" ")[1],
+      materialsMeno: state.formadd.material_meno
+    };
     let result = await request.post(api.MATERIALS_ADD_API, formAdd);
     let data = result.data;
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '新增成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "新增成功!"
+      });
     } else if (data.statusCode == 30006) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '业务逻辑异常!查看是否已存在编号'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!查看是否已存在编号"
+      });
     } else {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
-    console.log('add', data);
-    await dispatch('getListAction')
+    console.log("add", data);
+    await dispatch("getListAction");
   },
   // 修改
   async editListAction({ dispatch }) {
     let formEdit = {
-      "materialsId": state.formadd.material_id,
-      "materialsName": state.formadd.material_name,
-      "materialsType": state.formadd.material_type,
-      "formatId": state.formadd.format_id.split(' ')[0],
-      "formatName": state.formadd.format_id.split(' ')[1],
-      "materialsUnit": state.formadd.material_unit,
-      "supplierId": state.formadd.supplier_id.split(' ')[0],
-      "supplierName": state.formadd.supplier_id.split(' ')[1],
-      "materialsErpid": state.formadd.material_erpid,
-      "materialsIndate": state.formadd.material_indate,
-      "materialsStoreid": state.formadd.material_storeid,
-      "materialsOperaterid": state.formadd.material_operaterid,
-      "materialsOperaterdate": state.formadd.material_operaterdate,
-      "parentId": state.formadd.parent_id,
-      "productId": state.formadd.product_id.split(' ')[0],
-      "productName": state.formadd.product_id.split(' ')[1],
-      "materialsMeno": state.formadd.material_meno,
-    }
+      materialsId: state.formadd.material_id,
+      materialsName: state.formadd.material_name,
+      materialsType: state.formadd.material_type,
+      formatId: state.formadd.format_id
+        ? state.formadd.format_id.split(" ")[0]
+        : "",
+      formatName: state.formadd.format_id
+        ? state.formadd.format_id.split(" ")[1]
+        : "",
+      materialsUnit: state.formadd.material_unit,
+      supplierId: state.formadd.supplier_id
+        ? state.formadd.supplier_id.split(" ")[0]
+        : "",
+      supplierName: state.formadd.supplier_id
+        ? state.formadd.supplier_id.split(" ")[1]
+        : "",
+      materialsErpid: state.formadd.material_erpid,
+      materialsIndate: state.formadd.material_indate,
+      materialsStoreid: state.formadd.material_storeid,
+      materialsOperaterid: state.formadd.material_operaterid,
+      materialsOperaterdate: state.formadd.material_operaterdate,
+      parentId: state.formadd.parent_id,
+      productId: state.formadd.product_id
+        ? state.formadd.product_id.split(" ")[0]
+        : "",
+      productName: state.formadd.product_id
+        ? state.formadd.product_id.split(" ")[1]
+        : "",
+      materialsMeno: state.formadd.material_meno
+    };
     let result = await request.put(api.MATERIALS_ADIT_API, formEdit);
     let data = result.data;
-    console.log('edit', data);
+    console.log("edit", data);
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '修改成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "修改成功!"
+      });
     } else if (data.statusCode == 30006) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
     } else {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
 
-    await dispatch('getListAction')
-
+    await dispatch("getListAction");
   },
   // 删除
   async deleteSingleAction({ dispatch }, param) {
-
     let formDelete = {
-      "materialsId": param
-    }
+      materialsId: param
+    };
     console.log(formDelete);
 
-    let result = await request.oDelete(api.MATERIALS_DELETE_SINGLE_API, formDelete);
+    let result = await request.oDelete(
+      api.MATERIALS_DELETE_SINGLE_API,
+      formDelete
+    );
     let data = result.data;
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
     } else if (data.statusCode == 30006) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '业务逻辑异常，查看是否其它地方有引用此数据!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常，查看是否其它地方有引用此数据!"
+      });
     } else {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
     console.log(data);
-    await dispatch('getListAction')
+    await dispatch("getListAction");
   },
   // 删除多
   async deleteListAction({ dispatch }, param) {
-    console.log(param)
+    console.log(param);
     let formDelete = {
-      "materialsIds": param
-    }
+      materialsIds: param
+    };
     console.log(formDelete);
     let result = await request.oDelete(api.MATERIALS_DELETE_API, formDelete);
     let data = result.data;
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
     } else if (data.statusCode == 30006) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else if (data.statusCode == 4001) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '业务逻辑异常，查看是否其它地方有引用此数据!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常，查看是否其它地方有引用此数据!"
+      });
     } else {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
     console.log(data);
-    await dispatch('getListAction')
-  },
+    await dispatch("getListAction");
+  }
 };
 
 export default {
