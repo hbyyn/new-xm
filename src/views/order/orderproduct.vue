@@ -64,13 +64,13 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="order_id">
-          <el-select v-model="mock_all.formData.order_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.order_id" placeholder="请选择" :disabled="disabledFlat"  clearable filterable>
             <el-option class="dialog_select" v-for="item in order_store" :key="item.id" :value="item.order_id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label" prop="product_id">
-          <el-select v-model="mock_all.formData.product_id" placeholder="请选择">
+          <el-select v-model="mock_all.formData.product_id" placeholder="请选择"  clearable filterable>
             <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
               :value="item.product_id+' '+item.product_name">
             </el-option>

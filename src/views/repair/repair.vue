@@ -56,13 +56,20 @@
         <el-form-item :label="mock_all.columns[1].label">
           <el-input v-model="mock_all.formData.repair_name"></el-input>
         </el-form-item>
-        <el-form-item :label="mock_all.columns[2].label">
+        <!-- <el-form-item :label="mock_all.columns[2].label">
           <el-select v-model="mock_all.formData.parent_id" clearable placeholder="请选择">
             <el-option class="dialog_select" v-for="item in mock_all.list" :key="item.id" :value="item.repair_id"
               :label="item.repair_id+ ' ' +item.repair_name">
             </el-option>
           </el-select>
+        </el-form-item> -->
+        <el-form-item :label="mock_all.columns[2].label">
+          <el-cascader placeholder="请选择" v-model="mock_all.formData.parent_id" :show-all-levels="false"
+            :options="parentOption" clearable filterable :props="{ checkStrictly: true }" style="width:350px;">
+          </el-cascader>
         </el-form-item>
+
+
         <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.repair_desc"></el-input>
         </el-form-item>
@@ -144,7 +151,6 @@ export default {
           }
         }
       },
-
       rules: {
         repair_id: [
           { required: true, message: '请输入编号', trigger: 'blur' },
@@ -159,6 +165,7 @@ export default {
       mock_all: state => state.repair.tableData,//{formData,list,columns}
       changeIndex: state => state.repair.changeIndex,
       formadd: state => state.repair.formadd,
+      parentOption: state => state.repair.parentOption,
     }),
     tableList(){
       return this.mock_all.list
@@ -282,6 +289,7 @@ export default {
         obj[k] = ''
       }
       obj.form_fileList = []
+      this.$store.dispatch('repair/getParentOptionAction');
     },
     //修改
     pwdChange(index, row) {
@@ -291,6 +299,7 @@ export default {
       this.centerDialogVisible = true;
       this.disabledFlat = true;
       this.mock_all.formData = { ...row };
+      this.$store.dispatch('repair/editParentOptionAction', row.repair_id);
     },
     //submit
     formOr(formName) {

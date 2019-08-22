@@ -175,10 +175,13 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item :label="mock_all.columns[11].label">
-            <el-select v-model="formData.parent_id" clearable :disabled="flagParentId" placeholder="请选择">
+            <!-- <el-select v-model="formData.parent_id" clearable :disabled="flagParentId" placeholder="请选择">
               <el-option class="dialog_select" v-for="(item,index) in mock_all.list" :key="index" :value="item.material_id" :label="item.material_id+ ' ' +item.material_name">
               </el-option>
-            </el-select>
+            </el-select> -->
+            <el-cascader placeholder="请选择" v-model="formData.parent_id" :show-all-levels="false"
+            :options="parentOption" clearable filterable :props="{ checkStrictly: true }" style="width:350px;">
+          </el-cascader>
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
 
@@ -290,6 +293,7 @@ export default {
       format_store: state => state.format.tableData.list,
       supplier_store: state => state.supplier.tableData.list,
       product_store: state => state.product.tableData.list,
+      parentOption: state => state.materials.parentOption,
     }),
     tableList(){
       return this.mock_all.list
@@ -337,6 +341,9 @@ export default {
   },
   created() {
     this.$store.dispatch('materials/getListAction');
+    this.$store.dispatch('format/getListAction');
+    this.$store.dispatch('product/getListAction');
+    this.$store.dispatch('supplier/getListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
@@ -471,7 +478,7 @@ export default {
       for (let k of Object.keys(obj)) {
         obj[k] = ''
       }
-
+      this.$store.dispatch('materials/getParentOptionAction');
     },
     //修改
     pwdChange(index, row) {
@@ -481,6 +488,7 @@ export default {
       this.centerDialogVisible = true;
       this.disabledFlat = true;
       this.formData = { ...row };
+      this.$store.dispatch('materials/editParentOptionAction', row.material_id);
     },
     //弹窗确认
     formOr(formName) {

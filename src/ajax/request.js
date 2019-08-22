@@ -1,5 +1,5 @@
 import axios from "axios";
-import api from "./api";
+import api from "../../static/config";
 function get(url, data) {
   return new Promise((resolve, reject) => {
     let params = data || {};

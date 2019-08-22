@@ -73,7 +73,7 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="140px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="material_id">
-          <el-select v-model="mock_all.formData.material_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.material_id" placeholder="请选择" :disabled="disabledFlat" clearable filterable >
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
               :value="item.material_id+' '+item.material_name">
               <span>{{'ID:'+item.material_id}}</span>
@@ -82,7 +82,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label" prop="work_id">
-          <el-select v-model="mock_all.formData.work_id" placeholder="请选择">
+          <el-select v-model="mock_all.formData.work_id" placeholder="请选择" clearable filterable >
             <el-option class="dialog_select" v-for="item in work_store" :key="item.id"
               :value="item.work_id+' '+item.work_name">
               <span>{{'ID:'+item.work_id}}</span>
@@ -156,9 +156,24 @@ export default {
       mock_all: state => state.mwork.tableData,//{formData,list,columns}
       changeIndex: state => state.mwork.changeIndex,
       formadd: state => state.mwork.formadd,
-      materials_store: state => state.materials.tableData.list,
+      // materials_store: state => state.materials.tableData.list,
+      materials_store: state =>{
+        let arr=state.materials.tableData.list
+        let arr2=state.mwork.tableData.list
+        let newArr=[]
+        arr2.forEach(item => {
+          newArr.push(item.material_id.split(' ')[0])
+        })
+        for (let material_id of newArr) {
+          arr = arr.filter(item => {
+            return material_id !== item.material_id
+          })
+        }
+        return arr
+      } ,
       work_store: state => state.work.tableData.list.filter(item=>!item.parent_id),
     }),
+
     tableList(){
       return this.mock_all.list
     }

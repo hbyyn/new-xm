@@ -1,5 +1,5 @@
 // 开发环境
-const DEV_HOST = 'http://192.168.10.219:5687';
+// const DEV_HOST = 'http://192.168.10.219:5687';
 // 测试环境
 // const SET_HOST = 'https://';
 // 生产环境
@@ -132,11 +132,18 @@ const MATERIALS_DELETE_SINGLE_API = '/api/Materials/delete/single';
 const MATERIALS_DELETE_API = '/api/Materials/delete';
 
 /*
-说明： 物料数据
+说明： 物料tree数据
 请求方式：POST
 参数： 无
 */
 const MATERIALS_SELECT_PRODUCT_TREE_API = '/api/Materials/select/product/tree';
+
+/*
+说明： 物料表父级tree
+请求方式：post
+参数： 无
+*/
+const MATERIALS_BASE_TREE_API = '/api/Materials/select/base/tree';
 
 ///////product产品///////////////
 /*
@@ -408,6 +415,13 @@ const REPAIR_DELETE_SINGLE_API = '/api/Repair/delete/single';
 const REPAIR_DELETE_API = '/api/Repair/delete';
 
 /*
+说明： 返修表父级tree
+请求方式：post
+参数： 无
+*/
+const REPAIR_BASE_TREE_API = '/api/Repair/select/base/tree';
+
+/*
 说明： 返修报表tree
 请求方式：POST
 参数： 无
@@ -565,7 +579,7 @@ const MATERIALSWORK_DELETE_SINGLE_API = '/api/MaterialsWork/delete/single';
 const MATERIALSWORK_DELETE_API = '/api/MaterialsWork/delete';
 
 export default {
-    HOST: DEV_HOST,
+    // HOST: DEV_HOST,
     // USER_ADD_API,
     USER_CHECK_API,
     USER_LOGIN_API,
@@ -584,6 +598,7 @@ export default {
     MATERIALS_DELETE_SINGLE_API,
     MATERIALS_DELETE_API,
     MATERIALS_SELECT_PRODUCT_TREE_API,
+    MATERIALS_BASE_TREE_API,
     PRODUCT_SELECT_API,
     PRODUCT_BASE_API,
     PRODUCT_ADD_API,
@@ -621,6 +636,7 @@ export default {
     REPAIR_DELETE_SINGLE_API,
     REPAIR_DELETE_API,
     REPAIR_SELECT_CHILDTREE_API,
+    REPAIR_BASE_TREE_API,
     MATERIALSREPAIR_SELECT_API,
     MATERIALSREPAIR_BASE_API,
     MATERIALSREPAIR_ADD_API,

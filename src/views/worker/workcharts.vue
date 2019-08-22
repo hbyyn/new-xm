@@ -1,7 +1,7 @@
 <template>
   <div class="pmixPage" ref="scollElement">
     <ul class="jumpProduct">
-      <span>产品跳转:</span>
+      <span>工序跳转:</span>
       <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择"
         @change="point">
         <el-option v-for="(item,index) in chartList" :key="index" :label="`${item.id} ${item.name}`" :value="index">

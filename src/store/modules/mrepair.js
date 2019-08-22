@@ -114,21 +114,21 @@ const actions = {
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!"
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -160,21 +160,21 @@ const actions = {
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!"
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -206,21 +206,21 @@ const actions = {
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!"
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -250,21 +250,21 @@ const actions = {
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!"
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"

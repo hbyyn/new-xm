@@ -75,7 +75,7 @@
           <el-input v-model="mock_all.formData.customers_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
-          <el-select v-model="mock_all.formData.customers_id" placeholder="请选择">
+          <el-select v-model="mock_all.formData.customers_id" placeholder="请选择"  clearable filterable>
             <el-option class="dialog_select" v-for="item in customers_store" :key="item.id"
               :value="item.customers_id+' '+item.customers_name">
               <span>{{'ID:'+item.customers_id}}</span>

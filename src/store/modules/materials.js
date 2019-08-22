@@ -70,6 +70,7 @@ const state = {
   changeIndex: "",
   formadd: "",
   nowTime: "",
+  parentOption: [],
   chartList: []
 };
 const mutations = {
@@ -108,42 +109,44 @@ const mutations = {
     state.tableData.list = param;
     console.log(state.tableData.list);
   },
+  setParentOption(state, param) {
+    state.parentOption = param;
+  },
   setChartList(state, param) {
     state.chartList.push(param);
   },
-  setDelChartList(state){
-    state.chartList=[]
+  setDelChartList(state) {
+    state.chartList = [];
   }
 };
 
 const actions = {
   // 树形报表数据
-  async getChartListAction(context,param) {
-    console.log(param)
+  async getChartListAction(context, param) {
+    console.log(param);
     let result = await request.post(api.MATERIALS_SELECT_PRODUCT_TREE_API, {
       productId: param
     });
     let data = result.data.data;
     console.log(data);
-
     // 修改树形参数属性
-      let newItem={
-        id:'',
-        name:'',
-        children:[]
-      };
-      newItem.id=data.productId;
-      newItem.name=data.productName;
-      newItem.children=data.childNodes;
+    let newItem = {
+      id: "",
+      name: "",
+      children: []
+    };
+    newItem.id = data.productId;
+    newItem.name = data.productName;
+    newItem.children = data.childNodes;
     const newarr = [];
     function renderChart(arr, newarr) {
       for (let i = 0; i < arr.length; i++) {
         let addArrObj = {
           id: arr[i].materialsId ? arr[i].materialsId : arr[i].productId,
-          name: arr[i].materialsName ? arr[i].materialsName : arr[i].productName,
-          children: [
-
-          ],
+          name: arr[i].materialsName
+            ? arr[i].materialsName
+            : arr[i].productName,
+          children: [],
           client_id: arr[i].clientId,
           material_id: arr[i].materialsId,
           material_name: arr[i].materialsName,
@@ -174,7 +177,7 @@ const actions = {
       return newarr;
     }
     renderChart(newItem.children, newarr);
-    newItem.children=newarr
+    newItem.children = newarr;
     console.log(newItem);
     context.commit("setChartList", newItem);
   },
@@ -223,6 +226,33 @@ const actions = {
     });
     context.commit("setList", list);
   },
+
+  // 新增父级树形参数
+  async getParentOptionAction(context) {
+    let result = await request.post(api.MATERIALS_BASE_TREE_API);
+    let data = result.data.data;
+    console.log("addtree", data);
+    let newarr = [];
+    render(data, newarr);
+    context.commit("setParentOption", newarr);
+  },
+  // 修改父级树形参数
+  async editParentOptionAction(context, param) {
+    let ignoreMaterialsId = {
+      // materialsId:param,
+      ignoreMaterialsId: param
+    };
+    let result = await request.post(
+      api.MATERIALS_BASE_TREE_API,
+      ignoreMaterialsId
+    );
+    let data = result.data.data;
+    console.log("edittree", data);
+    let newarr = [];
+    render(data, newarr);
+    context.commit("setParentOption", newarr);
+  },
+
   // 新增
   async addListAction({ dispatch }) {
     console.log(state.list);
@@ -240,7 +270,10 @@ const actions = {
       materialsStoreid: state.formadd.material_storeid,
       materialsOperaterid: state.formadd.material_operaterid,
       materialsOperaterdate: state.formadd.material_operaterdate,
-      parentId: state.formadd.parent_id,
+      parentId:
+        state.formadd.parent_id instanceof Array
+          ? state.formadd.parent_id.pop()
+          : state.formadd.parent_id,
       productId: state.formadd.product_id.split(" ")[0],
       productName: state.formadd.product_id.split(" ")[1],
       materialsMeno: state.formadd.material_meno
@@ -256,21 +289,21 @@ const actions = {
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!查看是否已存在编号"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -303,7 +336,10 @@ const actions = {
       materialsStoreid: state.formadd.material_storeid,
       materialsOperaterid: state.formadd.material_operaterid,
       materialsOperaterdate: state.formadd.material_operaterdate,
-      parentId: state.formadd.parent_id,
+      parentId:
+        state.formadd.parent_id instanceof Array
+          ? state.formadd.parent_id.pop()
+          : state.formadd.parent_id,
       productId: state.formadd.product_id
         ? state.formadd.product_id.split(" ")[0]
         : "",
@@ -324,21 +360,21 @@ const actions = {
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -368,21 +404,21 @@ const actions = {
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else if (data.statusCode == 40001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
-        message: "业务逻辑异常，查看是否其它地方有引用此数据!"
+        message: "业务逻辑异常，查看是否关联其它数据!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -409,21 +445,21 @@ const actions = {
       });
     } else if (data.statusCode == 30006) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "登录超时!"
       });
     } else if (data.statusCode == 4001) {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "业务逻辑异常，查看是否其它地方有引用此数据!"
       });
     } else {
       Message({
-        type: "success",
+        type: "warning",
         showClose: true,
         duration: 2000,
         message: "操作失败!"
@@ -433,6 +469,23 @@ const actions = {
     await dispatch("getListAction");
   }
 };
+
+// 修改树形参数属性
+function render(arr, newarr) {
+  for (let i = 0; i < arr.length; i++) {
+    newarr.push({
+      value: arr[i].materialsId,
+      label: arr[i].materialsId + " " + arr[i].materialsName,
+      children: []
+    });
+    if (arr[i].childNodes && arr[i].childNodes.length > 0) {
+      render(arr[i].childNodes, newarr[i].children);
+    } else if (newarr[i].children.length == 0) {
+      newarr[i].children = "";
+    }
+  }
+  return newarr;
+}
 
 export default {
   namespaced: true,

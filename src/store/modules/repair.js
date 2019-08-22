@@ -62,6 +62,7 @@ const state = {
   formadd: "",
   nowTime: "",
   chartList:[],
+  parentOption:[],
 };
 const mutations = {
   setformadd(state, param) {
@@ -73,6 +74,9 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list)
+  },
+  setParentOption(state, param) {
+    state.parentOption = param;
   },
   setChartList(state, param) {
     state.chartList = param;
@@ -117,6 +121,29 @@ const actions = {
     console.log(newarr);
     context.commit("setChartList", newarr);
   },
+  // 新增父级树形参数
+  async getParentOptionAction(context) {
+    let result = await request.post(api.REPAIR_BASE_TREE_API);
+    let data = result.data.data;
+    console.log("addtree", data);
+    let newarr = [];
+    render(data, newarr);
+    context.commit("setParentOption", newarr);
+  },
+  // 修改父级树形参数
+  async editParentOptionAction(context, param) {
+    let ignorerepairId = {
+      // repairId:param,
+      ignoreRepairId: param
+    };
+    let result = await request.post(api.REPAIR_BASE_TREE_API, ignorerepairId);
+    let data = result.data.data;
+    console.log("edittree", data);
+    let newarr = [];
+    render(data, newarr);
+
+    context.commit("setParentOption", newarr);
+  },
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.REPAIR_SELECT_API);
@@ -146,7 +173,7 @@ const actions = {
     let formAdd={
       "repairId":state.formadd.repair_id,
       "repairName":state.formadd.repair_name,
-      "repairParentid":state.formadd.parent_id,
+      "repairParentid":(state.formadd.parent_id instanceof Array)?state.formadd.parent_id.pop():state.formadd.parent_id,
       "repairDesc":state.formadd.repair_desc,
       // "repairMeno":state.formadd.form_fileList,
       "repairMeno": state.formadd.repair_meno,
@@ -160,17 +187,17 @@ const actions = {
       })
     }else if(data.statusCode==40001){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '业务逻辑异常!'
       })
     }else if(data.statusCode==30006){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '登录超时!'
       })
     }else{
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '操作失败!'
       })
     }
@@ -182,7 +209,7 @@ const actions = {
     let formEdit={
       "repairId":state.formadd.repair_id,
       "repairName":state.formadd.repair_name,
-      "repairParentid":state.formadd.parent_id,
+      "repairParentid":(state.formadd.parent_id instanceof Array)?state.formadd.parent_id.pop():state.formadd.parent_id,
       "repairDesc":state.formadd.repair_desc,
       // "repairMeno":state.formadd.form_fileList,
       "repairMeno": state.formadd.repair_meno,
@@ -197,17 +224,17 @@ const actions = {
       })
     }else if(data.statusCode==40001){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '业务逻辑异常!'
       })
     }else if(data.statusCode==30006){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '登录超时!'
       })
     }else{
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '操作失败!'
       })
     }
@@ -232,17 +259,17 @@ const actions = {
       })
     }else if(data.statusCode==40001){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '业务逻辑异常!'
       })
     }else if(data.statusCode==30006){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '登录超时!'
       })
     }else{
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '操作失败!'
       })
     }
@@ -265,17 +292,17 @@ const actions = {
       })
     }else if(data.statusCode==40001){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '业务逻辑异常!'
       })
     }else if(data.statusCode==30006){
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '登录超时!'
       })
     }else{
       Message({
-        type: 'success',
+        type: 'warning',
         showClose: true, duration: 2000, message: '操作失败!'
       })
     }
@@ -283,6 +310,23 @@ const actions = {
       await dispatch('getListAction')
   },
 };
+
+// 修改树形参数属性
+function render(arr, newarr) {
+  for (let i = 0; i < arr.length; i++) {
+    newarr.push({
+      value: arr[i].repairId,
+      label: arr[i].repairId + " " + arr[i].repairName,
+      children: []
+    });
+    if (arr[i].childNodes && arr[i].childNodes.length > 0) {
+      render(arr[i].childNodes, newarr[i].children);
+    } else if (newarr[i].children.length == 0) {
+      newarr[i].children = "";
+    }
+  }
+  return newarr;
+}
 
 export default {
   namespaced: true,

@@ -73,14 +73,14 @@
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
       <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="material_id">
-          <el-select v-model="mock_all.formData.material_id" placeholder="请选择" :disabled="disabledFlat">
+          <el-select v-model="mock_all.formData.material_id" placeholder="请选择" :disabled="disabledFlat" clearable filterable>
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"
               :value="item.material_id+' '+item.material_name">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="mock_all.columns[1].label"  prop="repair_id">
-          <el-select v-model="mock_all.formData.repair_id" placeholder="请选择" >
+          <el-select v-model="mock_all.formData.repair_id" placeholder="请选择" clearable filterable >
             <el-option class="dialog_select" v-for="item in repair_store" :key="item.id"
               :value="item.repair_id+' '+item.repair_name">
             </el-option>
@@ -152,7 +152,21 @@ export default {
       mock_all: state => state.mrepair.tableData,//{formData,list,columns}
       changeIndex: state => state.mrepair.changeIndex,
       formadd: state => state.mrepair.formadd,
-      materials_store: state => state.materials.tableData.list,
+      // materials_store: state => state.materials.tableData.list,
+      materials_store: state =>{
+        let arr=state.materials.tableData.list
+        let arr2=state.mrepair.tableData.list
+        let newArr=[]
+        arr2.forEach(item => {
+          newArr.push(item.material_id.split(' ')[0])
+        })
+        for (let material_id of newArr) {
+          arr = arr.filter(item => {
+            return material_id !== item.material_id
+          })
+        }
+        return arr
+      } ,
       repair_store: state => state.repair.tableData.list.filter(item=>!item.parent_id),
     }),
     tableList(){
