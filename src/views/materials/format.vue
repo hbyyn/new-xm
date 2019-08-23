@@ -49,7 +49,7 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
-      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
 
         <el-form-item :label="mock_all.columns[0].label" prop="format_id">
           <el-input v-model="mock_all.formData.format_id" :disabled="disabledFlat"></el-input>
@@ -75,6 +75,23 @@
 import { mapState } from 'vuex'
 export default {
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.format_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,
@@ -90,7 +107,7 @@ export default {
       //验证
       rules: {
         format_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -102,13 +119,13 @@ export default {
       changeIndex: state => state.format.changeIndex,
       formadd: state => state.format.formadd,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     }
 
   },
   watch: {
-    tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -157,7 +174,7 @@ export default {
         type: 'warning'
       }).then(() => {
         // this.$message({
-          //   type: 'success',
+        //   type: 'success',
         //   showClose: true, duration: 2000, message: '删除成功!'
         // });
 
@@ -191,7 +208,7 @@ export default {
           type: 'warning'
         }).then(() => {
           // this.$message({
-            //   type: 'success',
+          //   type: 'success',
           //   showClose: true, duration: 2000, message: '删除成功!'
           // });
           // this.$store.commit('format/rowRemoveStore', this.multipleSelection)

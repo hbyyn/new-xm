@@ -1,6 +1,6 @@
 import { api, request } from "../../ajax";
-import { Message } from 'element-ui';
-
+import { Message } from "element-ui";
+import router from "../../router";
 
 const state = {
   tableData: {
@@ -19,32 +19,32 @@ const state = {
     ],
     columns: [
       // {id:1,prop:'client_id',label:"公司编号"},
-      { id: 2, prop: 'material_id', label: "物料编号" },
-      { id: 7, prop: 'work_id', label: "工序编号" },
-      { id: 8, prop: 'material_work_begindate', label: "开始日期" },
-      { id: 11, prop: 'material_work_enddate', label: "结束日期" },
+      { id: 2, prop: "material_id", label: "物料编号" },
+      { id: 7, prop: "work_id", label: "工序编号" },
+      { id: 8, prop: "material_work_begindate", label: "开始日期" },
+      { id: 11, prop: "material_work_enddate", label: "结束日期" },
       { id: 21, prop: "material_work_meno", label: "备注" },
-      { id: 14, prop: 'client_creator', label: "创建人" },
-      { id: 15, prop: 'client_createtime', label: "创建时间" },
-      { id: 16, prop: 'client_updator', label: "修改人" },
-      { id: 17, prop: 'client_updatetime', label: "修改时间" }
+      { id: 14, prop: "client_creator", label: "创建人" },
+      { id: 15, prop: "client_createtime", label: "创建时间" },
+      { id: 16, prop: "client_updator", label: "修改人" },
+      { id: 17, prop: "client_updatetime", label: "修改时间" }
     ],
     formData: {
-      client_id: '',
-      material_id: 'b546+',
-      work_id: 'c222+',
-      material_work_begindate: '',
-      material_work_enddate: '',
-      material_work_meno: '',
-      client_creator: '',
-      client_createtime: '',
-      client_updator: '',
-      client_updatetime: ''
-    }, //弹窗,
+      client_id: "",
+      material_id: "b546+",
+      work_id: "c222+",
+      material_work_begindate: "",
+      material_work_enddate: "",
+      material_work_meno: "",
+      client_creator: "",
+      client_createtime: "",
+      client_updator: "",
+      client_updatetime: ""
+    } //弹窗,
   },
   changeIndex: "",
   formadd: "",
-  nowTime: "",
+  nowTime: ""
 };
 const mutations = {
   setformadd(state, param) {
@@ -55,7 +55,7 @@ const mutations = {
   },
   setList(state, param) {
     state.tableData.list = param;
-    console.log(state.tableData.list)
+    console.log(state.tableData.list);
   }
 };
 
@@ -63,171 +63,244 @@ const actions = {
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.MATERIALSWORK_SELECT_API);
-    let data = result.data
-    console.log(data)
+    let data = result.data;
+    console.log(data);
     let list = result.data.data.resultObjects;
 
     list = list.map(item => {
       const newItem = {};
       newItem.client_id = item.clientId;
-      newItem.material_id = item.materialsId + ' ' + item.materialsName;
-      newItem.work_id = item.workId + ' ' + item.workName;
-      newItem.material_work_begindate = item.materialsWorkBegindate?item.materialsWorkBegindate.replace(/T/, " "):'';
-      newItem.material_work_enddate =item.materialsWorkEnddate? item.materialsWorkEnddate.replace(/T/, " "):'';
+      newItem.material_id = item.materialsId + " " + item.materialsName;
+      newItem.work_id = item.workId + " " + item.workName;
+      newItem.material_work_begindate = item.materialsWorkBegindate
+        ? item.materialsWorkBegindate.replace(/T/, " ")
+        : "";
+      newItem.material_work_enddate = item.materialsWorkEnddate
+        ? item.materialsWorkEnddate.replace(/T/, " ")
+        : "";
       newItem.material_work_meno = item.materialsWorkMeno;
       newItem.client_creator = item.materialsWorkCreator;
       newItem.client_createtime = item.materialsWorkCreatetime;
       newItem.client_updator = item.materialsWorkUpdator;
       newItem.client_updatetime = item.materialsWorkUpdatetime;
-      return newItem
-    })
+      return newItem;
+    });
     context.commit("setList", list);
   },
   // 新增
   async addListAction({ dispatch }) {
     let formAdd = {
-      "isMaterialsView": true,
-      "associatedIds": [
-        state.formadd.work_id.split(' ')[0]
-      ],
-      "objectIds": [
-        state.formadd.material_id.split(' ')[0]
-      ],
+      isMaterialsView: true,
+      associatedIds: [state.formadd.work_id.split(" ")[0]],
+      objectIds: [state.formadd.material_id.split(" ")[0]],
       // "materialsId":state.formadd.material_id.split(' ')[0],
       // "materialsName":state.formadd.material_id.split(' ')[1],
       // "workId":state.formadd.work_id.split(' ')[0],
       // "workName":state.formadd.work_id.split(' ')[1],
-      "materialsWorkBegindate": state.formadd.material_work_begindate,
-      "materialsWorkEnddate": state.formadd.material_work_enddate,
-      "materialsWorkMeno": state.formadd.material_work_meno,
-    }
+      materialsWorkBegindate: state.formadd.material_work_begindate,
+      materialsWorkEnddate: state.formadd.material_work_enddate,
+      materialsWorkMeno: state.formadd.material_work_meno
+    };
     let result = await request.post(api.MATERIALSWORK_ADD_API, formAdd);
     let data = result.data;
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '新增成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "新增成功!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    } else if (data.statusCode == 30006) {
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
-    console.log('add', data);
-    await dispatch('getListAction')
+    console.log("add", data);
+    await dispatch("getListAction");
   },
   // 修改
   async editListAction({ dispatch }) {
     let formEdit = {
-      "materialsId": state.formadd.material_id.split(' ')[0],
-      "materialsName": state.formadd.material_id.split(' ')[1],
-      "workId": state.formadd.work_id.split(' ')[0],
-      "workName": state.formadd.work_id.split(' ')[1],
-      "materialsWorkBegindate": state.formadd.material_work_begindate,
-      "materialsWorkEnddate": state.formadd.material_work_enddate,
-      "materialsWorkMeno": state.formadd.material_work_meno,
-    }
+      materialsId: state.formadd.material_id.split(" ")[0],
+      materialsName: state.formadd.material_id.split(" ")[1],
+      workId: state.formadd.work_id.split(" ")[0],
+      workName: state.formadd.work_id.split(" ")[1],
+      materialsWorkBegindate: state.formadd.material_work_begindate,
+      materialsWorkEnddate: state.formadd.material_work_enddate,
+      materialsWorkMeno: state.formadd.material_work_meno
+    };
     let result = await request.put(api.MATERIALSWORK_ADIT_API, formEdit);
     let data = result.data;
-    console.log('edit', data);
+    console.log("edit", data);
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '修改成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "修改成功!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    } else if (data.statusCode == 30006) {
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
 
-    await dispatch('getListAction')
-
+    await dispatch("getListAction");
   },
   // 删除
   async deleteSingleAction({ dispatch }, params) {
-    let result = await request.oDelete(api.MATERIALSWORK_DELETE_SINGLE_API, params);
+    let result = await request.oDelete(
+      api.MATERIALSWORK_DELETE_SINGLE_API,
+      params
+    );
     let data = result.data;
     console.log(data);
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    } else if (data.statusCode == 30006) {
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
 
-    await dispatch('getListAction')
+    await dispatch("getListAction");
   },
   // 删除多
   async deleteListAction({ dispatch }, param) {
-    console.log(param)
+    console.log(param);
     let formDelete = {
-      "materialsIds": param
-    }
+      materialsIds: param
+    };
     console.log(formDelete);
-    let result = await request.oDelete(api.MATERIALSWORK_DELETE_API, formDelete);
+    let result = await request.oDelete(
+      api.MATERIALSWORK_DELETE_API,
+      formDelete
+    );
     let data = result.data;
     if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
     } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    } else if (data.statusCode == 30006) {
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
     } else {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
     console.log(data);
-    await dispatch('getListAction')
-  },
+    await dispatch("getListAction");
+  }
 };
 
 export default {
@@ -236,4 +309,3 @@ export default {
   mutations,
   actions
 };
-

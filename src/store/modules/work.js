@@ -1,5 +1,6 @@
 import { api, request } from "../../ajax";
 import { Message } from "element-ui";
+import router from "../../router";
 
 const state = {
   tableData: {
@@ -34,7 +35,7 @@ const state = {
       work_name: "",
       parent_id: "",
       work_desc: "",
-      work_meno:'',
+      work_meno: "",
       client_creator: "",
       client_createtime: "",
       client_updator: "",
@@ -150,13 +151,15 @@ const actions = {
   },
   // 新增
   async addListAction({ dispatch }) {
-
     let formAdd = {
-      "workId": state.formadd.work_id,
-      "workName": state.formadd.work_name,
-      "workParentid":(state.formadd.parent_id instanceof Array)?state.formadd.parent_id.pop():state.formadd.parent_id,
-      "workDesc": state.formadd.work_desc,
-      "workMeno": state.formadd.work_meno,
+      workId: state.formadd.work_id,
+      workName: state.formadd.work_name,
+      workParentid:
+        state.formadd.parent_id instanceof Array
+          ? state.formadd.parent_id.pop()
+          : state.formadd.parent_id,
+      workDesc: state.formadd.work_desc,
+      workMeno: state.formadd.work_meno
     };
     let result = await request.post(api.WORK_ADD_API, formAdd);
     let data = result.data;
@@ -174,7 +177,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -194,13 +206,16 @@ const actions = {
   },
   // 修改
   async editListAction({ dispatch }) {
-    console.log(state.formadd.parent_id)
+    console.log(state.formadd.parent_id);
     let formEdit = {
-      "workId": state.formadd.work_id,
-      "workName": state.formadd.work_name,
-      "workParentid":(state.formadd.parent_id instanceof Array)?state.formadd.parent_id.pop():state.formadd.parent_id,
-      "workDesc": state.formadd.work_desc,
-      "workMeno": state.formadd.work_meno,
+      workId: state.formadd.work_id,
+      workName: state.formadd.work_name,
+      workParentid:
+        state.formadd.parent_id instanceof Array
+          ? state.formadd.parent_id.pop()
+          : state.formadd.parent_id,
+      workDesc: state.formadd.work_desc,
+      workMeno: state.formadd.work_meno
     };
     let result = await request.put(api.WORK_ADIT_API, formEdit);
     let data = result.data;
@@ -219,7 +234,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -260,7 +284,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -301,7 +334,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,

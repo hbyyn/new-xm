@@ -71,7 +71,7 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
-      <el-form label-position="right" label-width="140px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="140px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="material_id">
           <el-select v-model="mock_all.formData.material_id" placeholder="请选择" :disabled="disabledFlat" clearable filterable >
             <el-option class="dialog_select" v-for="item in materials_store" :key="item.id"

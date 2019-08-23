@@ -1,6 +1,7 @@
 // import Date from "../time";
 import { api, request } from "../../ajax";
 import { Message } from "element-ui";
+import router from "../../router";
 const state = {
   tableData: {
     list: [
@@ -123,7 +124,6 @@ const mutations = {
 const actions = {
   // 树形报表数据
   async getChartListAction(context, param) {
-    console.log(param);
     let result = await request.post(api.MATERIALS_SELECT_PRODUCT_TREE_API, {
       productId: param
     });
@@ -155,10 +155,14 @@ const actions = {
           material_unit: arr[i].materialsUnit,
           supplier_id: arr[i].supplierId + " " + arr[i].supplierName,
           material_erpid: arr[i].materialsErpid,
-          material_indate: arr[i].materialsIndate,
+          material_indate: arr[i].materialsIndate
+            ? arr[i].materialsIndate.replace(/T/, " ")
+            : arr[i].materialsIndate,
           material_storeid: arr[i].materialsStoreid,
           material_operaterid: arr[i].materialsOperaterid,
-          material_operaterdate: arr[i].materialsOperaterdate,
+          material_operaterdate: arr[i].materialsOperaterdate
+            ? arr[i].materialsOperaterdate.replace(/T/, " ")
+            : arr[i].materialsOperaterdate,
           parent_id: arr[i].parentId,
           product_id: arr[i].productId + " " + arr[i].productName,
           material_meno: arr[i].materialsMeno,
@@ -207,10 +211,14 @@ const actions = {
         ? item.supplierName
         : "";
       newItem.material_erpid = item.materialsErpid;
-      newItem.material_indate = item.materialsIndate;
+      newItem.material_indate = item.materialsIndate
+        ? item.materialsIndate.replace(/T/, " ")
+        : item.materialsIndate;
       newItem.material_storeid = item.materialsStoreid;
       newItem.material_operaterid = item.materialsOperaterid;
-      newItem.material_operaterdate = item.materialsOperaterdate;
+      newItem.material_operaterdate = item.materialsOperaterdate
+        ? item.materialsOperaterdate.replace(/T/, " ")
+        : item.materialsOperaterdate;
       newItem.parent_id = item.parentId;
       newItem.product_id = item.productId
         ? item.productId
@@ -287,7 +295,16 @@ const actions = {
         duration: 2000,
         message: "新增成功!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -358,7 +375,16 @@ const actions = {
         duration: 2000,
         message: "修改成功!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -402,7 +428,16 @@ const actions = {
         duration: 2000,
         message: "删除成功!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -443,7 +478,16 @@ const actions = {
         duration: 2000,
         message: "删除成功!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,

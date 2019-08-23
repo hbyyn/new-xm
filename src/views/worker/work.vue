@@ -90,6 +90,23 @@
 import { mapState } from 'vuex'
 export default {
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let trueList = this.mock_all.list.filter(item => item.work_id == value)
+          if (trueList.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,
@@ -104,7 +121,7 @@ export default {
       flagPaging: false,
       rules: {
         work_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -141,11 +158,11 @@ export default {
   },
   created() {
     this.$store.dispatch('work/getListAction');
-
-
     this.tableShow(this.mock_all.list)
   },
   methods: {
+
+
     //列表显示
     tableShow(data) {
       let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)

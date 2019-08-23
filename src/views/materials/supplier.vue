@@ -48,7 +48,7 @@
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
-      <el-form label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
         <!-- <el-form-item :label="mock_all.columns[0].label">
           <el-input v-model="mock_all.formData.client_id"></el-input>
         </el-form-item> -->
@@ -84,6 +84,23 @@
 import { mapState } from 'vuex'
 export default {
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.supplier_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,//弹框
@@ -98,7 +115,7 @@ export default {
       idSearch: '',
       rules: {
         supplier_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -110,12 +127,12 @@ export default {
       changeIndex: state => state.supplier.changeIndex,
       formadd: state => state.supplier.formadd,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     }
   },
   watch: {
-    tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -160,7 +177,7 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

@@ -1,6 +1,7 @@
 // import Date from "../time";
 import { api, request } from "../../ajax";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
+import router from "../../router";
 
 const state = {
   tableData: {
@@ -10,7 +11,6 @@ const state = {
       //   format_id: "66",
       //   //规划
       //   format_name: "BBBB",
-
       //   client_creator: "66",
       //   client_createtime: "66",
       //   client_updator: "66",
@@ -31,12 +31,12 @@ const state = {
       client_id: "",
       format_id: "",
       format_name: "",
-      format_meno:'',
+      format_meno: "",
       client_creator: "",
       client_createtime: "",
       client_updator: "",
       client_updatetime: ""
-    },
+    }
   },
   changeIndex: "",
   formadd: "",
@@ -72,7 +72,7 @@ const mutations = {
   // },
   setList(state, param) {
     state.tableData.list = param;
-    console.log(state.tableData.list)
+    console.log(state.tableData.list);
   }
 };
 
@@ -80,159 +80,228 @@ const actions = {
   // 获取list数据
   async getListAction(context) {
     let result = await request.post(api.FORMAT_SELECT_API);
-    let data=result.data
-    console.log(data)
+    let data = result.data;
+    console.log(data);
     let list = result.data.data.resultObjects;
 
-    list=list.map(item=>{
-      const newItem={};
-      newItem.client_id=item.clientId;
-      newItem.format_id=item.formatId;
-      newItem.format_name=item.formatName;
+    list = list.map(item => {
+      const newItem = {};
+      newItem.client_id = item.clientId;
+      newItem.format_id = item.formatId;
+      newItem.format_name = item.formatName;
       newItem.format_meno = item.formatMeno;
-      newItem.client_creator=item.formatCreator;
-      newItem.client_createtime=item.formatCreatetime;
-      newItem.client_updator=item.formatUpdator;
-      newItem.client_updatetime=item.formatUpdatetime;
-      return newItem
-    })
-      context.commit("setList", list);
+      newItem.client_creator = item.formatCreator;
+      newItem.client_createtime = item.formatCreatetime;
+      newItem.client_updator = item.formatUpdator;
+      newItem.client_updatetime = item.formatUpdatetime;
+      return newItem;
+    });
+    context.commit("setList", list);
   },
   // 新增
   async addListAction({ dispatch }) {
-    let formAdd={
-      "formatName":state.formadd.format_name,
-      "formatId":state.formadd.format_id,
-      "formatMeno": state.formadd.format_meno,
-    }
-    let result = await request.post(api.FORMAT_ADD_API,formAdd);
+    let formAdd = {
+      formatName: state.formadd.format_name,
+      formatId: state.formadd.format_id,
+      formatMeno: state.formadd.format_meno
+    };
+    let result = await request.post(api.FORMAT_ADD_API, formAdd);
     let data = result.data;
-    if(data.statusCode==10000){
+    if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '新增成功!'
-      })
-    }else if(data.statusCode==40001){
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "新增成功!"
+      });
+    } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    }else if(data.statusCode==30006){
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
-    }else{
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
+    } else {
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
-      console.log('add',data);
-      await dispatch('getListAction')
+    console.log("add", data);
+    await dispatch("getListAction");
   },
   // 修改
   async editListAction({ dispatch }) {
-    let formEdit={
-      "formatName":state.formadd.format_name,
-      "formatId":state.formadd.format_id,
-      "formatMeno": state.formadd.format_meno,
-    }
-    let result = await request.put(api.FORMAT_ADIT_API,formEdit);
+    let formEdit = {
+      formatName: state.formadd.format_name,
+      formatId: state.formadd.format_id,
+      formatMeno: state.formadd.format_meno
+    };
+    let result = await request.put(api.FORMAT_ADIT_API, formEdit);
     let data = result.data;
-    console.log('edit',data);
-    if(data.statusCode==10000){
+    console.log("edit", data);
+    if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '修改成功!'
-      })
-    }else if(data.statusCode==40001){
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "修改成功!"
+      });
+    } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    }else if(data.statusCode==30006){
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
-    }else{
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
+    } else {
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
 
-    await dispatch('getListAction')
-
+    await dispatch("getListAction");
   },
   // 删除
-  async deleteSingleAction({ dispatch },param) {
-
-    let formDelete={
-      "formatId":param
-    }
+  async deleteSingleAction({ dispatch }, param) {
+    let formDelete = {
+      formatId: param
+    };
     console.log(formDelete);
 
-    let result = await request.oDelete(api.FORMAT_DELETE_SINGLE_API,formDelete);
+    let result = await request.oDelete(
+      api.FORMAT_DELETE_SINGLE_API,
+      formDelete
+    );
     let data = result.data;
-    if(data.statusCode==10000){
+    if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
-    }else if(data.statusCode==40001){
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
+    } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    }else if(data.statusCode==30006){
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
-    }else{
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
+    } else {
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
-      console.log(data);
-      await dispatch('getListAction')
+    console.log(data);
+    await dispatch("getListAction");
   },
-   // 删除多
-   async deleteListAction({ dispatch },param) {
-    console.log(param)
-    let formDelete={
-      "formatIds":param
-    }
+  // 删除多
+  async deleteListAction({ dispatch }, param) {
+    console.log(param);
+    let formDelete = {
+      formatIds: param
+    };
     console.log(formDelete);
-    let result = await request.oDelete(api.FORMAT_DELETE_API,formDelete);
+    let result = await request.oDelete(api.FORMAT_DELETE_API, formDelete);
     let data = result.data;
-    if(data.statusCode==10000){
+    if (data.statusCode == 10000) {
       Message({
-        type: 'success',
-        showClose: true, duration: 2000, message: '删除成功!'
-      })
-    }else if(data.statusCode==40001){
+        type: "success",
+        showClose: true,
+        duration: 2000,
+        message: "删除成功!"
+      });
+    } else if (data.statusCode == 40001) {
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '业务逻辑异常!'
-      })
-    }else if(data.statusCode==30006){
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "业务逻辑异常!"
+      });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '登录超时!'
-      })
-    }else{
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
+    } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
-        type: 'warning',
-        showClose: true, duration: 2000, message: '操作失败!'
-      })
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "登录超时!"
+      });
+    } else {
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "操作失败!"
+      });
     }
-      console.log(data);
-      await dispatch('getListAction')
-  },
+    console.log(data);
+    await dispatch("getListAction");
+  }
 };
 
 export default {

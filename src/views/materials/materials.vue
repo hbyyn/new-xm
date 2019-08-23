@@ -23,7 +23,6 @@
           </el-option>
         </el-select>
 
-
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="formatSearch" clearable filterable size="small" placeholder="请选择">
           <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id" :value="item.format_id">
@@ -110,7 +109,7 @@
     </el-pagination>
 
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="550px">
       <div class="formheight">
         <el-form class="formAdd" label-position="right" label-width="120px" :model="formData" :rules="rules"
           ref="ruleForm">
@@ -179,12 +178,11 @@
               <el-option class="dialog_select" v-for="(item,index) in mock_all.list" :key="index" :value="item.material_id" :label="item.material_id+ ' ' +item.material_name">
               </el-option>
             </el-select> -->
-            <el-cascader placeholder="请选择" v-model="formData.parent_id" :show-all-levels="false"
-            :options="parentOption" clearable filterable :props="{ checkStrictly: true }" style="width:350px;">
-          </el-cascader>
+            <el-cascader placeholder="请选择" v-model="formData.parent_id" :show-all-levels="false" :options="parentOption"
+              clearable filterable :props="{ checkStrictly: true }" style="width:350px;" :disabled="flagParentId">
+            </el-cascader>
           </el-form-item>
           <el-form-item :label="mock_all.columns[12].label">
-
             <el-select v-model="formData.product_id" clearable :disabled="flagProductId" placeholder="请选择">
               <el-option class="dialog_select" v-for="item in product_store" :key="item.id"
                 :value="item.product_id+' '+item.product_name">
@@ -194,8 +192,8 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="mock_all.columns[13].label">
-          <el-input v-model="formData.material_meno"></el-input>
-        </el-form-item>
+            <el-input v-model="formData.material_meno"></el-input>
+          </el-form-item>
 
           <!-- <el-form-item :label="mock_all.columns[14].label">
           <el-input v-model="formData.client_creator"></el-input>
@@ -226,6 +224,23 @@ import { mapState } from 'vuex'
 
 export default {
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.material_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,//弹框
@@ -250,7 +265,7 @@ export default {
         material_operaterdate: "",
         parent_id: "",
         product_id: "",
-        material_meno:'',
+        material_meno: '',
         client_creator: "",
         client_createtime: "",
         client_updator: "",
@@ -279,7 +294,7 @@ export default {
       //验证
       rules: {
         material_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID,required: true, trigger: 'blur' },
         ],
       }
     }
@@ -295,7 +310,7 @@ export default {
       product_store: state => state.product.tableData.list,
       parentOption: state => state.materials.parentOption,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     },
     fromParentId() {
@@ -306,7 +321,7 @@ export default {
     },
   },
   watch: {
-    tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -322,20 +337,22 @@ export default {
         document.onkeydown = undefined;
       }
     },
-    // fromParentId(val) {
-    //   if (val) {
-    //     this.flagProductId = true
-    //   } else {
-    //     this.flagProductId = false
-    //   }
-    // },
-    // fromProductId(val) {
-    //   if (val) {
-    //     this.flagParentId = true
-    //   } else {
-    //     this.flagParentId = false
-    //   }
-    // },
+    fromParentId(val) {
+      console.log(val)
+      if (val.length==0) {
+
+        this.flagProductId = false
+      }else {
+        this.flagProductId = true
+      }
+    },
+    fromProductId(val) {
+      if (val) {
+        this.flagParentId = true
+      } else {
+        this.flagParentId = false
+      }
+    },
 
 
   },
@@ -405,7 +422,7 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -433,7 +450,7 @@ export default {
     //批量删除
     rowRemove() {
       if (this.multipleSelection.length) {
-         let listRemove = []
+        let listRemove = []
         let xxx = this.multipleSelection
         xxx.map(item => {
           listRemove.push(item.material_id)

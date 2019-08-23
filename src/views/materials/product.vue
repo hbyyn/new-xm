@@ -78,6 +78,23 @@
 import { mapState } from 'vuex'
 export default {
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.product_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,
@@ -92,7 +109,7 @@ export default {
       flagPaging: false,
       rules: {
         product_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -104,12 +121,12 @@ export default {
       changeIndex: state => state.product.changeIndex,
       formadd: state => state.product.formadd,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     }
   },
   watch: {
-     tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -153,7 +170,7 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -254,7 +271,7 @@ export default {
             //   type: 'success',
             //   showClose: true, duration: 2000, message: '修改成功!'
             // })
-             this.$store.dispatch('product/editListAction');
+            this.$store.dispatch('product/editListAction');
           }
           this.centerDialogVisible = false
           this.tableShow(this.mock_all.list)

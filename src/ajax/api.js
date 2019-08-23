@@ -1,5 +1,5 @@
 // 开发环境
-// const DEV_HOST = 'http://192.168.10.219:5687';
+const DEV_HOST = 'http://192.168.10.109:5896';
 // 测试环境
 // const SET_HOST = 'https://';
 // 生产环境
@@ -579,7 +579,7 @@ const MATERIALSWORK_DELETE_SINGLE_API = '/api/MaterialsWork/delete/single';
 const MATERIALSWORK_DELETE_API = '/api/MaterialsWork/delete';
 
 export default {
-    // HOST: DEV_HOST,
+    HOST: DEV_HOST,
     // USER_ADD_API,
     USER_CHECK_API,
     USER_LOGIN_API,

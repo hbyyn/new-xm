@@ -75,7 +75,7 @@
           <el-input v-model="mock_all.formData.customers_id"></el-input>
         </el-form-item> -->
         <el-form-item :label="mock_all.columns[1].label">
-          <el-select v-model="mock_all.formData.customers_id" placeholder="请选择"  clearable filterable>
+          <el-select v-model="mock_all.formData.customers_id" placeholder="请选择" clearable filterable>
             <el-option class="dialog_select" v-for="item in customers_store" :key="item.id"
               :value="item.customers_id+' '+item.customers_name">
               <span>{{'ID:'+item.customers_id}}</span>
@@ -124,7 +124,25 @@
 <script>
 import { mapState } from 'vuex'
 export default {
+
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.order_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,
@@ -143,7 +161,7 @@ export default {
       flagPaging: false,
       rules: {
         order_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -156,12 +174,12 @@ export default {
       formadd: state => state.order.formadd,
       customers_store: state => state.customers.tableData.list,
     }),
-     tableList(){
+    tableList() {
       return this.mock_all.list
     }
   },
   watch: {
-    tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -222,14 +240,14 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let deleteRow={
-          "orderId":row.order_id
+        let deleteRow = {
+          "orderId": row.order_id
         }
         this.$store.dispatch('order/deleteSingleAction', deleteRow);
         this.tableShow(this.mock_all.list)

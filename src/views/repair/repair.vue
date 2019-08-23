@@ -48,8 +48,9 @@
       layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
     </el-pagination>
     <!-- 新增 -->
-    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="60%">
-      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules" ref="ruleForm">
+    <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="600px">
+      <el-form class="formAdd" label-position="right" label-width="120px" :model="mock_all.formData" :rules="rules"
+        ref="ruleForm">
         <el-form-item :label="mock_all.columns[0].label" prop="repair_id">
           <el-input v-model="mock_all.formData.repair_id" :disabled="disabledFlat"></el-input>
         </el-form-item>
@@ -68,7 +69,6 @@
             :options="parentOption" clearable filterable :props="{ checkStrictly: true }" style="width:350px;">
           </el-cascader>
         </el-form-item>
-
 
         <el-form-item :label="mock_all.columns[3].label">
           <el-input v-model="mock_all.formData.repair_desc"></el-input>
@@ -127,6 +127,23 @@ export default {
     quillEditor
   },
   data() {
+    var checkID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('不能为空,请输入编号'));
+      }
+      setTimeout(() => {
+        if (this.addorChange == true) {
+          let xxx = this.mock_all.list.filter(item => item.repair_id == value)
+          if (xxx.length > 0) {
+            callback(new Error('编号已存在，请重新输入'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }, 200);
+    };
     return {
       multipleSelection: [],
       centerDialogVisible: false,
@@ -153,7 +170,7 @@ export default {
       },
       rules: {
         repair_id: [
-          { required: true, message: '请输入编号', trigger: 'blur' },
+          { validator: checkID, trigger: 'blur' },
         ],
       },
     }
@@ -167,13 +184,13 @@ export default {
       formadd: state => state.repair.formadd,
       parentOption: state => state.repair.parentOption,
     }),
-    tableList(){
+    tableList() {
       return this.mock_all.list
     }
 
   },
   watch: {
-     tableList(){
+    tableList() {
       this.tableShow(this.mock_all.list)
     },
     //弹窗回车
@@ -226,7 +243,7 @@ export default {
       this.tableShow(filterData)
     },
     //移除
-    rowDel(index,row) {
+    rowDel(index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -260,7 +277,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-         this.$store.dispatch('repair/deleteListAction', listRemove)
+          this.$store.dispatch('repair/deleteListAction', listRemove)
           this.tableShow(this.mock_all.list)
           console.log(this.multipleSelection)
         }).catch(() => {
@@ -340,7 +357,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .rowAdd {
   float: right;
   margin-right: 50px;

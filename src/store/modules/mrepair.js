@@ -1,5 +1,6 @@
 import { api, request } from "../../ajax";
 import { Message } from "element-ui";
+import router from "../../router";
 
 const state = {
   tableData: {
@@ -90,12 +91,8 @@ const actions = {
   async addListAction({ dispatch }) {
     let formAdd = {
       isMaterialsView: true,
-      associatedIds: [
-        state.formadd.repair_id.split(" ")[0],
-      ],
-      objectIds: [
-        state.formadd.material_id.split(" ")[0],
-      ],
+      associatedIds: [state.formadd.repair_id.split(" ")[0]],
+      objectIds: [state.formadd.material_id.split(" ")[0]],
       // "materialsId":state.formadd.material_id.split(' ')[0],
       // "repairId":state.formadd.repair_id.split(' ')[0],
       materialsRepairBegindate: state.formadd.material_repair_begindate,
@@ -119,7 +116,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -165,7 +171,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -211,7 +226,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
@@ -255,7 +279,16 @@ const actions = {
         duration: 2000,
         message: "业务逻辑异常!"
       });
+    } else if (data.statusCode == 30001) {
+      router.push({ path: "/login" });
+      Message({
+        type: "warning",
+        showClose: true,
+        duration: 2000,
+        message: "用户未登录!"
+      });
     } else if (data.statusCode == 30006) {
+      router.push({ path: "/login" });
       Message({
         type: "warning",
         showClose: true,
