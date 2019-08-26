@@ -1,5 +1,24 @@
+// import Vue from "vue";
+// import axios from "axios";
+// function aaaa(){
+//     return new Promise((resolve, reject) => {
+//         axios.get('/static/config.json').then(result =>resolve(result)).catch(error => reject(error))
+//     })
+//   }
+//   async function xxx(){
+//     let xxxx=await aaaa()
+//     Vue.prototype.CONFIG_HOST=xxxx.data.CONFIG_HOST
+
+//   }
+//   xxx()
+
+
+
+
 // 开发环境
-const DEV_HOST = 'http://192.168.10.109:5896';
+// const DEV_HOST = 'http://192.168.10.109:5896';
+const DEV_HOST = sessionStorage.getItem("CONFIG_HOST");
+
 // 测试环境
 // const SET_HOST = 'https://';
 // 生产环境

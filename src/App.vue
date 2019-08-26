@@ -29,6 +29,14 @@ export default {
         this.isRouterAlive = true
       })
     }
+  },
+  created(){
+    this.getConfigJson()
+  },
+  mounted(){
+
+    console.log(sessionStorage.getItem("CONFIG_HOST"))
+
   }
 
 }

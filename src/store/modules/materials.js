@@ -138,6 +138,8 @@ const actions = {
     newItem.id = data.productId;
     newItem.name = data.productName;
     newItem.children = data.childNodes;
+    newItem.product_id = data.productId;
+    newItem.product_name = data.productName?data.productName:'';
     const newarr = [];
     function renderChart(arr, newarr) {
       for (let i = 0; i < arr.length; i++) {
@@ -149,23 +151,23 @@ const actions = {
           children: [],
           client_id: arr[i].clientId,
           material_id: arr[i].materialsId,
-          material_name: arr[i].materialsName,
-          material_type: arr[i].materialsType,
-          format_id: arr[i].formatId + " " + arr[i].formatName,
-          material_unit: arr[i].materialsUnit,
-          supplier_id: arr[i].supplierId + " " + arr[i].supplierName,
-          material_erpid: arr[i].materialsErpid,
+          material_name: arr[i].materialsName?arr[i].materialsName:'',
+          material_type: arr[i].materialsType?arr[i].materialsType:'',
+          format_id: arr[i].formatId?arr[i].formatId:'',
+          material_unit: arr[i].materialsUnit?arr[i].materialsUnit:'',
+          supplier_id: arr[i].supplierId?arr[i].supplierId:'',
+          material_erpid: arr[i].materialsErpid?arr[i].materialsErpid:'',
           material_indate: arr[i].materialsIndate
             ? arr[i].materialsIndate.replace(/T/, " ")
-            : arr[i].materialsIndate,
-          material_storeid: arr[i].materialsStoreid,
-          material_operaterid: arr[i].materialsOperaterid,
+            : '',
+          material_storeid: arr[i].materialsStoreid?arr[i].materialsStoreid:'',
+          material_operaterid: arr[i].materialsOperaterid?arr[i].materialsOperaterid:'',
           material_operaterdate: arr[i].materialsOperaterdate
             ? arr[i].materialsOperaterdate.replace(/T/, " ")
-            : arr[i].materialsOperaterdate,
-          parent_id: arr[i].parentId,
-          product_id: arr[i].productId + " " + arr[i].productName,
-          material_meno: arr[i].materialsMeno,
+            : '',
+          parent_id: arr[i].parentId?arr[i].parentId:'',
+          product_id: arr[i].productId?arr[i].productId:'',
+          material_meno: arr[i].materialsMeno?arr[i].materialsMeno:'',
           client_creator: arr[i].materialsCreator,
           client_createtime: arr[i].materialsCreatetime,
           client_updator: arr[i].materialsUpdator,

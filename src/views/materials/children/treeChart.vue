@@ -22,14 +22,15 @@ export default {
           position: 'right',
           trigger: 'item',
           formatter: (params) => {
+            console.log(params.data)
             var res = '';
             if (params.data.product_name) {
-              for (let k of this.columnsProduct) {
-                res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+              for (let k of this.columnsProduct.slice(0,2)) {
+                res = res + '<p>' + k.label + ':' + params.data[k.prop]+ '<p/>'
               }
             }else{
               for (let k of this.columns) {
-                res = res + '<br/>' + k.label + ':' + params.data[k.prop]
+                res = res + '<p>' + k.label + ':' + params.data[k.prop]+ '<p/>'
               }
             }
             return res;
@@ -75,6 +76,9 @@ export default {
       }
     }
   },
+  created(){
+    console.log(this.columnsProduct,this.columns)
+  }
 }
 </script>
 

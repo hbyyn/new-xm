@@ -19,8 +19,8 @@
 </template>
 
 <script>
-// import treechart from './children/treeChart'
-import treechart from '../../components/treeChart'
+import treechart from './children/treeChart'
+// import treechart from '../../components/treeChart'
 import { mapState } from 'vuex'
 export default {
 
@@ -37,9 +37,7 @@ export default {
     ...mapState({
       // 获得菜单列表数据
       mock_all: state => state.materials.tableData,//{formData,list,columns}
-      product_store: state => {
-        return state.product.tableData
-      },
+      product_store: state => state.product.tableData,
       chartList: state => state.materials.chartList,
     }),
     //   //数据
