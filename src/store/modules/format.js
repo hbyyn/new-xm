@@ -40,7 +40,9 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime: ""
+  nowTime: "",
+  count:0,
+  searchList:[]
 };
 const mutations = {
   // setNowTime(state) {
@@ -73,17 +75,29 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list);
-  }
+  },
+  setCount(state, param) {
+    state.count= param;
+  },
+  setSearchList(state, param) {
+    state.searchList= param;
+  },
 };
 
 const actions = {
   // 获取list数据
-  async getListAction(context) {
-    let result = await request.post(api.FORMAT_SELECT_API);
-    let data = result.data;
-    console.log(data);
-    let list = result.data.data.resultObjects;
+  async getListAction(context,param={}) {
+    let { pageIndex = 1, pageSize = 10, formatId='' } = param;
+    const page = {
+      pageIndex,
+      pageSize,
+      formatId
+    };
+    let result = await request.post(api.FORMAT_SELECT_API,page);
+    let count = result.data.data.count;
+    context.commit("setCount", count);
 
+    let list = result.data.data.resultObjects;
     list = list.map(item => {
       const newItem = {};
       newItem.client_id = item.clientId;
@@ -97,6 +111,18 @@ const actions = {
       return newItem;
     });
     context.commit("setList", list);
+  },
+  // 查询
+  async checkListAction(context) {
+    let result= await request.post(api.FORMAT_SELECT_BASE_API);
+    let searchList=result.data.data.resultObjects;
+    searchList = searchList.map(item=>{
+      const newItem = {};
+      newItem.format_id=item.formatId;
+      newItem.format_name = item.formatName;
+      return newItem;
+    })
+    context.commit("setSearchList",searchList);
   },
   // 新增
   async addListAction({ dispatch }) {
@@ -204,8 +230,6 @@ const actions = {
     let formDelete = {
       formatId: param
     };
-    console.log(formDelete);
-
     let result = await request.oDelete(
       api.FORMAT_DELETE_SINGLE_API,
       formDelete
@@ -249,16 +273,13 @@ const actions = {
         message: "操作失败!"
       });
     }
-    console.log(data);
     await dispatch("getListAction");
   },
   // 删除多
   async deleteListAction({ dispatch }, param) {
-    console.log(param);
     let formDelete = {
       formatIds: param
     };
-    console.log(formDelete);
     let result = await request.oDelete(api.FORMAT_DELETE_API, formDelete);
     let data = result.data;
     if (data.statusCode == 10000) {
@@ -299,7 +320,6 @@ const actions = {
         message: "操作失败!"
       });
     }
-    console.log(data);
     await dispatch("getListAction");
   }
 };

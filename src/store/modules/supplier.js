@@ -35,12 +35,12 @@ const state = {
     ],
     formData: {
       client_id: "",
-      supplier_id: "333+",
+      supplier_id: "",
       //供应商
-      supplier_name: "DDD+",
-      supplier_tel: "333+",
-      supplier_address: "333+",
-      supplier_fax: "333+",
+      supplier_name: "",
+      supplier_tel: "",
+      supplier_address: "",
+      supplier_fax: "",
       supplier_meno: "",
       client_creator: "",
       client_createtime: "",
@@ -50,7 +50,9 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime: ""
+  nowTime: "",
+  count: 0,
+  searchList: []
 };
 const mutations = {
   // setNowTime(state) {
@@ -81,17 +83,29 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list);
+  },
+  setCount(state, param) {
+    state.count = param;
+  },
+  setSearchList(state, param) {
+    state.searchList = param;
+    console.log(state.searchList);
   }
 };
 
 const actions = {
   // 获取list数据
-  async getListAction(context) {
-    let result = await request.post(api.SUPPLIER_SELECT_API);
-    let data = result.data;
-    console.log(data);
+  async getListAction(context, param={}) {
+    let { pageIndex = 1, pageSize = 10, supplierId='' } = param;
+    const page = {
+      pageIndex,
+      pageSize,
+      supplierId
+    };
+    let result = await request.post(api.SUPPLIER_SELECT_API, page);
+    let count = result.data.data.count;
+    context.commit("setCount", count);
     let list = result.data.data.resultObjects;
-
     list = list.map(item => {
       const newItem = {};
       newItem.client_id = item.clientId;
@@ -108,6 +122,18 @@ const actions = {
       return newItem;
     });
     context.commit("setList", list);
+  },
+  // 查询
+  async checkListAction(context) {
+    let result = await request.post(api.SUPPLIER_SELECT_BASE_API);
+    let searchList = result.data.data.resultObjects;
+    searchList = searchList.map(item => {
+      const newItem = {};
+      newItem.supplier_id = item.supplierId;
+      newItem.supplier_name = item.supplierName;
+      return newItem;
+    });
+    context.commit("setSearchList", searchList);
   },
   // 新增
   async addListAction({ dispatch }) {

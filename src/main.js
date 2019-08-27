@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.prototype.getConfigJson=function(){
   axios.get("/static/config.json").then((result)=>{
-      //用一个全局字段保存ApiUrl  也可以用sessionStorage存储
+      //sessionStorage存储ApiUrl
       sessionStorage.setItem("CONFIG_HOST", result.data.CONFIG_HOST);
   }).catch((error)=>{console.log(error)});
 }

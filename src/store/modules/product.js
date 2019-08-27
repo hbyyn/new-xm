@@ -58,7 +58,9 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime: ""
+  nowTime: "",
+  count:0,
+  searchList:[]
 };
 const mutations = {
   // setNowTime(state) {
@@ -89,15 +91,29 @@ const mutations = {
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list);
-  }
+  },
+  setCount(state, param) {
+    state.count= param;
+  },
+  setSearchList(state, param) {
+    state.searchList= param;
+    console.log(state.searchList);
+  },
 };
 
 const actions = {
   // 获取list数据
-  async getListAction(context) {
-    let result = await request.post(api.PRODUCT_SELECT_API);
-    let data = result.data;
-    console.log(data);
+  async getListAction(context,param={}) {
+    let { pageIndex = 1, pageSize = 10, productId='' } = param;
+    const page = {
+      pageIndex,
+      pageSize,
+      productId
+    };
+    let result = await request.post(api.PRODUCT_SELECT_API,page);
+    let count = result.data.data.count;
+    context.commit("setCount", count);
+
     let list = result.data.data.resultObjects;
 
     list = list.map(item => {
@@ -115,6 +131,18 @@ const actions = {
       return newItem;
     });
     context.commit("setList", list);
+  },
+  // 查询
+  async checkListAction(context) {
+    let result= await request.post(api.PRODUCT_SELECT_BASE_API);
+    let searchList=result.data.data.resultObjects;
+    searchList = searchList.map(item=>{
+      const newItem = {};
+      newItem.product_id=item.productId;
+      newItem.product_name = item.productName;
+      return newItem;
+    })
+    context.commit("setSearchList",searchList);
   },
   // 新增
   async addListAction({ dispatch }) {

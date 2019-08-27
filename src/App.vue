@@ -33,17 +33,12 @@ export default {
   created(){
     this.getConfigJson()
   },
-  mounted(){
 
-    console.log(sessionStorage.getItem("CONFIG_HOST"))
-
-  }
 
 }
 </script>
 
 <style lang="scss" scoped>
-#app {
-}
+
 </style>
 

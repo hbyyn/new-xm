@@ -1,6 +1,6 @@
 import { api, request } from "../../ajax";
 import { Message } from "element-ui";
-import router from '../../router'
+import router from "../../router";
 
 const state = {
   tableData: {
@@ -47,46 +47,42 @@ const state = {
   },
   changeIndex: "",
   formadd: "",
-  nowTime: ""
+  nowTime: "",
+  count: 0,
+  searchList: []
 };
 const mutations = {
-  // setNowTime(state) {
-  //   state.nowTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
-  // },
   setformadd(state, param) {
     state.formadd = param;
   },
   setChangeIndex(state, param) {
     state.changeIndex = param;
   },
-  // //增
-  // rowAddStore(state) {
-  //   state.formadd.client_id = sessionStorage.getItem("client_id");
-  //   state.formadd.client_creator = sessionStorage.getItem("user_name");
-  //   state.formadd.client_createtime = state.nowTime;
-  //   state.tableData.list.unshift(state.formadd);
-  // },
-  // rowRemoveStore(state,param){
-  //   state.tableData.list=state.tableData.list.filter( item=>(param.indexOf(item) < 0))
-  // },
-  // //改
-  // pwdChange(state) {
-  //   state.formadd.client_updator = sessionStorage.getItem("user_name");
-  //   state.formadd.client_updatetime = state.nowTime;
-  //   state.tableData.list.splice(state.changeIndex, 1, state.formadd);
-  // },
   setList(state, param) {
     state.tableData.list = param;
     console.log(state.tableData.list);
+  },
+  setCount(state, param) {
+    state.count = param;
+  },
+  setSearchList(state, param) {
+    state.searchList = param;
+    console.log(state.searchList);
   }
 };
 
 const actions = {
   // 获取list数据
-  async getListAction(context) {
-    let result = await request.post(api.CUSTOMERS_SELECT_API);
-    let data = result.data;
-    console.log(data);
+  async getListAction(context, param={}) {
+    let { pageIndex = 1, pageSize = 10, customersId='' } = param;
+    const page = {
+      pageIndex,
+      pageSize,
+      customersId
+    };
+    let result = await request.post(api.CUSTOMERS_SELECT_API, page);
+    let count = result.data.data.count;
+    context.commit("setCount", count);
     let list = result.data.data.resultObjects;
 
     list = list.map(item => {
@@ -105,6 +101,18 @@ const actions = {
       return newItem;
     });
     context.commit("setList", list);
+  },
+  // 查询
+  async checkListAction(context) {
+    let result = await request.post(api.CUSTOMERS_SELECT_BASE_API);
+    let searchList = result.data.data.resultObjects;
+    searchList = searchList.map(item => {
+      const newItem = {};
+      newItem.customers_id = item.customersId;
+      newItem.customers_name = item.customersName;
+      return newItem;
+    });
+    context.commit("setSearchList", searchList);
   },
   // 新增
   async addListAction({ dispatch }) {

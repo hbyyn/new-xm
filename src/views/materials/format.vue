@@ -4,7 +4,7 @@
       <div class="search">
         <span>规格编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.format_id+' '+item.format_name"
+          <el-option v-for="(item,index) in searchList" :key="index" :label="item.format_id+' '+item.format_name"
             :value="item.format_id">
           </el-option>
         </el-select>
@@ -45,7 +45,7 @@
     <!-- 分页 -->
     <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+      layout="total, sizes, prev, pager, next, jumper" :total="count">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
@@ -103,7 +103,6 @@ export default {
       pageCurrent: 1,
       flagPaging: false,
       idSearch: '',
-      nameSearch: '',
       //验证
       rules: {
         format_id: [
@@ -118,6 +117,8 @@ export default {
       mock_all: state => state.format.tableData,//{formData,list,columns}
       changeIndex: state => state.format.changeIndex,
       formadd: state => state.format.formadd,
+      count: state => state.format.count,
+      searchList: state => state.format.searchList,
     }),
     tableList() {
       return this.mock_all.list
@@ -143,14 +144,18 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('format/getListAction');
+    this.$store.dispatch('format/getListAction',{
+      "pageIndex":1,
+      "pageSize": 10,
+    });
+    this.$store.dispatch('format/checkListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
     //列表显示
     tableShow(data) {
-      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
-      this.tableData = _data
+      // let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      this.tableData = data
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
@@ -163,8 +168,10 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.format_id.toLowerCase().includes(this.idSearch.toLowerCase()))
-      this.tableShow(filterData)
+      // var filterData = this.mock_all.list.filter(item => !this.idSearch || item.format_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      // this.tableShow(filterData)
+      this.$store.dispatch('format/getListAction',{"formatId":this.idSearch});
+      this.tableShow(this.mock_all.list)
     },
     //移除
     rowDel(index, row) {
@@ -275,13 +282,13 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
+      this.$store.dispatch('format/getListAction',{"pageSize":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
     },
     handleCurrentChange(val) {
       this.pageCurrent = val
+      this.$store.dispatch('format/getListAction',{"pageIndex":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
     }
   },
 

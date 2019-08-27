@@ -1,18 +1,3 @@
-// import Vue from "vue";
-// import axios from "axios";
-// function aaaa(){
-//     return new Promise((resolve, reject) => {
-//         axios.get('/static/config.json').then(result =>resolve(result)).catch(error => reject(error))
-//     })
-//   }
-//   async function xxx(){
-//     let xxxx=await aaaa()
-//     Vue.prototype.CONFIG_HOST=xxxx.data.CONFIG_HOST
-
-//   }
-//   xxx()
-
-
 
 
 // 开发环境
@@ -74,7 +59,7 @@ const FORMAT_SELECT_API = '/api/Format/select';
 请求方式：POST
 参数： 无
 */
-const FORMAT_BASE_API = '/api/Format/select/base';
+const FORMAT_SELECT_BASE_API = '/api/Format/select/base';
 
 
 /*
@@ -119,7 +104,7 @@ const MATERIALS_SELECT_API = '/api/Materials/select';
 请求方式：POST
 参数： 无
 */
-const MATERIALS_BASE_API = '/api/Materials/select/base';
+const MATERIALS_SELECT_BASE_API = '/api/Materials/select/base';
 
 
 /*
@@ -177,7 +162,7 @@ const PRODUCT_SELECT_API = '/api/Product/select';
 请求方式：POST
 参数： 无
 */
-const PRODUCT_BASE_API = '/api/Product/select/base';
+const PRODUCT_SELECT_BASE_API = '/api/Product/select/base';
 
 
 /*
@@ -222,7 +207,7 @@ const SUPPLIER_SELECT_API = '/api/Supplier/select';
 请求方式：POST
 参数： 无
 */
-const SUPPLIER_BASE_API = '/api/Supplier/select/base';
+const SUPPLIER_SELECT_BASE_API = '/api/Supplier/select/base';
 
 
 /*
@@ -267,7 +252,7 @@ const CUSTOMERS_SELECT_API = '/api/Customers/select';
 请求方式：POST
 参数： 无
 */
-const CUSTOMERS_BASE_API = '/api/Customers/select/base';
+const CUSTOMERS_SELECT_BASE_API = '/api/Customers/select/base';
 
 
 /*
@@ -312,7 +297,7 @@ const ORDER_SELECT_API = '/api/Order/select';
 请求方式：POST
 参数： 无
 */
-const ORDER_BASE_API = '/api/Order/select/base';
+const ORDER_SELECT_BASE_API = '/api/Order/select/base';
 
 
 /*
@@ -357,7 +342,7 @@ const ORDERPRODUCT_SELECT_API = '/api/OrderProduct/select';
 请求方式：POST
 参数： 无
 */
-const ORDERPRODUCT_BASE_API = '/api/OrderProduct/select/base';
+const ORDERPRODUCT_SELECT_BASE_API = '/api/OrderProduct/select/base';
 
 
 /*
@@ -402,7 +387,7 @@ const REPAIR_SELECT_API = '/api/Repair/select';
 请求方式：POST
 参数： 无
 */
-const REPAIR_BASE_API = '/api/Repair/select/base';
+const REPAIR_SELECT_BASE_API = '/api/Repair/select/base';
 
 
 /*
@@ -461,7 +446,7 @@ const MATERIALSREPAIR_SELECT_API = '/api/MaterialsRepair/select';
 请求方式：POST
 参数： 无
 */
-const MATERIALSREPAIR_BASE_API = '/api/MaterialsRepair/select/base';
+const MATERIALSREPAIR_SELECT_BASE_API = '/api/MaterialsRepair/select/base';
 
 
 /*
@@ -506,7 +491,7 @@ const WORK_SELECT_API = '/api/Work/select';
 请求方式：POST
 参数： 无
 */
-const WORK_BASE_API = '/api/Work/select/base';
+const WORK_SELECT_BASE_API = '/api/Work/select/base';
 
 
 /*
@@ -566,7 +551,7 @@ const MATERIALSWORK_SELECT_API = '/api/MaterialsWork/select';
 请求方式：POST
 参数： 无
 */
-const MATERIALSWORK_BASE_API = '/api/MaterialsWork/select/base';
+const MATERIALSWORK_SELECT_BASE_API = '/api/MaterialsWork/select/base';
 
 
 /*
@@ -605,13 +590,13 @@ export default {
     USER_CHANGE_PASSWORD_API,
     USER_LOGOUT_API,
     FORMAT_SELECT_API,
-    FORMAT_BASE_API,
+    FORMAT_SELECT_BASE_API,
     FORMAT_ADD_API,
     FORMAT_ADIT_API,
     FORMAT_DELETE_SINGLE_API,
     FORMAT_DELETE_API,
     MATERIALS_SELECT_API,
-    MATERIALS_BASE_API,
+    MATERIALS_SELECT_BASE_API,
     MATERIALS_ADD_API,
     MATERIALS_ADIT_API,
     MATERIALS_DELETE_SINGLE_API,
@@ -619,37 +604,37 @@ export default {
     MATERIALS_SELECT_PRODUCT_TREE_API,
     MATERIALS_BASE_TREE_API,
     PRODUCT_SELECT_API,
-    PRODUCT_BASE_API,
+    PRODUCT_SELECT_BASE_API,
     PRODUCT_ADD_API,
     PRODUCT_ADIT_API,
     PRODUCT_DELETE_SINGLE_API,
     PRODUCT_DELETE_API,
     SUPPLIER_SELECT_API,
-    SUPPLIER_BASE_API,
+    SUPPLIER_SELECT_BASE_API,
     SUPPLIER_ADD_API,
     SUPPLIER_ADIT_API,
     SUPPLIER_DELETE_SINGLE_API,
     SUPPLIER_DELETE_API,
     CUSTOMERS_SELECT_API,
-    CUSTOMERS_BASE_API,
+    CUSTOMERS_SELECT_BASE_API,
     CUSTOMERS_ADD_API,
     CUSTOMERS_ADIT_API,
     CUSTOMERS_DELETE_SINGLE_API,
     CUSTOMERS_DELETE_API,
     ORDER_SELECT_API,
-    ORDER_BASE_API,
+    ORDER_SELECT_BASE_API,
     ORDER_ADD_API,
     ORDER_ADIT_API,
     ORDER_DELETE_SINGLE_API,
     ORDER_DELETE_API,
     ORDERPRODUCT_SELECT_API,
-    ORDERPRODUCT_BASE_API,
+    ORDERPRODUCT_SELECT_BASE_API,
     ORDERPRODUCT_ADD_API,
     ORDERPRODUCT_ADIT_API,
     ORDERPRODUCT_DELETE_SINGLE_API,
     ORDERPRODUCT_DELETE_API,
     REPAIR_SELECT_API,
-    REPAIR_BASE_API,
+    REPAIR_SELECT_BASE_API,
     REPAIR_ADD_API,
     REPAIR_ADIT_API,
     REPAIR_DELETE_SINGLE_API,
@@ -657,20 +642,20 @@ export default {
     REPAIR_SELECT_CHILDTREE_API,
     REPAIR_BASE_TREE_API,
     MATERIALSREPAIR_SELECT_API,
-    MATERIALSREPAIR_BASE_API,
+    MATERIALSREPAIR_SELECT_BASE_API,
     MATERIALSREPAIR_ADD_API,
     MATERIALSREPAIR_ADIT_API,
     MATERIALSREPAIR_DELETE_SINGLE_API,
     MATERIALSREPAIR_DELETE_API,
     WORK_SELECT_API,
-    WORK_BASE_API,
+    WORK_SELECT_BASE_API,
     WORK_ADD_API,
     WORK_ADIT_API,
     WORK_DELETE_SINGLE_API,
     WORK_DELETE_API,
     WORK_BASE_TREE_API,
     MATERIALSWORK_SELECT_API,
-    MATERIALSWORK_BASE_API,
+    MATERIALSWORK_SELECT_BASE_API,
     MATERIALSWORK_ADD_API,
     MATERIALSWORK_ADIT_API,
     MATERIALSWORK_DELETE_SINGLE_API,

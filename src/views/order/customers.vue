@@ -4,7 +4,7 @@
       <div class="search">
         <span>客户编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index"
+          <el-option v-for="(item,index) in searchList" :key="index"
             :label="item.customers_id+' '+item.customers_name" :value="item.customers_id">
           </el-option>
         </el-select>
@@ -45,7 +45,7 @@
     <!-- 分页 -->
     <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+      layout="total, sizes, prev, pager, next, jumper" :total="count">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
@@ -88,8 +88,8 @@ export default {
       }
       setTimeout(() => {
         if (this.addorChange == true) {
-          let xxx = this.mock_all.list.filter(item => item.customers_id == value)
-          if (xxx.length > 0) {
+          let idCheck = this.mock_all.list.filter(item => item.customers_id == value)
+          if (idCheck.length > 0) {
             callback(new Error('编号已存在，请重新输入'));
           } else {
             callback();
@@ -125,6 +125,8 @@ export default {
       mock_all: state => state.customers.tableData,//{formData,list,columns}
       changeIndex: state => state.customers.changeIndex,
       formadd: state => state.customers.formadd,
+      count: state => state.customers.count,
+      searchList: state => state.customers.searchList,
     }),
     tableList() {
       return this.mock_all.list
@@ -149,49 +151,53 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('customers/getListAction');
+    this.$store.dispatch('customers/getListAction',{
+      "pageIndex":1,
+      "pageSize": 10,
+    });
+    this.$store.dispatch('customers/checkListAction');
     this.tableShow(this.mock_all.list)
   },
   methods: {
-    // 搜索弹框数据，去重
-    restaurants(key) {
-      let restaurants = [];
-      for (var i = 0; i < this.mock_all.list.length; i++) {
-        restaurants.push({ value: '' });
-        restaurants[i].value = this.mock_all.list[i][key]//修改点
-      }
-      // 去重
-      let hash = {};
-      restaurants = restaurants.reduce((preVal, curVal) => {
-        hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
-        return preVal
-      }, [])
-      return restaurants
-    },
-    //搜索1
-    queryStringId(queryString, cb) {
-      let restaurants = this.restaurants('customers_id')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    //搜索2
-    queryStringName(queryString, cb) {
-      let restaurants = this.restaurants('customers_name')
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
-    },
-    createFilter(queryString) {
-      return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
+    // // 搜索弹框数据，去重
+    // restaurants(key) {
+    //   let restaurants = [];
+    //   for (var i = 0; i < this.mock_all.list.length; i++) {
+    //     restaurants.push({ value: '' });
+    //     restaurants[i].value = this.mock_all.list[i][key]//修改点
+    //   }
+    //   // 去重
+    //   let hash = {};
+    //   restaurants = restaurants.reduce((preVal, curVal) => {
+    //     hash[curVal.value] ? '' : hash[curVal.value] = true && preVal.push(curVal);
+    //     return preVal
+    //   }, [])
+    //   return restaurants
+    // },
+    // //搜索1
+    // queryStringId(queryString, cb) {
+    //   let restaurants = this.restaurants('customers_id')
+    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // //搜索2
+    // queryStringName(queryString, cb) {
+    //   let restaurants = this.restaurants('customers_name')
+    //   var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results);
+    // },
+    // createFilter(queryString) {
+    //   return (restaurant) => {
+    //     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+    //   };
+    // },
 
     //列表显示
     tableShow(data) {
-      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
-      this.tableData = _data
+      // let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      this.tableData = data
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
@@ -205,9 +211,10 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.customers_id.toLowerCase().includes(this.idSearch.toLowerCase()))
-
-      this.tableShow(filterData)
+      // var filterData = this.mock_all.list.filter(item => !this.idSearch || item.customers_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      this.$store.dispatch('customers/getListAction',{"customersId":this.idSearch});
+      this.tableShow(this.mock_all.list)
+      // this.tableShow(filterData)
     },
     //移除
 
@@ -327,13 +334,17 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
+      console.log('1111',val)
+      this.$store.dispatch('customers/getListAction',{"pageSize":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
+      // this.onFilter()
     },
     handleCurrentChange(val) {
       this.pageCurrent = val
+      console.log('2222',val)
+      this.$store.dispatch('customers/getListAction',{"pageIndex":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
+      // this.onFilter()
     }
   },
 }

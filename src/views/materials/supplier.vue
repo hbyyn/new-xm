@@ -4,7 +4,7 @@
       <div class="search">
         <span>供应商编号:</span>
         <el-select class="selectSearch" v-model="idSearch" clearable filterable size="small" placeholder="请选择">
-          <el-option v-for="(item,index) in mock_all.list" :key="index" :label="item.supplier_id+' '+item.supplier_name"
+          <el-option v-for="(item,index) in searchList" :key="index" :label="item.supplier_id+' '+item.supplier_name"
             :value="item.supplier_id">
           </el-option>
         </el-select>
@@ -44,7 +44,7 @@
     <!-- 分页 -->
     <el-pagination :class="{active_paging:flagPaging}" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" :page-sizes="[10, 20, 30, 40]" :current="pageCurrent" :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper" :total="mock_all.list.length">
+      layout="total, sizes, prev, pager, next, jumper" :total="count">
     </el-pagination>
     <!-- 新增 -->
     <el-dialog :title="formtitle" :visible.sync="centerDialogVisible" width="500px">
@@ -90,8 +90,8 @@ export default {
       }
       setTimeout(() => {
         if (this.addorChange == true) {
-          let xxx = this.mock_all.list.filter(item => item.supplier_id == value)
-          if (xxx.length > 0) {
+          let idCheck = this.mock_all.list.filter(item => item.supplier_id == value)
+          if (idCheck.length > 0) {
             callback(new Error('编号已存在，请重新输入'));
           } else {
             callback();
@@ -126,6 +126,8 @@ export default {
       mock_all: state => state.supplier.tableData,//{formData,list,columns}
       changeIndex: state => state.supplier.changeIndex,
       formadd: state => state.supplier.formadd,
+      count: state => state.supplier.count,
+      searchList: state => state.supplier.searchList,
     }),
     tableList() {
       return this.mock_all.list
@@ -150,7 +152,11 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('supplier/getListAction');
+    this.$store.dispatch('supplier/getListAction',{
+      "pageIndex":1,
+      "pageSize": 10,
+    });
+    this.$store.dispatch('supplier/checkListAction');
     this.tableShow(this.mock_all.list)
 
   },
@@ -158,8 +164,8 @@ export default {
 
     //列表显示
     tableShow(data) {
-      let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
-      this.tableData = _data
+      // let _data = data.slice((this.pageCurrent - 1) * this.pageSize, this.pageCurrent * this.pageSize)
+      this.tableData = data
       // 分页条
       this.$nextTick(() => {
         if (document.documentElement.scrollHeight > document.documentElement.offsetHeight) {
@@ -172,9 +178,12 @@ export default {
     },
     //filter
     onFilter() {
-      var filterData = this.mock_all.list.filter(item => !this.idSearch || item.supplier_id.toLowerCase().includes(this.idSearch.toLowerCase()))
+      // var filterData = this.mock_all.list.filter(item => !this.idSearch || item.supplier_id.toLowerCase().includes(this.idSearch.toLowerCase()))
 
-      this.tableShow(filterData)
+      // this.tableShow(filterData)
+      this.$store.dispatch('supplier/getListAction',{"supplierId":this.idSearch});
+      this.tableShow(this.mock_all.list)
+
     },
     //移除
     rowDel(index, row) {
@@ -292,13 +301,13 @@ export default {
     //分页
     handleSizeChange(val) {
       this.pageSize = val;
+      this.$store.dispatch('supplier/getListAction',{"pageSize":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
     },
     handleCurrentChange(val) {
       this.pageCurrent = val
+      this.$store.dispatch('supplier/getListAction',{"pageIndex":val});
       this.tableShow(this.mock_all.list)
-      this.onFilter()
     },
   },
 }
